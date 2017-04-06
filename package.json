@@ -1,7 +1,7 @@
 {
   "name": "communitybunqweb",
   "version": "0.0.1",
-  "description": "bunq web app made by bunqers",
+  "description": "Bunq web interface made by bunqers",
   "main": "./manage.py",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -23,6 +23,10 @@
   },
   "homepage": "https://github.com/OGKevin/ComBunqWebApp#readme",
   "dependencies": {
-    "bower": "^1.8.0"
+    "amcharts": "^3.14.5",
+    "bower": "^1.8.0",
+    "jquery": "^3.2.1",
+    "js-cookie": "^2.1.4",
+    "papaparse": "^4.2.0"
   }
 }

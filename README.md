@@ -94,11 +94,11 @@ All pull request are welcome, because this project is mixed with Front- and Back
 
 
 
-For Front End packages we use [bower][bower] so make sure u install and use the dependencies in the [bower.json](../blob/master/bower.json) file by running
+For Front End packages we use [npm][npm] so make sure u install and use the dependencies in the [package.json](../blob/master/package.json) file by running
 
 ```sh
 
-$ Bower install
+$ npm install
 
 ```
 U can also make use of placeholder texts :-)
@@ -188,7 +188,7 @@ MIT
 
    [heroku]:<https://www.heroku.com/>
 
-   [bower]:<https://bower.io/>
+   [npm]:<https://www.npmjs.com/>
 
    [virtualenv]:<https://virtualenv.pypa.io/en/stable/>
 

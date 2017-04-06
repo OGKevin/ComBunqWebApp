@@ -59,7 +59,6 @@ INSTALLED_APPS = [
      'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'Manager',
-    'djangobower',
 ]
 
 MIDDLEWARE = [
@@ -147,12 +146,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR,'static-files')
-STATICFILES_DIRS = [os.path.join(BASE_DIR,'static'),]
+STATICFILES_DIRS = [os.path.join(BASE_DIR,'static'),os.path.join(BASE_DIR,'node_modules')]
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-BOWER_COMPONENTS_ROOT = os.path.join(BASE_DIR)
-STATICFILES_FINDERS = ['djangobower.finders.BowerFinder',
+STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
 WHITENOISE_ROOT = STATIC_ROOT
-BOWER_INSTALLED_APPS = ['amcharts3#3.21.1', 'jquery#3.2.1', 'papaparse#4.2.0']
