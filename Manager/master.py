@@ -1,0 +1,89 @@
+import json
+import os
+import sys
+from models import transactions
+
+
+# NOTE: getting JSON from database
+# need to chage this to not use global vars
+data = []
+catagory =[]
+def getInfo():
+    data1 = list(transactions.objects.values_list('attrs', flat=True))
+    global data
+    data = data1[0]
+    # print data[0]
+    catagory1 = list(transactions.objects.values_list('catagory', flat=True))
+    global catagory
+    catagory = catagory1[0]
+    # print catagory
+    return {'data':data, 'catagory' : catagory}
+
+def getTotal():
+    getInfo()
+    total = 0
+    for x in range(len(data)):
+        total += float(data[x]["Bedrag"].replace(",", "."))
+    return total
+
+
+
+
+
+def getExpenses(begin, end):
+    getInfo()
+    loading = []
+    catagoryObj = {}
+    table = []
+    totalExpanses = 0
+    totalIncome = 0
+    k = 0
+    while k < len(catagory):
+        catagoryObj[catagory[k]["Naam"]] = 0
+        k += 1
+    for k in range(begin, end + 1):
+        loading.append("-")
+        for x in range(len(catagory)):
+            if data[k]["Tegenrekening"] == catagory[x]["Rekening"]:
+                catagoryObj[catagory[x]["Naam"]
+                            ] += round(float(data[k]["Bedrag"].replace(",", ".")), 2)
+                break
+            elif x == len(catagory) - 1:
+                catagoryObj["Other"] += round(float(data[k]
+                                                    ["Bedrag"].replace(",", ".")), 2)
+                print "not in list"
+
+        if float(data[k]["Bedrag"].replace(",", ".")) < 0:
+            totalExpanses += float(data[k]["Bedrag"].replace(",", "."))
+        else:
+            totalIncome += float(data[k]["Bedrag"].replace(",", "."))
+        k += 1
+    for x in range(len(catagoryObj)):
+        if catagoryObj[catagory[x]["Naam"]] < 0:
+            percentage = round(
+                abs(catagoryObj[catagory[x]["Naam"]] / totalExpanses * 100), 2)
+        else:
+            percentage = round(
+                abs(catagoryObj[catagory[x]["Naam"]] / totalIncome * 100), 2)
+        table.extend(
+            [[catagory[x]["Naam"], catagoryObj[catagory[x]["Naam"]], percentage]])
+    return table
+
+
+def getDate(start, stop):
+    begin = 0
+    end = 0
+    if start == "":
+        begin = 0
+    else:
+        for x in range(len(data)):
+            if data[x]["Datum"].replace("-", "") == start:
+                begin = x
+                break
+    if stop == "":
+        end = len(data) - 1
+    else:
+        for x in range(len(data)):
+            if data[x]["Datum"].replace("-", "") == stop:
+                end = x
+    return getExpenses(begin, end)

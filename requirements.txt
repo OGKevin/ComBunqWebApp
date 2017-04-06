@@ -1,0 +1,7 @@
+Django==1.10.6
+gunicorn==19.7.1
+psycopg2==2.7.1
+requests==2.10.0
+whitenoise==3.3.0
+dj-database-url==0.4.1
+django-bower==5.2.0

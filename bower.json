@@ -1,0 +1,25 @@
+{
+  "name": "CommunityBunqWeb",
+  "authors": [
+    "OGKevin <kevinhellemun@icloud.com>"
+  ],
+  "description": "Bunq web interface made by bunqers",
+  "main": "./manage.py",
+  "keywords": [
+    "Bunq"
+  ],
+  "license": "MIT",
+  "homepage": "https://combunqweb.herokuapp.com",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "^3.2.1",
+    "papaparse": "^4.2.0",
+    "amcharts3": "^3.21.1"
+  }
+}
