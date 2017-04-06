@@ -10,11 +10,11 @@ Community BunqWeb is going to be a web interface for bunqers using the [Bunq API
 
 
 
-Disclaimer: Bunq its self has nothing to do with this project
+Disclaimer: Bunq it self has nothing to do with this project
 
 
 
-View the app live on latest commit: <https://combunqweb.herokuapp.com/manager>
+View the app live based on the latest release: <https://combunqweb.herokuapp.com/manager>
 
 # Goals
 
@@ -94,7 +94,7 @@ All pull request are welcome, because this project is mixed with Front- and Back
 
 
 
-For Front End packages we use [bower][bower] so make sure u install and use the dependencies in the [bower.json](../blob/master/bower.json) file by running 
+For Front End packages we use [bower][bower] so make sure u install and use the dependencies in the [bower.json](../blob/master/bower.json) file by running
 
 ```sh
 
@@ -193,4 +193,3 @@ MIT
    [virtualenv]:<https://virtualenv.pypa.io/en/stable/>
 
    
-
