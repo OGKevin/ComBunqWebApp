@@ -152,7 +152,7 @@ For this project were gonna use [Django][django] and [Heroku][heroku], make sure
 
 ##### Todo
 
-- Creatate database models for sotring User info and catagorys
+- Create database models for storing user info and catagories
 
 - Hook it up to the Bunq API
 
