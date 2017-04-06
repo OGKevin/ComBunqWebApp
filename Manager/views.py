@@ -11,23 +11,15 @@ from .forms import GetNewData
 def Manager(request):
     data = master.getDate("", "")
     simpleData = json.dumps(data, sort_keys=True)
-    # # NOTE: for when using login and db
+    # # NOTE: Colecting user input to match againts catagory in db
     if request.method == 'POST':
         print 'post'
         form = GetNewData(request.POST)
         # print form
-        test = request.POST
-        print 'this is test',test
-        # print request.POST['test']
+        inputData = request.POST
+        print 'This should be the unser input',dict(inputData.lists())
         if form.is_valid():
-            value = form.cleaned_data['JSONTransactions']
-            # test1 = form.cleaned_data['test']
-    #         data = master.getDate("20170330", "20170331")
-    #         simpleData = json.dumps(data, sort_keys=True)
-    #         return render(request, 'Manager/index.html',{'data': data, 'simpleData': simpleData, } )
             print "valed form"
-            # print value
-            # print test
     else:
         form = GetNewData()
         # print form
