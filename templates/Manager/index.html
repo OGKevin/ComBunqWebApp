@@ -1,14 +1,15 @@
  <!-- <meta http-equiv="refresh" content="15" /> -->
 <head> {%load static%}
 	<link rel="stylesheet" href="{%static "Manager/CSS/index.css"%}"/>
-	<script src="{%static "amcharts3/amcharts/amcharts.js"%}"></script>
-	<script src="{%static "amcharts3/amcharts/pie.js"%}"></script>
-	<script src="{%static "amcharts3/amcharts/themes/light.js"%}"></script>
+	<script src="{%static "amcharts/dist/amcharts/amcharts.js"%}"></script>
+	<script src="{%static "amcharts/dist/amcharts/pie.js"%}"></script>
+	<script src="{%static "amcharts/dist/amcharts/themes/light.js"%}"></script>
 	<script>
 		data1 = {{simpleData | safe}};
 	</script>
 	<script type='text/javascript' src="{%static "jquery/dist/jquery.min.js"%}"></script>
 	<script type='text/javascript'src="{%static "papaparse/papaparse.min.js"%}"></script>
+	<script type='text/javascript'src="{%static "js-cookie/src/js.cookie.js"%}"></script>
 	<script type="text/javascript" src='{%static 'Manager/JS/index.js'%}'></script>
 	<script>getGraphsDB(data1)</script>
 </head>
@@ -44,7 +45,7 @@
 #Press 'via CSV text' to see this example in action
 #Lines that begin with '#' wil be ignored
 </textarea>
-	<button id='textCSV'>Via CSV text</button>
+	<!-- <button id='textCSV'>Via CSV text</button> -->
 	<input id='file' type="file" accept=".csv" name="files"/>
 	<button id="fileCSV">Via CSV Upload</button>
 </div>
@@ -53,3 +54,8 @@
 	<div id="chartdiv3" class="chartdiv"></div>
 	<div id="chartdiv4" class="chartdiv"></div>
 </div>
+<form id='textCSVForm' class="" action="" method="post">
+	{% csrf_token %}
+	{{from}}
+	<button name='' id="textCSV" type="" name="">Via CSV text</button>
+</form>

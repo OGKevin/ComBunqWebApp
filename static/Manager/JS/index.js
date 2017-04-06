@@ -73,39 +73,75 @@ $(function() {
         };
         Papa.parse($("#input").val(), Configuration);
 
+
+        csrftoken = Cookies.get('csrftoken')
+        console.log('CSRFTOKEN', csrftoken)
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        frm = $("#textCSVForm");
+        frm.submit(function(event) {
+            console.log('submit');
+            $.ajax({
+                    url: frm.attr('action'),
+                    type: frm.attr('method'),
+                    dataType: '',
+                    data: {
+                        test: 'post via js passed'
+                    },
+                    beforeSend: function(xhr, settings) {
+                        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                        }
+                    }
+                })
+                .done(function(response) {
+                    console.log("success");
+                    //  console.log(response);
+                })
+                .fail(function() {
+                    console.log("error");
+                })
+                .always(function() {
+                    console.log("complete");
+                });
+        });
+
     });
-  $('#fileCSV').click(function(event) {
-    file = $('#file')[0].files[0]
-    console.log(file);
-    complete = function(results, file) {
-        console.log("Parsing complete", results);
-        getUserGraphs(results);
-    };
-    Configuration = {
-        delimiter: "", // auto-detect
-        newline: "", // auto-detect
-        quoteChar: '"',
-        header: true,
-        dynamicTyping: true,
-        preview: 0,
-        encoding: "",
-        worker: false,
-        comments: true,
-        step: undefined,
-        complete: complete,
-        error: undefined,
-        download: false,
-        skipEmptyLines: true,
-        chunk: undefined,
-        fastMode: undefined,
-        beforeFirstChunk: undefined,
-        withCredentials: undefined
-    };
-    Papa.parse(file , Configuration);
+    $('#fileCSV').click(function(event) {
+        file = $('#file')[0].files[0]
+        console.log(file);
+        complete = function(results, file) {
+            console.log("Parsing complete", results);
+            getUserGraphs(results);
+        };
+        Configuration = {
+            delimiter: "", // auto-detect
+            newline: "", // auto-detect
+            quoteChar: '"',
+            header: true,
+            dynamicTyping: true,
+            preview: 0,
+            encoding: "",
+            worker: false,
+            comments: true,
+            step: undefined,
+            complete: complete,
+            error: undefined,
+            download: false,
+            skipEmptyLines: true,
+            chunk: undefined,
+            fastMode: undefined,
+            beforeFirstChunk: undefined,
+            withCredentials: undefined
+        };
+        Papa.parse(file, Configuration);
 
 
-  });
-})
+    })
+});
 
 function getUserGraphs(results) {
     income = []
@@ -155,4 +191,5 @@ function getUserGraphs(results) {
         }
     });
 }
-// getGraphs();
+
+function sendPost() {}
