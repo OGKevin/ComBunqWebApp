@@ -57,7 +57,7 @@ All pull request are welcome, because this project is mixed with Front- and Back
 
 
 
-1. In the folder [templates](../blob/mastertemplates/) u will find HTML documnets. These templates are used to render the front end. In some of these files there might be wierd markings like:
+1. In the folder [templates](../master/templates/) u will find HTML documnets. These templates are used to render the front end. In some of these files there might be wierd markings like:
 
     ```html
 
@@ -81,13 +81,13 @@ All pull request are welcome, because this project is mixed with Front- and Back
 
     This is  back end stuff and u shouldnt worry much about it for now.
 
-- In the folder [static](../blob/master/static/) u will find the CSS and JS documents used by the templates.
+- In the folder [static](../master/static/) u will find the CSS and JS documents used by the templates.
 
 - Change the ```href=''``` and ```src=''``` atributes by dublicating it, commenting one of them out and change the other one to```/static/Manager...``` like u normaly would. After you're done and ready to make a pull request uncomment the original line and remove the edited one.
 
 
 
-For Front End packages we use [npm][npm] so make sure u install and use the dependencies in the [package.json](../blob/master/package.json) file by running
+For Front End packages we use [npm][npm] so make sure u install and use the dependencies in the [package.json](../master/package.json) file by running
 
 ```sh
 
@@ -111,7 +111,7 @@ For this project were gonna use [Django][django] and [Heroku][heroku], make sure
 
 1. run ```$ pip install -r requirements.txt``` to install the python packages used in this project. It might be a good idea to setup and use [virtualenv][virtualenv].
 
-- setup local postgress database and change the database settings in [settings.py](../blob/masterMoneyWebApp/settings.py) file
+- setup local postgress database and change the database settings in [settings.py](../masterMoneyWebApp/settings.py) file
 
 - now we need to collect static files by running the following:
 
