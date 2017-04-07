@@ -13,20 +13,21 @@ def Manager(request):
     simpleData = json.dumps(data, sort_keys=True)
     # # NOTE: Colecting user input to match againts catagory in db
     if request.method == 'POST':
-        print 'post'
+        # print 'post'
         form = GetNewData(request.POST)
         # print form
         inputData = json.loads(request.POST['json'])
         # print inputData
-        print type(inputData)
-        master.getDate('','',inputData)
+        # print type(inputData)
+        # print master.getDate('','',inputData)
+        return HttpResponse(json.dumps(master.getDate('','',inputData)))
         # print 'This should be the unser input',dict(inputData.lists())
-        if form.is_valid():
-            print "valed form"
+        # if form.is_valid():
+            # print "valed form"
     else:
         form = GetNewData()
         # print form
-        print 'get'
+        # print 'get'
     # # NOTE: endNote
     return render(request,'Manager/index.html',{'data': data, 'simpleData': simpleData, 'from': form  })
 

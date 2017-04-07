@@ -209,10 +209,12 @@ frm.submit(function(event) {
             }
         })
         .done(function(response) {
+          sortedJSON = JSON.parse(response);
+          getUserGraphs2(sortedJSON);
+          
         })
         .fail(function() {})
         .always(function() {
-          
         });
 });
 

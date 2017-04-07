@@ -10,7 +10,7 @@ catagory =[]
 def getInfo(method):
     
     if method == 'database':
-        print 'Method: ',method
+        # print 'Method: ',method
         data1 = list(transactions.objects.values_list('attrs', flat=True))
         global data
         data = data1[0]
@@ -21,7 +21,7 @@ def getInfo(method):
         # print catagory
         return {'data':data, 'catagory' : catagory} # NOTE: the idea is that these get returned so that Global vars should be used
     else:
-        print 'Method: user input'
+        # print 'Method: user input'
         data1 = method
         # print data1
         global data
@@ -64,7 +64,7 @@ def getExpenses(begin, end):
             elif x == len(catagory) - 1:
                 catagoryObj["Other"] += round(float(data[k]
                                                     ["Bedrag"].replace(",", ".")), 2)
-                print "not in catagory list"
+                # print "not in catagory list"
 
         if float(data[k]["Bedrag"].replace(",", ".")) < 0:
             totalExpanses += float(data[k]["Bedrag"].replace(",", "."))
