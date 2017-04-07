@@ -4,25 +4,32 @@ from django.template import loader
 from . import master
 import json
 from models import transactions
-# from .forms import GetNewData
+from .forms import GetNewData
 # Create your views here.
 
 
 def Manager(request):
-    data = master.getDate("", "")
+    data = master.getDate("", "",'database')
     simpleData = json.dumps(data, sort_keys=True)
-    # # NOTE: for when using login and db
-    # if request.method == 'POST':
-    #     form = GetNewData(request.POST)
-    #     if form.is_valid():
-    #         data = master.getDate("20170330", "20170331")
-    #         simpleData = json.dumps(data, sort_keys=True)
-    #         return render(request, 'Manager/index.html',{'data': data, 'simpleData': simpleData, } )
-    #         print "valed form"
-    # else:
-    #     form = GetNewData()
+    # # NOTE: Colecting user input to match againts catagory in db
+    if request.method == 'POST':
+        # print 'post'
+        form = GetNewData(request.POST)
+        # print form
+        inputData = json.loads(request.POST['json'])
+        # print inputData
+        # print type(inputData)
+        # print master.getDate('','',inputData)
+        return HttpResponse(json.dumps(master.getDate('','',inputData)))
+        # print 'This should be the unser input',dict(inputData.lists())
+        # if form.is_valid():
+            # print "valed form"
+    else:
+        form = GetNewData()
+        # print form
+        # print 'get'
     # # NOTE: endNote
-    return render(request,'Manager/index.html',{'data': data, 'simpleData': simpleData,  })
+    return render(request,'Manager/index.html',{'data': data, 'simpleData': simpleData, 'from': form  })
 
 
 # def getData(request):
