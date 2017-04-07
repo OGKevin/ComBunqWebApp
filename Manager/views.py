@@ -9,15 +9,18 @@ from .forms import GetNewData
 
 
 def Manager(request):
-    data = master.getDate("", "")
+    data = master.getDate("", "",'database')
     simpleData = json.dumps(data, sort_keys=True)
     # # NOTE: Colecting user input to match againts catagory in db
     if request.method == 'POST':
         print 'post'
         form = GetNewData(request.POST)
         # print form
-        inputData = request.POST
-        print 'This should be the unser input',dict(inputData.lists())
+        inputData = json.loads(request.POST['json'])
+        # print inputData
+        print type(inputData)
+        master.getDate('','',inputData)
+        # print 'This should be the unser input',dict(inputData.lists())
         if form.is_valid():
             print "valed form"
     else:

@@ -35,13 +35,6 @@ View the app live based on the latest release: <https://combunqweb.herokuapp.com
 
 
   - Use Bunq CSV file and see a Pie of income, exapnses, transaction names and percentages
-
-  
-
-# Know Issues
-
-- When user inputs his/her CSV data the Pie's wont get catagories like in the example at the top of the page. This can get fixed by using a catagory filter stored in the DB. I haven't found/made such filter yet.
-
  
 
 # Why Community ?

@@ -3,21 +3,36 @@ import os
 import sys
 from models import transactions
 
-
 # NOTE: getting JSON from database
 # need to chage this to not use global vars
 data = []
 catagory =[]
-def getInfo():
-    data1 = list(transactions.objects.values_list('attrs', flat=True))
-    global data
-    data = data1[0]
-    # print data[0]
-    catagory1 = list(transactions.objects.values_list('catagory', flat=True))
-    global catagory
-    catagory = catagory1[0]
-    # print catagory
-    return {'data':data, 'catagory' : catagory}
+def getInfo(method):
+    
+    if method == 'database':
+        print 'Method: ',method
+        data1 = list(transactions.objects.values_list('attrs', flat=True))
+        global data
+        data = data1[0]
+        # print data[0]
+        catagory1 = list(transactions.objects.values_list('catagory', flat=True))
+        global catagory
+        catagory = catagory1[0]
+        # print catagory
+        return {'data':data, 'catagory' : catagory} # NOTE: the idea is that these get returned so that Global vars should be used
+    else:
+        print 'Method: user input'
+        data1 = method
+        # print data1
+        global data
+        data = data1
+        print data
+        catagory1 = list(transactions.objects.values_list('catagory', flat=True))
+        global catagory
+        catagory = catagory1[0]
+        # print catagory
+        return {'data':data, 'catagory' : catagory} # NOTE: the idea is that these get returned so that Global vars should be used
+        
 
 def getTotal():
     getInfo()
@@ -31,8 +46,7 @@ def getTotal():
 
 
 def getExpenses(begin, end):
-    getInfo()
-    loading = []
+    # getInfo(method)
     catagoryObj = {}
     table = []
     totalExpanses = 0
@@ -42,7 +56,6 @@ def getExpenses(begin, end):
         catagoryObj[catagory[k]["Naam"]] = 0
         k += 1
     for k in range(begin, end + 1):
-        loading.append("-")
         for x in range(len(catagory)):
             if data[k]["Tegenrekening"] == catagory[x]["Rekening"]:
                 catagoryObj[catagory[x]["Naam"]
@@ -51,7 +64,7 @@ def getExpenses(begin, end):
             elif x == len(catagory) - 1:
                 catagoryObj["Other"] += round(float(data[k]
                                                     ["Bedrag"].replace(",", ".")), 2)
-                print "not in list"
+                print "not in catagory list"
 
         if float(data[k]["Bedrag"].replace(",", ".")) < 0:
             totalExpanses += float(data[k]["Bedrag"].replace(",", "."))
@@ -70,7 +83,8 @@ def getExpenses(begin, end):
     return table
 
 
-def getDate(start, stop):
+def getDate(start, stop, method):
+    getInfo(method)
     begin = 0
     end = 0
     if start == "":
@@ -86,4 +100,6 @@ def getDate(start, stop):
         for x in range(len(data)):
             if data[x]["Datum"].replace("-", "") == stop:
                 end = x
+    
     return getExpenses(begin, end)
+        
