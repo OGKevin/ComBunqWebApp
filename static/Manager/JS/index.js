@@ -192,28 +192,28 @@ function sendPost(json) {
         // these HTTP methods do not require CSRF protection
         return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
     }
-
-
-
-    frm = $("#textCSVForm");
-    frm.submit(function(event) {
-        event.preventDefault()
-        $.ajax({
-                url: frm.attr('action'),
-                type: frm.attr('method'),
-                dataType: '',
-                data: {
-                    json: json.data
-                },
-                beforeSend: function(xhr, settings) {
-                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                    }
+frm = $("#textCSVForm");
+frm.submit(function(event) {
+    event.preventDefault()
+    $.ajax({
+            url: frm.attr('action'),
+            type: frm.attr('method'),
+            dataType: '',
+            data: {
+                'json': JSON.stringify(json.data)
+            },
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
                 }
-            })
-            .done(function(response) {})
-            .fail(function() {})
-            .always(function() {});
-    });
+            }
+        })
+        .done(function(response) {
+        })
+        .fail(function() {})
+        .always(function() {
+          
+        });
+});
 
 }
