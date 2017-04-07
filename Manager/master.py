@@ -1,7 +1,7 @@
 import json
 import os
 import sys
-from models import transactions
+from models import transactions, catagories
 
 # NOTE: getting JSON from database
 # need to chage this to not use global vars
@@ -10,7 +10,7 @@ catagory =[]
 def getInfo(method):
     
     if method == 'database':
-        # print 'Method: ',method
+        print 'Method: ',method
         data1 = list(transactions.objects.values_list('attrs', flat=True))
         global data
         data = data1[0]
@@ -19,14 +19,31 @@ def getInfo(method):
         global catagory
         catagory = catagory1[0]
         # print catagory
+        
+        
+        # NOTE: testing databse catagory retrieval
+        catName = list(catagories.objects.filter(Rekening__contains = ['DE60700111100250250061']).values_list('Naam'))
+        catList = []
+        for x in catName:
+            # print 'catagoryNmae ',x[0]
+            catList.append(x[0])
+                    
+        print 'catagories found: ',catList
+        # NOTE: this should be implemented in getExpenses or a new fucntion createCatagory
+        # print type(catName)
+        # NOTE: endNote
+        
+        
+        
+        
         return {'data':data, 'catagory' : catagory} # NOTE: the idea is that these get returned so that Global vars should be used
     else:
-        # print 'Method: user input'
+        print 'Method: user input'
         data1 = method
         # print data1
         global data
         data = data1
-        print data
+        # print data
         catagory1 = list(transactions.objects.values_list('catagory', flat=True))
         global catagory
         catagory = catagory1[0]
@@ -64,7 +81,7 @@ def getExpenses(begin, end):
             elif x == len(catagory) - 1:
                 catagoryObj["Other"] += round(float(data[k]
                                                     ["Bedrag"].replace(",", ".")), 2)
-                # print "not in catagory list"
+                print "not in catagory list"
 
         if float(data[k]["Bedrag"].replace(",", ".")) < 0:
             totalExpanses += float(data[k]["Bedrag"].replace(",", "."))

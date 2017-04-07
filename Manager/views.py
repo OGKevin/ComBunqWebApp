@@ -3,7 +3,6 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from . import master
 import json
-from models import transactions
 from .forms import GetNewData
 # Create your views here.
 
@@ -18,12 +17,12 @@ def Manager(request):
         # print form
         inputData = json.loads(request.POST['json'])
         # print inputData
-        # print type(inputData)
-        # print master.getDate('','',inputData)
+        print type(inputData)
+        print master.getDate('','',inputData)
         return HttpResponse(json.dumps(master.getDate('','',inputData)))
         # print 'This should be the unser input',dict(inputData.lists())
-        # if form.is_valid():
-            # print "valed form"
+        if form.is_valid():
+            print "valed form"
     else:
         form = GetNewData()
         # print form
