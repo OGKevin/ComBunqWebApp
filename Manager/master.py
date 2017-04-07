@@ -26,7 +26,7 @@ def getInfo(method):
         # print data1
         global data
         data = data1
-        print data
+        # print data
         catagory1 = list(transactions.objects.values_list('catagory', flat=True))
         global catagory
         catagory = catagory1[0]

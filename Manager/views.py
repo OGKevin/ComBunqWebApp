@@ -19,7 +19,8 @@ def Manager(request):
         inputData = json.loads(request.POST['json'])
         # print inputData
         print type(inputData)
-        master.getDate('','',inputData)
+        print master.getDate('','',inputData)
+        return HttpResponse(json.dumps(master.getDate('','',inputData)))
         # print 'This should be the unser input',dict(inputData.lists())
         if form.is_valid():
             print "valed form"

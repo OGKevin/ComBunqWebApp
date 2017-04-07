@@ -34,6 +34,8 @@ $(function() {
         // sendPost()
     
         input = $("#id_JSONTransactions").val()
+        console.log('click');
+        console.log(input);
         parseCSV(input)
     });
     $('#fileCSV').click(function(event) {
@@ -161,6 +163,8 @@ function getUserGraphs(results) {
 function parseCSV(csv) {
   
   complete = function(results, file) {
+    console.log('parse complete');
+    console.log(results.data);
           sendPost(results);
       };
       Configuration = {
@@ -194,7 +198,9 @@ function sendPost(json) {
     }
 frm = $("#textCSVForm");
 frm.submit(function(event) {
+  console.log('submiting before prevent ');
     event.preventDefault()
+    console.log('submitting');
     $.ajax({
             url: frm.attr('action'),
             type: frm.attr('method'),
@@ -209,11 +215,65 @@ frm.submit(function(event) {
             }
         })
         .done(function(response) {
+          console.log(response);
+          console.log(typeof(response));
+          console.log(JSON.parse(response));
+          sortedJSON = JSON.parse(response);
+          getUserGraphs2(sortedJSON);
+          
         })
         .fail(function() {})
         .always(function() {
-          
+          console.log('send');
         });
 });
 
+}
+
+function getUserGraphs2(data) {
+    income = [],
+        expenses = [];
+    for (var i = 0; i < data.length; i++) {
+        if (data[i][1] > 0) {
+            income.push({
+                'catName': data[i][0],
+                'ammount': data[i][1]
+            })
+
+        } else {
+            expenses.push({
+                'catName': data[i][0],
+                'ammount': data[i][1] * -1
+            })
+
+        }
+    }
+
+    var chart = AmCharts.makeChart("chartdiv4", {
+        "type": "pie",
+        "theme": "light",
+        "dataProvider": income,
+        "valueField": "ammount",
+        "titleField": "catName",
+        "balloon": {
+            "fixedPosition": true
+        },
+        "export": {
+            "enabled": false
+        }
+    });
+    var chart = AmCharts.makeChart("chartdiv3", {
+        "type": "pie",
+        "theme": "light",
+        "dataProvider": expenses,
+        "valueField": "ammount",
+        "titleField": "catName",
+        "balloon": {
+            "fixedPosition": true
+        },
+
+        "export": {
+            "enabled": false
+        }
+    });
 }
