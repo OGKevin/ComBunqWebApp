@@ -111,7 +111,7 @@ For this project were gonna use [Django][django] and [Heroku][heroku], make sure
 
 1. run ```$ pip install -r requirements.txt``` to install the python packages used in this project. It might be a good idea to setup and use [virtualenv][virtualenv].
 
-- setup local postgress database and change the database settings in [settings.py](../masterMoneyWebApp/settings.py) file
+- setup local postgress database and change the database settings in [settings.py](../master/BunqWebApp/settings.py) file
 
 - now we need to collect static files by running the following:
 
