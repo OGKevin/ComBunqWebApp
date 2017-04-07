@@ -1,7 +1,7 @@
 import json
 import os
 import sys
-from models import transactions
+from models import transactions, catagories
 
 # NOTE: getting JSON from database
 # need to chage this to not use global vars
@@ -19,6 +19,23 @@ def getInfo(method):
         global catagory
         catagory = catagory1[0]
         # print catagory
+        
+        
+        # NOTE: testing databse catagory retrieval
+        catName = list(catagories.objects.filter(Rekening__contains = ['DE60700111100250250061']).values_list('Naam'))
+        catList = []
+        for x in catName:
+            # print 'catagoryNmae ',x[0]
+            catList.append(x[0])
+                    
+        print 'catagories found: ',catList
+        # NOTE: this should be implemented in getExpenses or a new fucntion createCatagory
+        # print type(catName)
+        # NOTE: endNote
+        
+        
+        
+        
         return {'data':data, 'catagory' : catagory} # NOTE: the idea is that these get returned so that Global vars should be used
     else:
         print 'Method: user input'
