@@ -1,4 +1,3 @@
-# from Manager.models import catagories
 import csv
 import json
 import os
@@ -12,23 +11,19 @@ from Manager.models import catagories
 
 def getJSON():
     
-    catFiltersCSV = open('DatabseInput/ComBunqWeb-category-filter.csv')
+    catFiltersCSV = open('DatabaseInput/ComBunqWeb-category-filter.csv')
     reader = csv.reader(catFiltersCSV, delimiter=',', quotechar='"')
     keys = next(reader)
     catFiltersJSON = [{key:val for key,val in zip(keys,prop)} for prop in reader]
-    # print json.dumps(catFiltersJSON,sort_keys=True,indent=2)
-    # getHeaders()
     return catFiltersJSON
     
 
 def getHeaders():
-    catFiltersCSV = open('DatabseInput/ComBunqWeb-category-filter.csv')
+    catFiltersCSV = open('DatabaseInput/ComBunqWeb-category-filter.csv')
     reader = csv.reader(catFiltersCSV, delimiter=',', quotechar='"')
     keys = reader.next()
-    # print keys
     return keys
 
-# getJSON()
 
 def validator():
     obj = getJSON()
@@ -40,13 +35,45 @@ def validator():
         for y in getHeaders():
             try:
                 obj[x][y]
-                # print y,':',obj[x][y]
                 check = json.loads(requests.get("".join([url,obj[x][y]])).content)
-                print check['valid']
-                # print type(list(valid))
+                if check['valid']:
+                    print 'valid IBAN'
+                    print y, ' ', obj[x][y]
+                    obj[x][y] = newCatInfo(y,obj[x][y])
+                    isInDatabase(obj[x][y])
+                    
+                else:
+                    print 'unvalid IBAN'
             except KeyError:
                 continue
-            
-        
+
+
+class newCatInfo(object):
+    """docstring for newCatInfo."""
+    def __init__(self, catName,Iban):
+        super(newCatInfo, self).__init__()
+        self.catName = catName
+        self.Iban = Iban
+    
+    def getIban(self):
+        print self.Iban
+    
+    def __str__(self):
+        return self.catName
+
+
+def isInDatabase(catInfo):
+    test = 'Aliexpres'
+    cat = catagories.objects
+    # print catInfo.getIban()
+    catName = str(catInfo)
+    ibanList = cat.get(Naam = catName)
+    print type(catName)
+    print cat.filter(Naam = catName)[0] # NOTE: query set from DB the [0] is so that we get the catagory name if its in the db
+    if str(cat.filter(Naam = catName)[0]) == catName:
+        print catName,"is in database", ibanList.Rekening #catagory is already in database
+    else:
+        print catName, 'is not in database' # not in data base so need to create it
+    
 
 validator()
