@@ -3,6 +3,7 @@ import json
 import os
 import sys
 import requests
+from django.core.exceptions import ObjectDoesNotExist
 curdir = os.path.abspath(os.curdir)
 print curdir
 sys.path.insert(0, curdir)
@@ -29,21 +30,21 @@ def validator():
     obj = getJSON()
     url = 'https://openiban.com/validate/'
     
-    print json.dumps(obj,sort_keys=True,indent = 2 )
+    # print json.dumps(obj,sort_keys=True,indent = 2 )
     for x in range(len(getJSON())):
-        print x
         for y in getHeaders():
             try:
                 obj[x][y]
+                # print y,':',obj[x][y]
                 check = json.loads(requests.get("".join([url,obj[x][y]])).content)
                 if check['valid']:
-                    print 'valid IBAN'
-                    print y, ' ', obj[x][y]
+                    print '\nvalid IBAN:',obj[x][y],'-->',y
                     obj[x][y] = newCatInfo(y,obj[x][y])
                     isInDatabase(obj[x][y])
                     
                 else:
-                    print 'unvalid IBAN'
+                    print 'unvalid IBAN:', obj[x][y],'\n\n'
+                # print type(list(valid))
             except KeyError:
                 continue
 
@@ -56,7 +57,7 @@ class newCatInfo(object):
         self.Iban = Iban
     
     def getIban(self):
-        print self.Iban
+        return self.Iban
     
     def __str__(self):
         return self.catName
@@ -65,15 +66,27 @@ class newCatInfo(object):
 def isInDatabase(catInfo):
     test = 'Aliexpres'
     cat = catagories.objects
-    # print catInfo.getIban()
     catName = str(catInfo)
-    ibanList = cat.get(Naam = catName)
-    print type(catName)
-    print cat.filter(Naam = catName)[0] # NOTE: query set from DB the [0] is so that we get the catagory name if its in the db
-    if str(cat.filter(Naam = catName)[0]) == catName:
-        print catName,"is in database", ibanList.Rekening #catagory is already in database
-    else:
-        print catName, 'is not in database' # not in data base so need to create it
+    iban = catInfo.getIban()
+    try:
+        cat.get(Naam = catName)
     
+    except ObjectDoesNotExist:
+        print catName, 'is not in database'
+        # NOTE: create catagory
+        p = cat.create(Naam = catName, Rekening = [iban])
+        print catName, 'Has been stored in the database with', iban
+    else:
+        ibanList = cat.get(Naam = catName).Rekening
+        editCat = cat.get(Naam = catName)
+        print catName,'is in db, the following ibans are stored:\n\n', ibanList,'\n\n'
+        if iban in ibanList:
+            print iban,'is already in the list\n'
+        else:
+            ibanList.append(iban)
+            cat.save()
+            print 'Updated list for',catName,'-->',ibanList
+
+
 
 validator()
