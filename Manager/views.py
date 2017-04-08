@@ -3,7 +3,6 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from . import master
 import json
-from models import transactions
 from .forms import GetNewData
 # Create your views here.
 
