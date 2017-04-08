@@ -64,7 +64,6 @@ class newCatInfo(object):
 
 
 def isInDatabase(catInfo):
-    test = 'Aliexpres'
     cat = catagories.objects
     catName = str(catInfo)
     iban = catInfo.getIban()
@@ -77,16 +76,19 @@ def isInDatabase(catInfo):
         p = cat.create(Naam = catName, Rekening = [iban])
         print catName, 'Has been stored in the database with', iban
     else:
-        ibanList = cat.get(Naam = catName).Rekening
         editCat = cat.get(Naam = catName)
+        ibanList = editCat.Rekening
         print catName,'is in db, the following ibans are stored:\n\n', ibanList,'\n\n'
         if iban in ibanList:
             print iban,'is already in the list\n'
         else:
             ibanList.append(iban)
-            cat.save()
-            print 'Updated list for',catName,'-->',ibanList
+            editCat.save()
+            print 'Updated list for',catName,'with -->',iban,'\nlist is now -->', ibanList,'\n'
 
+
+def sendToDb():
+    pass
 
 
 validator()
