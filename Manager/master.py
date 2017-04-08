@@ -24,6 +24,8 @@ def getInfo(method):
         # NOTE: testing databse catagory retrieval
         catName = list(catagories.objects.filter(Rekening__contains = ['DE60700111100250250061']).values_list('Naam'))
         catList = []
+        allCatNames = list(catagories.objects.values_list('Naam', flat=True))
+        print 'allCatNames = ',allCatNames # NOTE: Whit this in getExpenses catagoryObj can be made. Or wiht something like catName only catagories that has been found should be returned.
         for x in catName:
             # print 'catagoryNmae ',x[0]
             catList.append(x[0])
