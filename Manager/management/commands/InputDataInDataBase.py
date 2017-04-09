@@ -8,23 +8,44 @@ curdir = os.path.abspath(os.curdir)
 print curdir
 sys.path.insert(0, curdir)
 from Manager.models import catagories
+from django.core.management.base import BaseCommand, CommandError
 
+class Command(BaseCommand):
+    """docstring for Command."""
+    def handle(self, *args,**options):
+        print 'This scrpit will add new catagories and filters to the database\n do you want to proceed "Yes" or "No"'
+        
+        yes = set(['yes','y','ye'])
+        no = set (['no','n'])
+        choice = raw_input().lower()
+        if choice in yes:
+            print '\n\nExecuting...'
+            validator()
+        elif choice in no:
+            print 'exiting...'
+        else:
+            print 'please answer "Yes" or "No"'
+    
 
 def getJSON():
     
-    catFiltersCSV = open('DatabaseInput/ComBunqWeb-category-filter.csv')
+    catFiltersCSV = open('Manager/management/DatabaseInput/ComBunqWeb-category-filter.csv')
     reader = csv.reader(catFiltersCSV, delimiter=',', quotechar='"')
     keys = next(reader)
     catFiltersJSON = [{key:val for key,val in zip(keys,prop)} for prop in reader]
+    # print json.dumps(catFiltersJSON,sort_keys=True,indent=2)
+    # getHeaders()
     return catFiltersJSON
     
 
 def getHeaders():
-    catFiltersCSV = open('DatabaseInput/ComBunqWeb-category-filter.csv')
+    catFiltersCSV = open('Manager/management/DatabaseInput/ComBunqWeb-category-filter.csv')
     reader = csv.reader(catFiltersCSV, delimiter=',', quotechar='"')
     keys = reader.next()
+    # print keys
     return keys
 
+# getJSON()
 
 def validator():
     obj = getJSON()
@@ -43,7 +64,7 @@ def validator():
                     isInDatabase(obj[x][y])
                     
                 else:
-                    print 'unvalid IBAN:', obj[x][y],'\n\n'
+                    print '\n\nunvalid IBAN:', obj[x][y],'\n\n'
                 # print type(list(valid))
             except KeyError:
                 continue
@@ -89,6 +110,3 @@ def isInDatabase(catInfo):
 
 def sendToDb():
     pass
-
-
-validator()
