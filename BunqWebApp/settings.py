@@ -98,12 +98,25 @@ WSGI_APPLICATION = 'BunqWebApp.wsgi.application'
 # http://www.marinamele.com/taskbuster-django-tutorial/install-and-configure-posgresql-for-django
 # pg_ctl -D /usr/local/var/postgres start
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME':  'KevinH',
+if 'TRAVIS' in os.environ:
+    DATABASES = {
+        'default': {
+            'ENGINE':   'django.db.backends.postgresql_psycopg2',
+            'NAME':     'travisci',
+            'USER':     'postgres',
+            'PASSWORD': '',
+            'HOST':     'localhost',
+            'PORT':     '',
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME':  'KevinH',
+        }
+    }
+
 db_from_env = dj_database_url.config()
 DATABASES['default'].update(db_from_env)
 

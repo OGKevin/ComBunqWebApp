@@ -99,6 +99,7 @@ def getExpenses(begin, end):
                 abs(catagoryObj[catagory[x]["Naam"]] / totalIncome * 100), 2)
         table.extend(
             [[catagory[x]["Naam"], catagoryObj[catagory[x]["Naam"]], percentage]])
+    print table
     return table
 
 
