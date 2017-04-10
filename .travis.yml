@@ -10,9 +10,9 @@ before_install:
   - export PIP_USE_MIRRORS=true
 install: pip install -r requirements.txt
 before_script:
-  - psql -c "CREATE DATABASE mydb;" -U postgres
+  - psql -c "CREATE DATABASE travisdb;" -U postgres
+  - ./manage.py migrate
 script:
-  - ./manage.py syncdb --noinput 
   - ./manage.py test
 deploy:
   provider: herkou

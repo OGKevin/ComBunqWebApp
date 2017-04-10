@@ -5,6 +5,8 @@
 [![N|Solid](https://lh3.googleusercontent.com/B0u_lzpnrZMdR8o3ece3N9sLQtOgc1UayCJLYUhzJh7Xkr4oJEdQk0-PJFhx0-a0CA=w300)][BunqPic]
 
 [![Build Status](https://travis-ci.org/OGKevin/ComBunqWebApp.svg?branch=master)](https://travis-ci.org/OGKevin/ComBunqWebApp)
+[![Coverage Status](https://coveralls.io/repos/github/OGKevin/ComBunqWebApp/badge.svg?branch=master)](https://coveralls.io/github/OGKevin/ComBunqWebApp?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/OGKevin/ComBunqWebApp/badge.svg?branch=master)](https://coveralls.io/github/OGKevin/ComBunqWebApp?branch=master)
 
 
 
