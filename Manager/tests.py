@@ -19,6 +19,9 @@ class TestPageAccess(TestCase):
     def test_HomePage(self):
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
+    def test_ManagerPage(self):
+        response = self.client.get('/Manager',follow=True)
+        self.assertEqual(response.status_code, 200,)
         
     def test_Manager(self):
         trans = [
@@ -37,25 +40,16 @@ class TestPageAccess(TestCase):
       "Bedrag":"202,30",
    },
    {
-      "Tegenrekening":"NL90INGB0006080785",
-      "Bedrag":"-94,75",
-   }
-]
-        cat = [
-   {
-      "Naam":"Aliexpres",
-      "Rekening":"DE60700111100250250061"
+      "Tegenrekening":"NL21INGB0674773837",
+      "Bedrag":"-53,00",
    },
    {
-      "Naam":"Gorilla",
-      "Rekening":"NL90INGB0006080785"
-   },{
-      "Naam":"Other",
-      "Rekening":"Geen rekening"
+   'Tegenrekening':'NL03BUNQ2025449445',
+   'Bedrag': '50,00'
    }
 ]
         # NOTE: NewModel
         catagories.objects.create(Naam = 'Aliexpres', Rekening = ['DE60700111100250250061'])
         catagories.objects.create(Naam = 'Gorrila', Rekening = ['NL90INGB0006080785'])
         catagories.objects.create(Naam = 'Requests', Rekening = ['NL03BUNQ2025449445'])
-        self.assertEqual(sortInfo(trans), [('Aliexpres', 0.01), ('Gorrila', 107.55000000000001), ('Requests', 24.09)])
+        self.assertEqual(sortInfo(trans), [('Aliexpres', 0.01), ('Gorrila', 202.30), ('Requests', 74.09),('Other', -53.00)])

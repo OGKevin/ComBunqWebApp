@@ -5,21 +5,21 @@ from models import catagories
 
 # NOTE: startinh from the beginning with new databse models
 
-catOBJ = {}
+catOBJ = {'Other': 0 }
         
 def sortInfo(transactions):
     cat = catagories.objects
     for x in transactions:
-        print x
         filt = cat.filter(Rekening__contains = [x['Tegenrekening']])
+        ammount = float(x['Bedrag'].replace(",","."))
         try:
             catName = str(filt[0])
-            print catName
         except IndexError:
-            print 'cat not found in database'
+            print 'catagory not found in database\nAdding it to "Other"'
+            catOBJ['Other'] += ammount
+            
         else:
-            ammount = float(x['Bedrag'].replace(",","."))
-            print 'cat found '
+            print catName,'found '
             if catName in catOBJ:
                 catOBJ[catName] += ammount
             else:
