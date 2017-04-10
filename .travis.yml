@@ -1,8 +1,6 @@
 language: python
 python:
 - '2.7'
-- '3.3'
-- pypy
 services: postgresql
 before_install:
   - export DJANGO_SETTINGS_MODULE=BunqWebApp.settings
