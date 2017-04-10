@@ -45,7 +45,7 @@ except NameError:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['.combunqweb.herokuapp.com', '.localhost']
+ALLOWED_HOSTS = ['.combunqweb.herokuapp.com', '.127.0.0.1']
 
 
 # Application definition

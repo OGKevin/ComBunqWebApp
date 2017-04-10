@@ -10,7 +10,9 @@ before_install:
 install:
   - pip install -r requirements.txt
   - pip install coveralls
-  - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
+  - . $HOME/.nvm/nvm.sh
+  - nvm install stable
+  - nvm use stable
   - npm install
 before_script:
   - sudo /etc/init.d/postgresql stop
