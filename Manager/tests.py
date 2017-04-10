@@ -2,7 +2,7 @@ from django.test import TestCase, Client
 from django.core.management import call_command
 from django.utils.six import StringIO
 from models import transactions, catagories
-from master import getDate
+from master import sortInfo
 # Create your tests here.
 
 class DatabaseInputTest(TestCase):
@@ -12,11 +12,19 @@ class DatabaseInputTest(TestCase):
 
 class TestPageAccess(TestCase):
     """docstring for TestPageAccess."""
-    def setUp(self):
+    # def setUp(self):
+
+
+
+    def test_HomePage(self):
+        response = self.client.get('/')
+        self.assertEqual(response.status_code, 200)
+        
+    def test_Manager(self):
         trans = [
    {
       "Tegenrekening":"NL08SNSB0862762731",
-      "Naam":"K. Hellemun",
+      "Naam":"Kevin",
       "Bedrag":"0,01",
    },
    {
@@ -25,7 +33,7 @@ class TestPageAccess(TestCase):
       "Bedrag":"24,09",
    },
    {
-      "Tegenrekening":"NL08SNSB0862762731",
+      "Tegenrekening":"NL90INGB0006080785",
       "Bedrag":"202,30",
    },
    {
@@ -52,12 +60,4 @@ class TestPageAccess(TestCase):
         catagories.objects.create(Naam = 'Aliexpres', Rekening = ['DE60700111100250250061'])
         catagories.objects.create(Naam = 'Gorrila', Rekening = ['NL90INGB0006080785'])
         catagories.objects.create(Naam = 'Requests', Rekening = ['NL03BUNQ2025449445'])
-
-
-    def test_HomePage(self):
-        response = self.client.get('/')
-        self.assertEqual(response.status_code, 200)
-        
-    def test_Manager(self):
-        getDate("","",'database')
-        
+        self.assertEqual(sortInfo(trans),[['Gorilla', 94.75]])
