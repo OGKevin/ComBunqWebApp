@@ -6,7 +6,7 @@
 
 [![Build Status](https://travis-ci.org/OGKevin/ComBunqWebApp.svg?branch=master)](https://travis-ci.org/OGKevin/ComBunqWebApp)
 [![Coverage Status](https://coveralls.io/repos/github/OGKevin/ComBunqWebApp/badge.svg?branch=master)](https://coveralls.io/github/OGKevin/ComBunqWebApp?branch=master)
-[![Coverage Status](https://coveralls.io/repos/github/OGKevin/ComBunqWebApp/badge.svg?branch=master)](https://coveralls.io/github/OGKevin/ComBunqWebApp?branch=master)
+[![Dependency Status](https://gemnasium.com/badges/github.com/OGKevin/ComBunqWebApp.svg)](https://gemnasium.com/github.com/OGKevin/ComBunqWebApp)
 
 
 

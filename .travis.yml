@@ -7,10 +7,9 @@ services: postgresql
 before_install:
   - export DJANGO_SETTINGS_MODULE=BunqWebApp.settings
   - export PYTHONPATH=$HOME/builds/OGKevin/ComBunqWebApp
-  - export PIP_USE_MIRRORS=true
 install: pip install -r requirements.txt
 before_script:
-  - psql -c "CREATE DATABASE travisdb;" -U postgres
+  - psql -c "CREATE DATABASE travisci;" -U postgres
   - ./manage.py migrate
 script:
   - ./manage.py test
