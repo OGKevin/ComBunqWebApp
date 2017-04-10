@@ -3,18 +3,14 @@ $(function() {
         // sendPost()
 
         input = $("#id_JSONTransactions").val()
-        console.log('click');
-        console.log(input);
         parseCSV(input)
     });
 
     $('#fileCSV').click(function(event) {
         // event.preventDefault()
-        console.log('clikc file upload ');
 
         /* Act on the event */
         input = $('#id_JSONTransactionsFile')[0].files[0]
-        console.log(input);
         parseCSV(input)
     });
 });
@@ -22,10 +18,8 @@ $(function() {
 function parseCSV(csv) {
 
     complete = function(results, file) {
-        console.log('parse complete');
-        console.log(results.data);
         sendPost(results);
-        // console.log(results);
+        createTable(results);
     };
     Configuration = {
         delimiter: "", // auto-detect
@@ -51,7 +45,6 @@ function parseCSV(csv) {
 }
 
 function sendPost(json) {
-    console.log('sendpost has been called ');
     csrftoken = Cookies.get('csrftoken')
 
     function csrfSafeMethod(method) {
@@ -73,17 +66,12 @@ function sendPost(json) {
             }
         })
         .done(function(response) {
-            console.log(response);
-            console.log(typeof(response));
-            console.log(JSON.parse(response));
             sortedJSON = JSON.parse(response);
             getUserGraphs(sortedJSON);
 
         })
         .fail(function() {})
-        .always(function() {
-            console.log('send');
-        });
+        .always(function() {});
 }
 
 function getUserGraphs(data) {
@@ -132,4 +120,25 @@ function getUserGraphs(data) {
             "enabled": false
         }
     });
+}
+
+function createTable(input) {
+    rows = []
+    for (var i = 0; i < input.data.length; i++) {
+      rows.push(Object.keys(input.data[i]).map(function (key) { return input.data[i][key]; }))
+    }
+    options = {
+        data: {
+            'headings': [
+                'Datum',
+                'Bedrag',
+                'Rekening',
+                'Tegenrekening',
+                'Naam',
+                'Omschrijving'
+            ],
+            "rows": rows
+        }
+    }
+    var dataTable = new DataTable("#transactionsInfo", options)
 }

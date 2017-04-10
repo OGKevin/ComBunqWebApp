@@ -22,6 +22,9 @@ class TestPageAccess(TestCase):
     def test_ManagerPage(self):
         response = self.client.get('/Manager',follow=True)
         self.assertEqual(response.status_code, 200,)
+        json = '[{"Datum":"2017-03-31","Bedrag":"-0,01","Rekening":"NL01BUNQ1234567890","Tegenrekening":"NL48ABNA0502830042","Naam":"Spotify by Adyen","Omschrijving":"Payment description"},{"Datum":"2017-03-31","Bedrag":"1,64","Rekening":"NL01BUNQ1234567890","Tegenrekening":"NL01BUNQ1234567890","Naam":"bunq","Omschrijving":"Slice heeft deze request verstuurd voor de groep Family."}]'
+        response2 = self.client.post('/Manager/', {'json' : json})
+        self.assertEqual(response2.status_code, 200,)
         
     def test_Manager(self):
         trans = [

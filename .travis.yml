@@ -24,7 +24,7 @@ before_script:
   - ./manage.py migrate
   - ./manage.py collectstatic --noinput -v 0
 script:
-  - coverage run --source=BunqWebApp,Manager ./manage.py test
+  - coverage run ./manage.py test
 deploy:
   provider: heroku
   api_key:

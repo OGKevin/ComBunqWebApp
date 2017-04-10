@@ -174,3 +174,4 @@ logfile
 OLDmigrations
 secret.txt
 .git.backup
+coverageHTML

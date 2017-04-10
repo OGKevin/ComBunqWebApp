@@ -30,7 +30,7 @@ except NameError:
     SECRET_FILE = os.path.join(PROJECT_ROOT, 'secret.txt')
     try:
         SECRET_KEY = open(SECRET_FILE).read().strip()
-    except IOError:
+    except IOError: # pragma: no cover
         try:
             import random
             SECRET_KEY = ''.join([random.SystemRandom().choice('abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)') for i in range(50)])
@@ -98,7 +98,7 @@ WSGI_APPLICATION = 'BunqWebApp.wsgi.application'
 # http://www.marinamele.com/taskbuster-django-tutorial/install-and-configure-posgresql-for-django
 # pg_ctl -D /usr/local/var/postgres start
 
-if 'TRAVIS' in os.environ:
+if 'TRAVIS' in os.environ: # pragma: no cover
     DATABASES = {
         'default': {
             'ENGINE':   'django.db.backends.postgresql',
@@ -109,7 +109,7 @@ if 'TRAVIS' in os.environ:
             'PORT':     '',
         }
     }
-else:
+else: # pragma: no cover
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',

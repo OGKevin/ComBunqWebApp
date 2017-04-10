@@ -1,0 +1,9 @@
+[run]
+source =
+  BunqWebApp
+  Manager
+  
+omit =
+  BunqWebApp/wsgi.py
+  Manager/apps.py
+  
