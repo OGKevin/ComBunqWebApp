@@ -1,32 +1,22 @@
 import json
 import os
 import sys
-from models import transactions, catagories
+from models import catagories
 
 # NOTE: startinh from the beginning with new databse models
-# class catOBJ(object):
-#     """docstring for catOBJ."""
-#     def __init__(self,name ,value):
-#         self.name = name
-#         self.value = value
-#     def updatePerc(self, val):
-#         self.value += val
-#         print self.value
-#     def getInfo(self):
-#         print {self.name : self.value}
 
 catOBJ = {}
         
-def sortInfo(data):
+def sortInfo(transactions):
     cat = catagories.objects
-    for x in data:
+    for x in transactions:
         print x
         filt = cat.filter(Rekening__contains = [x['Tegenrekening']])
         try:
             catName = str(filt[0])
             print catName
         except IndexError:
-            print 'cat not found'
+            print 'cat not found in database'
         else:
             ammount = float(x['Bedrag'].replace(",","."))
             print 'cat found '
@@ -34,7 +24,8 @@ def sortInfo(data):
                 catOBJ[catName] += ammount
             else:
                 catOBJ[catName] = ammount
-    print catOBJ
+    print 'catOBJ', catOBJ.items()
+    return catOBJ.items()
 
 
 

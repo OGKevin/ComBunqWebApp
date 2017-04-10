@@ -23,7 +23,7 @@ class TestPageAccess(TestCase):
     def test_Manager(self):
         trans = [
    {
-      "Tegenrekening":"NL08SNSB0862762731",
+      "Tegenrekening":"DE60700111100250250061",
       "Naam":"Kevin",
       "Bedrag":"0,01",
    },

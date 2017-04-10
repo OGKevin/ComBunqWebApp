@@ -9,7 +9,7 @@ class transactions(models.Model):
     catagory = JSONField()
     
 class catagories(models.Model):
-    Naam = models.CharField(max_length=10)
+    Naam = models.CharField(max_length=20)
     Rekening = ArrayField(models.CharField(max_length = 34), blank = True)
     
     def __str__(self):
