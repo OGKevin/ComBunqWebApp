@@ -1,35 +1,4 @@
 $(function() {
-    // $("#textCSV").click(function(event) {
-    //     complete = function(results, file) {
-    //         getUserGraphs(results);
-    //     };
-    //     Configuration = {
-    //         delimiter: "", // auto-detect
-    //         newline: "", // auto-detect
-    //         quoteChar: '"',
-    //         header: true,
-    //         dynamicTyping: true,
-    //         preview: 0,
-    //         encoding: "",
-    //         worker: false,
-    //         comments: true,
-    //         step: undefined,
-    //         complete: complete,
-    //         error: undefined,
-    //         download: false,
-    //         skipEmptyLines: true,
-    //         chunk: undefined,
-    //         fastMode: undefined,
-    //         beforeFirstChunk: undefined,
-    //         withCredentials: undefined
-    //     };
-    //     Papa.parse($("#input").val(), Configuration);
-    //
-    //
-    //
-    //
-    // });
-
     $("#textCSV").click(function(event) {
         // sendPost()
     

@@ -13,18 +13,8 @@ from django.core.management.base import BaseCommand, CommandError
 class Command(BaseCommand):
     """docstring for Command."""
     def handle(self, *args,**options):
-        print 'This scrpit will add new catagories and filters to the database\n do you want to proceed "Yes" or "No"'
-        
-        yes = set(['yes','y','ye'])
-        no = set (['no','n'])
-        choice = raw_input().lower()
-        if choice in yes:
-            print '\n\nExecuting...'
-            validator()
-        elif choice in no:
-            print 'exiting...'
-        else:
-            print 'please answer "Yes" or "No"'
+        print 'This scrpit will add new catagories and filters to the database\n'
+        validator()
     
 
 def getJSON():
@@ -106,7 +96,3 @@ def isInDatabase(catInfo):
             ibanList.append(iban)
             editCat.save()
             print 'Updated list for',catName,'with -->',iban,'\nlist is now -->', ibanList,'\n'
-
-
-def sendToDb():
-    pass

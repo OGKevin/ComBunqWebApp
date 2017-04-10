@@ -4,6 +4,8 @@
 
 [![N|Solid](https://lh3.googleusercontent.com/B0u_lzpnrZMdR8o3ece3N9sLQtOgc1UayCJLYUhzJh7Xkr4oJEdQk0-PJFhx0-a0CA=w300)][BunqPic]
 
+[![Build Status](https://travis-ci.org/OGKevin/ComBunqWebApp.svg?branch=master)](https://travis-ci.org/OGKevin/ComBunqWebApp)
+
 
 
 Community BunqWeb is going to be a web interface for bunqers using the [Bunq API](https://www.bunq.com/en/api).
