@@ -2,7 +2,7 @@ language: python
 python:
 - '2.7'
 addons:
-  postgresql: "9.6.2"
+  postgresql: "9.5"
 before_install:
   - export DJANGO_SETTINGS_MODULE=BunqWebApp.settings
   - export PYTHONPATH=$HOME/builds/OGKevin/ComBunqWebApp
