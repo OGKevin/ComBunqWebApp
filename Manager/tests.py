@@ -60,4 +60,4 @@ class TestPageAccess(TestCase):
         catagories.objects.create(Naam = 'Aliexpres', Rekening = ['DE60700111100250250061'])
         catagories.objects.create(Naam = 'Gorrila', Rekening = ['NL90INGB0006080785'])
         catagories.objects.create(Naam = 'Requests', Rekening = ['NL03BUNQ2025449445'])
-        self.assertEqual(sortInfo(trans),[['Gorilla', 94.75]])
+        self.assertEqual(sortInfo(trans), [('Aliexpres', 0.01), ('Gorrila', 107.55000000000001), ('Requests', 24.09)])
