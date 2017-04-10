@@ -18,6 +18,7 @@ before_script:
   - sudo apt-get install postgresql-9.5
   - psql -c "CREATE DATABASE travisci;" -U postgres
   - ./manage.py migrate
+  - ./manage.py collectstatic --noinput
 script:
   - coverage run --source=BunqWebApp,Manager ./manage.py test
 deploy:
