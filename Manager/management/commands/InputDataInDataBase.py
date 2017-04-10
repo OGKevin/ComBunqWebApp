@@ -96,7 +96,3 @@ def isInDatabase(catInfo):
             ibanList.append(iban)
             editCat.save()
             print 'Updated list for',catName,'with -->',iban,'\nlist is now -->', ibanList,'\n'
-
-
-def sendToDb():
-    pass
