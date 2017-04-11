@@ -9,8 +9,9 @@ from django.core.management.base import BaseCommand
 class Command(BaseCommand):
     """docstring for Command."""
     def handle(self, *args, **options):
-        print 'This scrpit will add new catagories and filters to the database'
-        '\n'
+        print (
+            'This scrpit will add new catagories and filters to the database'
+            '\n')
         validator()
 
 
@@ -33,9 +34,9 @@ def getHeaders():
         'Manager/management/DatabaseInput/ComBunqWeb-category''-filter.csv')
 # NOTE: This can be used later for a from on the App itself
     reader = csv.reader(catFiltersCSV, delimiter=',', quotechar='"')
-    keys = reader.next()
+    keys = next(reader)
     # print keys
-    return keys
+    return list(keys)
 
 
 def validator():
@@ -47,13 +48,13 @@ def validator():
                 obj[x][y]
                 # print y,':',obj[x][y]
                 check = json.loads(requests.get(
-                    "".join([url, obj[x][y]])).content)
+                    "".join([url, obj[x][y]])).content.decode())
                 if check['valid']:
-                    print '\nvalid IBAN:', obj[x][y], '-->', y
+                    print ('\nvalid IBAN:', obj[x][y], '-->', y)
                     obj[x][y] = newCatInfo(y, obj[x][y])
                     isInDatabase(obj[x][y])
                 else:
-                    print '\n\nunvalid IBAN:', obj[x][y], '\n\n'
+                    print ('\n\nunvalid IBAN:', obj[x][y], '\n\n')
                 # print type(list(valid))
             except KeyError:
                 continue
@@ -81,20 +82,21 @@ def isInDatabase(catInfo):
         cat.get(Naam=catName)
 
     except ObjectDoesNotExist:
-        print catName, 'is not in database'
+        print (catName, 'is not in database')
         # NOTE: create catagory
         cat.create(Naam=catName, Rekening=[iban])
-        print catName, 'Has been stored in the database with', iban
+        print (catName, 'Has been stored in the database with', iban)
     else:
         editCat = cat.get(Naam=catName)
         ibanList = editCat.Rekening
-        print '%s is in db, the following ibans are stored:\n\n%s\n\n' % (
-            iban, ibanList
-        )
+        print (
+            '%s is in db, the following ibans are stored:\n\n%s\n\n' % (
+                                                                iban, ibanList)
+                                                                )
         if iban in ibanList:
-            print '%s is already in the list\n' % (iban)
+            print ('%s is already in the list\n' % (iban))
         else:
             ibanList.append(iban)
             editCat.save()
-            print 'Updated list for %s with --> %s \nlist is now --> %s\n' % (
-                catName, iban, ibanList)
+            print ('Updated list for %s with --> %s \nlist is now --> %s\n' % (
+                catName, iban, ibanList))

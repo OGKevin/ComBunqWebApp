@@ -15,6 +15,5 @@ def Manager(request):
         return HttpResponse(json.dumps(master.sortInfo(inputData)))
     else:
         form = GetNewData()
-        print 'get'
     # # NOTE: endNote
     return render(request, 'Manager/index.html', {'from': form})

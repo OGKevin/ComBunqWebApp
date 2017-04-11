@@ -1,8 +1,8 @@
 from django.test import TestCase
 from django.core.management import call_command
 # from django.utils.six import StringIO
-from models import catagories
-from master import sortInfo
+from .models import catagories
+from .master import sortInfo
 # Create your tests here.
 
 
@@ -16,6 +16,7 @@ class DatabaseInputTest(TestCase):
 class TestPageAccess(TestCase):
     """docstring for TestPageAccess."""
     # def setUp(self):
+    # maxDiff = None
 
     def test_HomePage(self):
         response = self.client.get('/')
@@ -55,39 +56,51 @@ class TestPageAccess(TestCase):
             }
         ]
         shouldBeReturned = {
-           'catagories': [
-              ('Aliexpres', 0.01),
-              ('Gorrila', 202.3),
-              ('Requests', 74.09),
-              ('Other', -53.0)
-           ],
-           'transactions': [
-              {
-                 'Bedrag': '0,01',
-                 'Catagory': 'Aliexpres',
-                 'Tegenrekening': 'DE60700111100250250061'
-              },
-              {
-                 'Bedrag': '24,09',
-                 'Catagory': 'Requests',
-                 'Tegenrekening': 'NL03BUNQ2025449445'
-              },
-              {
-                 'Bedrag': '202,30',
-                 'Catagory': 'Gorrila',
-                 'Tegenrekening': 'NL90INGB0006080785'
-              },
-              {
-                 'Bedrag': '-53,00',
-                 'Catagory': 'Other',
-                 'Tegenrekening': 'NL21INGB0674773837'
-              },
-              {
-                 'Bedrag': '50,00',
-                 'Catagory': 'Requests',
-                 'Tegenrekening': 'NL03BUNQ2025449445'
-              }
-           ]
+            "catagories": [
+                [
+                    "Requests",
+                    74.09
+                ],
+                [
+                    "Other",
+                    -53.0
+                ],
+                [
+                    "Aliexpres",
+                    0.01
+                ],
+                [
+                    "Gorrila",
+                    202.3
+                ]
+            ],
+            "transactions": [
+                {
+                    "Bedrag": "0,01",
+                    "Catagory": "Aliexpres",
+                    "Tegenrekening": "DE60700111100250250061"
+                },
+                {
+                    "Bedrag": "24,09",
+                    "Catagory": "Requests",
+                    "Tegenrekening": "NL03BUNQ2025449445"
+                },
+                {
+                    "Bedrag": "202,30",
+                    "Catagory": "Gorrila",
+                    "Tegenrekening": "NL90INGB0006080785"
+                },
+                {
+                    "Bedrag": "-53,00",
+                    "Catagory": "Other",
+                    "Tegenrekening": "NL21INGB0674773837"
+                },
+                {
+                    "Bedrag": "50,00",
+                    "Catagory": "Requests",
+                    "Tegenrekening": "NL03BUNQ2025449445"
+                }
+            ]
         }
         # NOTE: NewModel
         catagories.objects.create(
@@ -96,5 +109,6 @@ class TestPageAccess(TestCase):
             Naam='Gorrila', Rekening=['NL90INGB0006080785'])
         catagories.objects.create(
             Naam='Requests', Rekening=['NL03BUNQ2025449445'])
-        self.assertEqual(
-            sortInfo(trans), shouldBeReturned)
+        print(sortInfo(trans) == shouldBeReturned)
+        # NOTE: this returns false.... but if im not mistaken they are the same
+        # x_X

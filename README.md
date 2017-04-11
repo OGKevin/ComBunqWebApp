@@ -7,7 +7,8 @@
 [![Build Status](https://travis-ci.org/OGKevin/ComBunqWebApp.svg?branch=master)](https://travis-ci.org/OGKevin/ComBunqWebApp)
 [![Coverage Status](https://coveralls.io/repos/github/OGKevin/ComBunqWebApp/badge.svg?branch=master)](https://coveralls.io/github/OGKevin/ComBunqWebApp?branch=master)
 [![Code Climate](https://codeclimate.com/github/OGKevin/ComBunqWebApp/badges/gpa.svg)](https://codeclimate.com/github/OGKevin/ComBunqWebApp)
-[![Dependency Status](https://gemnasium.com/badges/github.com/OGKevin/ComBunqWebApp.svg)](https://gemnasium.com/github.com/OGKevin/ComBunqWebApp)
+[![Updates](https://pyup.io/repos/github/OGKevin/ComBunqWebApp/shield.svg)](https://pyup.io/repos/github/OGKevin/ComBunqWebApp/)
+[![Python 3](https://pyup.io/repos/github/OGKevin/ComBunqWebApp/python-3-shield.svg)](https://pyup.io/repos/github/OGKevin/ComBunqWebApp/)
 
 
 

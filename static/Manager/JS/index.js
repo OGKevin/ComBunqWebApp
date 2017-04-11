@@ -1,7 +1,6 @@
 $(function() {
     $("#textCSV").click(function(event) {
         // sendPost()
-
         input = $("#id_JSONTransactions").val()
         parseCSV(input)
     });
@@ -68,7 +67,7 @@ function sendPost(json) {
         })
         .done(function(response) {
             sortedJSON = JSON.parse(response);
-            
+
             getUserGraphs(sortedJSON.catagories);
             createTable(sortedJSON.transactions);
         })
@@ -117,22 +116,24 @@ function getUserGraphs(data) {
         "balloon": {
             "fixedPosition": true
         },
-          "export": {
+        "export": {
             "enabled": false
-        },
+        }
     });
 }
 
 function createTable(input) {
     var rows = [],
-     headers = Object.keys(input[0]);
+        headers = Object.keys(input[0]);
     for (var i = 0; i < input.length; i++) {
-      rows.push(Object.keys(input[i]).map(function (key) { return input[i][key]; }))
-      // NOTE: code climate doesnt want function inside loops
+        rows.push(Object.keys(input[i]).map(function(key) {
+            return input[i][key];
+        }))
+        // NOTE: code climate doesnt want function inside loops
     }
     options = {
         data: {
-            'headings':headers,
+            'headings': headers,
             "rows": rows
         }
     }
