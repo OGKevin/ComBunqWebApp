@@ -19,7 +19,8 @@ function parseCSV(csv) {
 
     complete = function(results, file) {
         sendPost(results);
-        createTable(results);
+        // createTable(results);
+        // NOTE: need a delay so that the pies load before the table shows
     };
     Configuration = {
         delimiter: "", // auto-detect
@@ -67,15 +68,16 @@ function sendPost(json) {
         })
         .done(function(response) {
             sortedJSON = JSON.parse(response);
-            getUserGraphs(sortedJSON);
-
+            
+            getUserGraphs(sortedJSON.catagories);
+            createTable(sortedJSON.transactions);
         })
         .fail(function() {})
         .always(function() {});
 }
 
 function getUserGraphs(data) {
-    income = [],
+    var income = [],
         expenses = [];
     for (var i = 0; i < data.length; i++) {
         if (data[i][1] > 0) {
@@ -93,7 +95,7 @@ function getUserGraphs(data) {
         }
     }
 
-    var chart = AmCharts.makeChart("chartdiv4", {
+    var chart = AmCharts.makeChart("chartdiv", {
         "type": "pie",
         "theme": "light",
         "dataProvider": income,
@@ -106,7 +108,7 @@ function getUserGraphs(data) {
             "enabled": false
         }
     });
-    var chart = AmCharts.makeChart("chartdiv3", {
+    var chart2 = AmCharts.makeChart("chartdiv2", {
         "type": "pie",
         "theme": "light",
         "dataProvider": expenses,
@@ -115,28 +117,22 @@ function getUserGraphs(data) {
         "balloon": {
             "fixedPosition": true
         },
-
-        "export": {
+          "export": {
             "enabled": false
-        }
+        },
     });
 }
 
 function createTable(input) {
-    rows = []
-    for (var i = 0; i < input.data.length; i++) {
-      rows.push(Object.keys(input.data[i]).map(function (key) { return input.data[i][key]; }))
+    var rows = [],
+     headers = Object.keys(input[0]);
+    for (var i = 0; i < input.length; i++) {
+      rows.push(Object.keys(input[i]).map(function (key) { return input[i][key]; }))
+      // NOTE: code climate doesnt want function inside loops
     }
     options = {
         data: {
-            'headings': [
-                'Datum',
-                'Bedrag',
-                'Rekening',
-                'Tegenrekening',
-                'Naam',
-                'Omschrijving'
-            ],
+            'headings':headers,
             "rows": rows
         }
     }

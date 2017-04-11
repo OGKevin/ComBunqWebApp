@@ -1,6 +1,7 @@
 from models import catagories
+# import json
 
-# NOTE: startinh from the beginning with new databse models
+# NOTE: starting from the beginning with new databse models
 
 catOBJ = {'Other': 0}
 
@@ -15,12 +16,17 @@ def sortInfo(transactions):
         except IndexError:
             print 'catagory not found in database\nAdding it to "Other"'
             catOBJ['Other'] += ammount
+            x['Catagory'] = 'Other'
 
         else:
             print catName, 'found '
             if catName in catOBJ:
                 catOBJ[catName] += ammount
+                x['Catagory'] = catName
             else:
                 catOBJ[catName] = ammount
-    print 'catOBJ', catOBJ.items()
-    return catOBJ.items()
+                x['Catagory'] = catName
+    # print 'this should be transactions\n%s' % json.dumps(
+    #     transactions, indent=4)
+    # print 'catOBJ', catOBJ.items()
+    return {'catagories': catOBJ.items(), 'transactions': transactions}

@@ -8,6 +8,7 @@ from master import sortInfo
 
 class DatabaseInputTest(TestCase):
     """docstring for NewMasterTest."""
+
     def test_command_output(self):
         call_command('InputDataInDataBase',)
 
@@ -37,24 +38,57 @@ class TestPageAccess(TestCase):
     def test_Manager(self):
         trans = [
             {
-                  "Tegenrekening": "DE60700111100250250061",
-                  "Naam": "Kevin",
-                  "Bedrag": "0,01",
-               }, {
-                  "Tegenrekening": "NL03BUNQ2025449445",
-                  "Naam": "bunq",
-                  "Bedrag": "24,09",
-               }, {
-                  "Tegenrekening": "NL90INGB0006080785",
-                  "Bedrag": "202,30",
-               }, {
-                  "Tegenrekening": "NL21INGB0674773837",
-                  "Bedrag": "-53,00",
-               }, {
-               'Tegenrekening': 'NL03BUNQ2025449445',
-               'Bedrag': '50,00'
-               }
-            ]
+                "Tegenrekening": "DE60700111100250250061",
+                "Bedrag": "0,01",
+            }, {
+                "Tegenrekening": "NL03BUNQ2025449445",
+                "Bedrag": "24,09",
+            }, {
+                "Tegenrekening": "NL90INGB0006080785",
+                "Bedrag": "202,30",
+            }, {
+                "Tegenrekening": "NL21INGB0674773837",
+                "Bedrag": "-53,00",
+            }, {
+                'Tegenrekening': 'NL03BUNQ2025449445',
+                'Bedrag': '50,00'
+            }
+        ]
+        shouldBeReturned = {
+           'catagories': [
+              ('Aliexpres', 0.01),
+              ('Gorrila', 202.3),
+              ('Requests', 74.09),
+              ('Other', -53.0)
+           ],
+           'transactions': [
+              {
+                 'Bedrag': '0,01',
+                 'Catagory': 'Aliexpres',
+                 'Tegenrekening': 'DE60700111100250250061'
+              },
+              {
+                 'Bedrag': '24,09',
+                 'Catagory': 'Requests',
+                 'Tegenrekening': 'NL03BUNQ2025449445'
+              },
+              {
+                 'Bedrag': '202,30',
+                 'Catagory': 'Gorrila',
+                 'Tegenrekening': 'NL90INGB0006080785'
+              },
+              {
+                 'Bedrag': '-53,00',
+                 'Catagory': 'Other',
+                 'Tegenrekening': 'NL21INGB0674773837'
+              },
+              {
+                 'Bedrag': '50,00',
+                 'Catagory': 'Requests',
+                 'Tegenrekening': 'NL03BUNQ2025449445'
+              }
+           ]
+        }
         # NOTE: NewModel
         catagories.objects.create(
             Naam='Aliexpres', Rekening=['DE60700111100250250061'])
@@ -63,6 +97,4 @@ class TestPageAccess(TestCase):
         catagories.objects.create(
             Naam='Requests', Rekening=['NL03BUNQ2025449445'])
         self.assertEqual(
-            sortInfo(trans),
-            [('Aliexpres', 0.01), ('Gorrila', 202.30), ('Requests', 74.09),
-                ('Other', -53.00)])
+            sortInfo(trans), shouldBeReturned)

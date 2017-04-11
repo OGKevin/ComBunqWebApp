@@ -6,6 +6,7 @@
 
 [![Build Status](https://travis-ci.org/OGKevin/ComBunqWebApp.svg?branch=master)](https://travis-ci.org/OGKevin/ComBunqWebApp)
 [![Coverage Status](https://coveralls.io/repos/github/OGKevin/ComBunqWebApp/badge.svg?branch=master)](https://coveralls.io/github/OGKevin/ComBunqWebApp?branch=master)
+[![Code Climate](https://codeclimate.com/github/OGKevin/ComBunqWebApp/badges/gpa.svg)](https://codeclimate.com/github/OGKevin/ComBunqWebApp)
 [![Dependency Status](https://gemnasium.com/badges/github.com/OGKevin/ComBunqWebApp.svg)](https://gemnasium.com/github.com/OGKevin/ComBunqWebApp)
 
 
@@ -121,7 +122,7 @@ For this project were gonna use [Django][django] and [Heroku][heroku], make sure
 
     ```sh
 
-    $ ./manage.py bower install
+    $ ./manage.py npm install
 
     $ ./manage.py collectstatic
 
