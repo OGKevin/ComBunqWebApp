@@ -18,12 +18,10 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from Manager.views import Manager
-#, getData
-from .  import views
+from . import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', views.home, name='home'),
-    url(r'^Manager/(?i)', Manager, name = 'Manager'),
-    # url(r'^update/',getData, name ='getData'),
+    url(r'^Manager/(?i)', Manager, name='Manager'),
 ] + static(settings.STATIC_URL)

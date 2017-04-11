@@ -6,4 +6,5 @@ source =
 omit =
   BunqWebApp/wsgi.py
   Manager/apps.py
+  Manager/migrations
   

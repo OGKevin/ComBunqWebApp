@@ -30,10 +30,12 @@ except NameError:
     SECRET_FILE = os.path.join(PROJECT_ROOT, 'secret.txt')
     try:
         SECRET_KEY = open(SECRET_FILE).read().strip()
-    except IOError: # pragma: no cover
+    except IOError:  # pragma: no cover
         try:
             import random
-            SECRET_KEY = ''.join([random.SystemRandom().choice('abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)') for i in range(50)])
+            SECRET_KEY = ''.join([random.SystemRandom().choice(
+                'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)')
+                 for i in range(50)])
             secret = file(SECRET_FILE, 'w')
             secret.write(SECRET_KEY)
             secret.close()
@@ -56,7 +58,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-     'whitenoise.runserver_nostatic',
+    'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'Manager',
 ]
@@ -98,7 +100,7 @@ WSGI_APPLICATION = 'BunqWebApp.wsgi.application'
 # http://www.marinamele.com/taskbuster-django-tutorial/install-and-configure-posgresql-for-django
 # pg_ctl -D /usr/local/var/postgres start
 
-if 'TRAVIS' in os.environ: # pragma: no cover
+if 'TRAVIS' in os.environ:  # pragma: no cover
     DATABASES = {
         'default': {
             'ENGINE':   'django.db.backends.postgresql',
@@ -109,7 +111,7 @@ if 'TRAVIS' in os.environ: # pragma: no cover
             'PORT':     '',
         }
     }
-else: # pragma: no cover
+else:  # pragma: no cover
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -120,22 +122,25 @@ else: # pragma: no cover
     DATABASES['default'].update(db_from_env)
 
 
-
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilari'
+        'tyValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidato'
+        'r',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidat'
+        'or',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValida'
+        'tor',
     },
 ]
 
@@ -158,8 +163,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR,'static-files')
-STATICFILES_DIRS = [os.path.join(BASE_DIR,'static'),os.path.join(BASE_DIR,'node_modules')]
+STATIC_ROOT = os.path.join(BASE_DIR, 'static-files')
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), os.path.join(
+    BASE_DIR, 'node_modules')]
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
