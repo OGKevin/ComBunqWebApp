@@ -175,5 +175,3 @@ OLDmigrations
 secret.txt
 .git.backup
 coverageHTML
-
-BunqWebApp/settings\.py
