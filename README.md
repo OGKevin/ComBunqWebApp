@@ -1,6 +1,6 @@
 # Community BunqWeb
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/OGKevin/ComBunqWebApp.svg)](https://greenkeeper.io/)
+
 
 
 
@@ -10,6 +10,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/OGKevin/ComBunqWebApp/badge.svg?branch=master)](https://coveralls.io/github/OGKevin/ComBunqWebApp?branch=master)
 [![Code Climate](https://codeclimate.com/github/OGKevin/ComBunqWebApp/badges/gpa.svg)](https://codeclimate.com/github/OGKevin/ComBunqWebApp)
 [![Updates](https://pyup.io/repos/github/OGKevin/ComBunqWebApp/shield.svg)](https://pyup.io/repos/github/OGKevin/ComBunqWebApp/)
+[![Greenkeeper badge](https://badges.greenkeeper.io/OGKevin/ComBunqWebApp.svg)](https://greenkeeper.io/)
 [![Python 3](https://pyup.io/repos/github/OGKevin/ComBunqWebApp/python-3-shield.svg)](https://pyup.io/repos/github/OGKevin/ComBunqWebApp/)
 
 
