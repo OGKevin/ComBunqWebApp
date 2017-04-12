@@ -29,3 +29,6 @@ h1{
   text-align: center;
   color: red;
 }
+#transactionsInfo{
+  visibility: hidden;
+}
