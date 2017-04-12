@@ -35,7 +35,8 @@ h1{
 body{
   background-image: url('../images/bunq-Desktop.png');
   background-position: center;
-  background-size: cover;
+  background-repeat: no-repeat;
+  background-size: auto;
   background-attachment: fixed;
 }
 p{
