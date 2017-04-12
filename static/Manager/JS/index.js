@@ -92,10 +92,10 @@ function getUserGraphs(data) {
         } else {
              dataProvider = expenses;
         }
-        var chart = AmCharts.makeChart("chartdiv" + i.toString(), {
+        var chart = AmCharts.makeChart("chartdiv" + l.toString(), {
             "type": "pie",
             "theme": "light",
-            "dataProvider": data,
+            "dataProvider": dataProvider,
             "valueField": "ammount",
             "titleField": "catName",
             "balloon": {
@@ -124,4 +124,5 @@ function createTable(input) {
         }
     }
     var dataTable = new DataTable("#transactionsInfo", options)
+    $("#transactionsInfo").css('visibility', 'visible');
 }
