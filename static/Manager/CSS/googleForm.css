@@ -1,0 +1,10 @@
+iframe{
+  display: block;
+  margin: auto;
+}
+
+body{
+  background-image: url('../images/bunq-Desktop.png');
+  background-position: center;
+  background-size: cover;
+}

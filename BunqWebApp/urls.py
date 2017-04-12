@@ -17,11 +17,12 @@ from django.conf.urls import url
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
-from Manager.views import Manager
+from Manager.views import Manager, googleFrom
 from . import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', views.home, name='home'),
-    url(r'^Manager/(?i)', Manager, name='Manager'),
+    url(r'^Manager/(?i)$', Manager, name='Manager'),
+    url(r'^Manager/googleForm(?i)$', googleFrom, name='googleFrom'),
 ] + static(settings.STATIC_URL)

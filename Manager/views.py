@@ -17,3 +17,7 @@ def Manager(request):
         form = GetNewData()
     # # NOTE: endNote
     return render(request, 'Manager/index.html', {'from': form})
+
+
+def googleFrom(request):
+    return render(request, 'Manager/googleFrom.html')
