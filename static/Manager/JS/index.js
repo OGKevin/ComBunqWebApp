@@ -1,14 +1,10 @@
 $(function() {
     $("#textCSV").click(function(event) {
-        // sendPost()
         input = $("#id_JSONTransactions").val()
         parseCSV(input)
     });
 
     $('#fileCSV').click(function(event) {
-        // event.preventDefault()
-
-        /* Act on the event */
         input = $('#id_JSONTransactionsFile')[0].files[0]
         parseCSV(input)
     });
@@ -18,7 +14,6 @@ function parseCSV(csv) {
 
     complete = function(results, file) {
         sendPost(results);
-        // createTable(results);
         // NOTE: need a delay so that the pies load before the table shows
     };
     Configuration = {
@@ -67,7 +62,6 @@ function sendPost(json) {
         })
         .done(function(response) {
             sortedJSON = JSON.parse(response);
-
             getUserGraphs(sortedJSON.catagories);
             createTable(sortedJSON.transactions);
         })
@@ -84,42 +78,33 @@ function getUserGraphs(data) {
                 'catName': data[i][0],
                 'ammount': data[i][1]
             })
-
         } else {
             expenses.push({
                 'catName': data[i][0],
                 'ammount': data[i][1] * -1
             })
-
         }
     }
-
-    var chart = AmCharts.makeChart("chartdiv", {
-        "type": "pie",
-        "theme": "light",
-        "dataProvider": income,
-        "valueField": "ammount",
-        "titleField": "catName",
-        "balloon": {
-            "fixedPosition": true
-        },
-        "export": {
-            "enabled": false
+    for (var i = 0; i < 2; i++) {
+        if (i === 0) {
+            var data = income;
+        } else {
+            var data = expenses;
         }
-    });
-    var chart2 = AmCharts.makeChart("chartdiv2", {
-        "type": "pie",
-        "theme": "light",
-        "dataProvider": expenses,
-        "valueField": "ammount",
-        "titleField": "catName",
-        "balloon": {
-            "fixedPosition": true
-        },
-        "export": {
-            "enabled": false
-        }
-    });
+        var chart = AmCharts.makeChart("chartdiv" + i.toString(), {
+            "type": "pie",
+            "theme": "light",
+            "dataProvider": data,
+            "valueField": "ammount",
+            "titleField": "catName",
+            "balloon": {
+                "fixedPosition": true
+            },
+            "export": {
+                "enabled": false
+            }
+        });
+    }
 }
 
 function createTable(input) {
@@ -128,8 +113,8 @@ function createTable(input) {
     for (var i = 0; i < input.length; i++) {
         rows.push(Object.keys(input[i]).map(function(key) {
             return input[i][key];
+            // NOTE: code climate doesnt want function inside loops
         }))
-        // NOTE: code climate doesnt want function inside loops
     }
     options = {
         data: {
