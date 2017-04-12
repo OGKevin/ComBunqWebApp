@@ -1,6 +1,7 @@
  <!-- <meta http-equiv="refresh" content="15" /> -->
 <head> {%load static%}
 	<link rel="stylesheet" href="{%static "Manager/CSS/index.css"%}"/>
+	<link rel="stylesheet" href="{%static "vanilla-datatables/vanilla-dataTables.min.css"%}"/>
 	<script src="{%static "amcharts/dist/amcharts/amcharts.js"%}"></script>
 	<script src="{%static "amcharts/dist/amcharts/pie.js"%}"></script>
 	<script src="{%static "amcharts/dist/amcharts/themes/light.js"%}"></script>
@@ -10,14 +11,14 @@
 	<script type='text/javascript'src="{%static "vanilla-datatables/vanilla-dataTables.min.js"%}"></script>
 	<script type="text/javascript" src='{%static 'Manager/JS/index.js'%}'></script>
 </head>
-<h1>input data to DB categorized and back</h1>
+<h1>Filter Bunq transactions</h1>
 <form id='textCSVForm' class="" action="" method="post">
 	{% csrf_token %}
 	{{from}}
 </form>
 <button name='' id="textCSV" type="" name="">Via CSV text</button>
 <button id="fileCSV">Via CSV Upload</button>
-
+<p>To enter catagory infromation click this <a href="./googleForm">link</a></p>
 <div class="container">
 	<div id="chartdiv0" class="chartdiv"></div>
 	<div id="chartdiv1" class="chartdiv"></div>

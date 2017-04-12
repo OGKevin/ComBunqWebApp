@@ -10,7 +10,7 @@ class GetNewData(forms.Form):
         ' request verstuurd voor de groep Family."\n\n\n#Only dutch headers su'
         'pported atm\n#Only Bunq CSV supported atm, or place 2 columns with he'
         'aders \'Bedrag\'(ammount) and \'Naam\'(name)\n#Press \'via CSV text\''
-        ' to see this example in action\n#Lines that begin with \'#\' wil be'
+        ' to see this example in action\n#Lines that begin with \'#\' wil be '
         'ignored')
     JSONTransactions = forms.CharField(
         initial=initialText,

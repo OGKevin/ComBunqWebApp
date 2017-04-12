@@ -15,8 +15,6 @@ class DatabaseInputTest(TestCase):
 
 class TestPageAccess(TestCase):
     """docstring for TestPageAccess."""
-    # def setUp(self):
-    # maxDiff = None
 
     def test_HomePage(self):
         response = self.client.get('/')
@@ -35,6 +33,10 @@ class TestPageAccess(TestCase):
         )
         response2 = self.client.post('/Manager/', {'json': json})
         self.assertEqual(response2.status_code, 200,)
+
+    def test_googleForm(self):
+        response = self.client.get('/Manager/googleForm')
+        self.assertEqual(response.status_code, 200)
 
     def test_Manager(self):
         trans = [

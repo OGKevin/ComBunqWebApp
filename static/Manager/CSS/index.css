@@ -27,8 +27,18 @@ textarea{
 }
 h1{
   text-align: center;
-  color: red;
+  color: black;
 }
 #transactionsInfo{
   visibility: hidden;
+}
+body{
+  background-image: url('../images/bunq-Desktop.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: auto;
+  background-attachment: fixed;
+}
+p{
+  text-align: center;
 }
