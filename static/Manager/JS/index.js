@@ -88,9 +88,9 @@ function getUserGraphs(data) {
     }
     for (var l = 0; l < 2; l++) {
         if (l === 0) {
-             dataProvider = income;
+            dataProvider = income;
         } else {
-             dataProvider = expenses;
+            dataProvider = expenses;
         }
         var chart = AmCharts.makeChart("chartdiv" + l.toString(), {
             "type": "pie",
@@ -108,21 +108,36 @@ function getUserGraphs(data) {
     }
 }
 
+var dataTable;
+
 function createTable(input) {
     var rows = [],
         headers = Object.keys(input[0]);
+
     for (var i = 0; i < input.length; i++) {
         rows.push(Object.keys(input[i]).map(function(key) {
             return input[i][key];
-            // NOTE: code climate doesnt want function inside loops
         }))
     }
+
     options = {
         data: {
             'headings': headers,
             "rows": rows
         }
     }
-    var dataTable = new DataTable("#transactionsInfo", options)
+
+    // Check to see if initialized
+    if (dataTable) {
+        // Wipe the table
+        dataTable.clear();
+
+        // Destroy the containers
+        dataTable.wrapper.parentNode.replaceChild(dataTable.table, dataTable.wrapper);
+    }
+
+    // Initialize with the data
+    dataTable = new DataTable("#transactionsInfo", options);
+
     $("#transactionsInfo").css('visibility', 'visible');
 }
