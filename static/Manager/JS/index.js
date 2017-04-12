@@ -72,7 +72,7 @@ function sendPost(json) {
 function getUserGraphs(data) {
     var income = [],
         expenses = [],
-        data;
+        dataProvider;
     for (var i = 0; i < data.length; i++) {
         if (data[i][1] > 0) {
             income.push({
@@ -88,9 +88,9 @@ function getUserGraphs(data) {
     }
     for (var l = 0; l < 2; l++) {
         if (l === 0) {
-             data = income;
+             dataProvider = income;
         } else {
-             data = expenses;
+             dataProvider = expenses;
         }
         var chart = AmCharts.makeChart("chartdiv" + i.toString(), {
             "type": "pie",
