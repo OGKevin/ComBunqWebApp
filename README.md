@@ -19,7 +19,7 @@ Community BunqWeb is going to be a web interface for bunqers using the [Bunq API
 
 
 
-Disclaimer: Bunq it self has nothing to do with this project
+Disclaimer: Bunq itself has nothing to do with this project
 
 
 
@@ -43,7 +43,7 @@ View the app live based on the latest release: <https://combunqweb.herokuapp.com
 
 
 
-  - Use Bunq CSV file and see a Pie of income, exapnses, transaction names and percentages
+  - Use Bunq CSV file and see a Pie Charts of Income, Expanses, Transcation Names and Percentages
  
 
 # Why Community ?
@@ -66,7 +66,7 @@ All pull request are welcome, because this project is mixed with Front- and Back
 
 
 
-1. In the folder [templates](../master/templates/) u will find HTML documnets. These templates are used to render the front end. In some of these files there might be wierd markings like:
+1. In the folder [templates](../master/templates/) you will find HTML documents. These templates are used to render the front end. In some of these files there might be wierd markings like:
 
     ```html
 
@@ -88,11 +88,11 @@ All pull request are welcome, because this project is mixed with Front- and Back
 
     ```
 
-    This is  back end stuff and u shouldnt worry much about it for now.
+    This is  back end stuff and you shouldn't worry too much about it for now.
 
-- In the folder [static](../master/static/) u will find the CSS and JS documents used by the templates.
+- In the folder [static](../master/static/) you will find the CSS and JS documents used by the templates.
 
-- Change the ```href=''``` and ```src=''``` atributes by dublicating it, commenting one of them out and change the other one to```/static/Manager...``` like u normaly would. After you're done and ready to make a pull request uncomment the original line and remove the edited one.
+- Change the ```href=''``` and ```src=''``` attributes by duplicating it, commenting one of them out and change the other one to```/static/Manager...``` like you normally would. After you're done and ready to make a pull request uncomment the original line and remove the edited one.
 
 
 
@@ -116,7 +116,8 @@ U can also make use of placeholder texts :-)
 
 #### Back End
 
-For this project were gonna use [Django][django] and [Heroku][heroku], make sure u have these 2 softwares installed. Beofre u perfomr any of the follwoing commands make sure your are in the root directroy of the project.
+For this project we're going to use [Django][django] and [Heroku][heroku], make sure you have these 2 softwares installed. 
+Before you perform any of the following commands make sure your are in the root directory of the project.
 
 1. run ```$ pip install -r requirements.txt``` to install the python packages used in this project. It might be a good idea to setup and use [virtualenv][virtualenv].
 
@@ -132,7 +133,7 @@ For this project were gonna use [Django][django] and [Heroku][heroku], make sure
 
     ```
 
-- to run a local develepment server:
+- to run a local development server:
 
     ```sh
 
@@ -140,7 +141,7 @@ For this project were gonna use [Django][django] and [Heroku][heroku], make sure
 
     ```
 
-    Before u push your chages make sure it runs on heroku aswell by using
+    Before you push your chages make sure it runs on heroku as well by using
 
     ```sh
 
@@ -148,7 +149,7 @@ For this project were gonna use [Django][django] and [Heroku][heroku], make sure
 
     ```
 
-    and see if heroku can handle the greatness that awaits.
+    and see if heroku can handle the greatness what awaits.
 
     
 
