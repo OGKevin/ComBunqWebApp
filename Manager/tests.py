@@ -113,4 +113,4 @@ class TestPageAccess(TestCase):
             Naam='Requests', Rekening=['NL03BUNQ2025449445'])
         print(sortInfo(trans) == shouldBeReturned)
         # NOTE: this returns false.... but if im not mistaken they are the same
-        # x_X
+        # x_X so this test needs fixing
