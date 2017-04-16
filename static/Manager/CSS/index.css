@@ -23,7 +23,9 @@ html, body {
   flex-direction: row;
 }
 textarea{
-  width: 100%
+  width: 100%;
+  resize: vertical;
+  overflow: auto;
 }
 h1{
   text-align: center;
