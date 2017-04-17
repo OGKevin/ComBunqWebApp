@@ -6,4 +6,4 @@ from django.http import HttpResponse
 
 
 def home(request):
-    return HttpResponse('Homepage dummy --> /Manager')
+    return HttpResponse('Homepage dummy --> <a href="./Manager" >/Manager</a>')

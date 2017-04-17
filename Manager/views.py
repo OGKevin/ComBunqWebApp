@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 # from django.template import loader
-from . import master
+# from . import master
+from .automaticDbInput import addTegenrekening
 import json
 from .forms import GetNewData
 from collections import OrderedDict
@@ -14,7 +15,7 @@ def Manager(request):
         form = GetNewData(request.POST)
         inputData = json.loads(
             request.POST['json'], object_pairs_hook=OrderedDict)
-        return HttpResponse(json.dumps(master.sortInfo(inputData)))
+        return HttpResponse(json.dumps(addTegenrekening(inputData)))
     else:
         form = GetNewData()
     # # NOTE: endNote

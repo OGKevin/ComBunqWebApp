@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib import admin
 
 
 class GetNewData(forms.Form):
@@ -18,3 +19,10 @@ class GetNewData(forms.Form):
         widget=forms.Textarea, label=''
         )
     JSONTransactionsFile = forms.FileField(label='')
+
+
+class catagoriesAdminForm(forms.ModelForm):  # pragma: no cover
+    """docstring for catagoriesAdmin."""
+    def __init__(self, *args, **kwargs):
+        super(catagoriesAdminForm, self).__init__(*args, **kwargs)
+        self.fields['Rekening'].widget = admin.widgets.AdminTextareaWidget()
