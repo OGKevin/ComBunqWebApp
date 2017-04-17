@@ -26,3 +26,4 @@ class catagoriesAdminForm(forms.ModelForm):  # pragma: no cover
     def __init__(self, *args, **kwargs):
         super(catagoriesAdminForm, self).__init__(*args, **kwargs)
         self.fields['Rekening'].widget = admin.widgets.AdminTextareaWidget()
+        self.fields['regex'].widget = admin.widgets.AdminTextareaWidget()

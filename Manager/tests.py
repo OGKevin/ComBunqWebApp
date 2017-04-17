@@ -25,10 +25,10 @@ class TestPageAccess(TestCase):
         response = self.client.get('/Manager', follow=True)
         self.assertEqual(response.status_code, 200,)
         catagories.objects.create(
-            Naam='Bunq Requests', Rekening=[], regex='bunq'
+            Naam='Bunq Requests', Rekening=[], regex=['bunq']
         )
         catagories.objects.create(
-            Naam='Bunq test', Rekening=['NL48ABNA0502830042'], regex='test'
+            Naam='Bunq test', Rekening=['NL48ABNA0502830042'], regex=['test']
         )
         json = (
             '[{"Datum":"2017-03-31","Bedrag":"-0,01","Rekening":"NL01BUNQ12345'
