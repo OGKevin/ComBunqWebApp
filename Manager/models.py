@@ -7,8 +7,9 @@ from django.db import models
 
 class catagories(models.Model):
     Naam = models.CharField(max_length=20)
-    Rekening = ArrayField(models.CharField(max_length=34), blank=True)
-    regex = models.CharField(max_length=20, blank=True)
+    Rekening = ArrayField(models.CharField(
+        max_length=34), blank=True, null=True)
+    regex = ArrayField(models.CharField(max_length=50, blank=True, null=True))
 
-    def __str__(self):
+    def __str__(self):  # pragma: no cover
         return self.Naam

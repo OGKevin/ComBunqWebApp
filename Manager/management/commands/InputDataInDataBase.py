@@ -84,7 +84,7 @@ def isInDatabase(catInfo):
     except ObjectDoesNotExist:
         print (catName, 'is not in database')
         # NOTE: create catagory
-        cat.create(Naam=catName, Rekening=[iban])
+        cat.create(Naam=catName, Rekening=[iban], regex=[])
         print (catName, 'Has been stored in the database with', iban)
     else:
         editCat = cat.get(Naam=catName)
