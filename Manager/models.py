@@ -8,6 +8,7 @@ from django.db import models
 class catagories(models.Model):
     Naam = models.CharField(max_length=20)
     Rekening = ArrayField(models.CharField(max_length=34), blank=True)
+    regex = models.CharField(max_length=20, blank=True)
 
     def __str__(self):
         return self.Naam

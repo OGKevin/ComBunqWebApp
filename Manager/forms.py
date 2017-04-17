@@ -20,7 +20,7 @@ class GetNewData(forms.Form):
     JSONTransactionsFile = forms.FileField(label='')
 
 
-class catagoriesAdminForm(forms.ModelForm):
+class catagoriesAdminForm(forms.ModelForm):  # pragma: no cover
     """docstring for catagoriesAdmin."""
     def __init__(self, *args, **kwargs):
         super(catagoriesAdminForm, self).__init__(*args, **kwargs)

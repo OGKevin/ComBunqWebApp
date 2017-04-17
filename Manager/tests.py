@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.core.management import call_command
 # import json
-# from .models import catagories
+from .models import catagories
 # from .master import sortInfo
 # from collections import OrderedDict
 # Create your tests here.
@@ -24,11 +24,17 @@ class TestPageAccess(TestCase):
     def test_ManagerPage(self):
         response = self.client.get('/Manager', follow=True)
         self.assertEqual(response.status_code, 200,)
+        catagories.objects.create(
+            Naam='Bunq Requests', Rekening=[], regex='bunq'
+        )
+        catagories.objects.create(
+            Naam='Bunq test', Rekening=['NL48ABNA0502830042'], regex='test'
+        )
         json = (
             '[{"Datum":"2017-03-31","Bedrag":"-0,01","Rekening":"NL01BUNQ12345'
-            '67890","Tegenrekening":"NL48ABNA0502830042","Naam":"Spotify by Ad'
+            '67890","Tegenrekening":"NL48ABNA0502830042","Naam":"test by Ad'
             'yen","Omschrijving":"Payment description"},{"Datum":"2017-03-31"'
-            ',"Bedrag":"1,64","Rekening":"NL01BUNQ1234567890","Tegenrekening"'
+            ',"Bedrag":"1,64","Rekening":"NL01BUNQ1234567990","Tegenrekening"'
             ':"NL01BUNQ1234567890","Naam":"bunq","Omschrijving":"Slice heeft'
             ' deze request verstuurd voor de groep Family."}]'
         )

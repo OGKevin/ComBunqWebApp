@@ -1,10 +1,12 @@
 from .models import catagories
+# from .automaticDbInput import addTegenrekening
 # import json
 
 # NOTE: starting from the beginning with new databse models
 
 
 def sortInfo(transactions):
+    # addTegenrekening(transactions)
     catOBJ = {'Other': 0}
     cat = catagories.objects
     for x in transactions:
@@ -19,12 +21,18 @@ def sortInfo(transactions):
 
         else:
             print (catName, 'found')
-            if catName in catOBJ:
-                catOBJ[catName] += ammount
-                x['Catagory'] = catName
+            if x['Tegenrekening'] is not "":
+                if catName in catOBJ:
+                    catOBJ[catName] += ammount
+                    x['Catagory'] = catName
+                else:
+                    catOBJ[catName] = ammount
+                    x['Catagory'] = catName
             else:
-                catOBJ[catName] = ammount
-                x['Catagory'] = catName
+                print ("empty Tegenrekening")
+                catOBJ['Other'] += ammount
+                x['Catagory'] = 'Other'
     returnInfo = {
         'catagories': list(catOBJ.items()), 'transactions': transactions}
+    # print (json.dumps(returnInfo, indent=4))
     return returnInfo
