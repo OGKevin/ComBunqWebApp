@@ -40,24 +40,24 @@ def addTegenrekening(transactions):
 
 
 def store(data):
-    print (data)
+    # print (data)
     keyWord = data['keyWord']
     iban = data['iban']
     p = catagories.objects.get(Naam=data['catagory'])
     keyWordList = p.regex
     ibanList = p.Rekening
-    print(p)
+    # print(p)
     if keyWord is not '':
-        print (keyWord)
+        # print (keyWord)
         keyWordList.append(keyWord)
-        print (keyWordList)
-        print (set(keyWordList))
+        # print (keyWordList)
+        # print (set(keyWordList))
         p.regex = list(set(keyWordList))
         p.save()
     if iban is not '':
-        print (iban)
+        # print (iban)
         ibanList.append(iban)
-        print (ibanList)
-        print (set(ibanList))
+        # print (ibanList)
+        # print (set(ibanList))
         p.Rekening = list(set(ibanList))
         p.save()
