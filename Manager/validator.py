@@ -4,7 +4,7 @@ import requests
 from django.utils.translation import ugettext_lazy as _
 
 
-def validator(iban):
+def ibanValidator(iban):
     url = 'https://openiban.com/validate/'
     check = json.loads(requests.get(
         "".join([url, iban])).content.decode())

@@ -1,0 +1,15 @@
+
+body{
+  background-image: url('../images/bunq-Desktop.png');
+  background-position: center;
+  background-size: cover;
+}
+h1 {
+  text-align: center;
+}
+input[type=text] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+}
