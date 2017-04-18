@@ -37,28 +37,3 @@ def addTegenrekening(transactions):
     return sortInfo(transactions)
     # # for l in cat.values():
     # #     print (json.dumps(l, indent=4))
-
-
-def store(data):
-    # NOTE: cant test this via post due to captcha
-    print (data)
-    keyWord = data['keyWord']
-    iban = data['iban']
-    p = catagories.objects.get(Naam=data['catagory'])
-    keyWordList = p.regex
-    ibanList = p.Rekening
-    # print(p)
-    if keyWord is not '':
-        # print (keyWord)
-        keyWordList.append(keyWord)
-        # print (keyWordList)
-        # print (set(keyWordList))
-        p.regex = list(set(keyWordList))
-        p.save()
-    if iban is not '':
-        # print (iban)
-        ibanList.append(iban)
-        # print (ibanList)
-        # print (set(ibanList))
-        p.Rekening = list(set(ibanList))
-        p.save()

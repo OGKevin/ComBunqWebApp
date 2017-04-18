@@ -2,9 +2,6 @@ from django.test import TestCase
 from django.core.management import call_command
 # import json
 from .models import catagories
-from .databaseInput import store
-from .validator import ibanValidator
-from django.core.exceptions import ValidationError
 # from .master import sortInfo
 # from collections import OrderedDict
 # Create your tests here.
@@ -44,31 +41,12 @@ class TestPageAccess(TestCase):
         response2 = self.client.post('/Manager/', {'json': json})
         self.assertEqual(response2.status_code, 200,)
 
-    def test_form(self):
-        response = self.client.get('/Manager/form')
+    def test_googleForm(self):
+        response = self.client.get('/Manager/googleForm')
         self.assertEqual(response.status_code, 200)
 
 
-class testScript(TestCase):
-    def setUp(self):
-        catagories.objects.create(
-            Naam='Bunq Requests', Rekening=[], regex=[]
-        )
-
-    def test_store(self):
-        data = {
-            'iban': 'GB82WEST12345698765432',
-            'catagory': 'Bunq Requests',
-            'keyWord': 'test',
-            'captcha': ['9e64410d52317ffc9744b11ef878386a4121c1d6', '']}
-        store(data)
-
-    def test_ibanValidator(self):
-        ibanValidator('GB82WEST12345698765432')
-        try:
-            ibanValidator('unvalid iban')
-        except ValidationError:
-            print ('validator passed unvalid iban')
+# class testScript(TestCase):
 #     def test_Manager(self):
 #         trans = [
 #             {

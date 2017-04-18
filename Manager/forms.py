@@ -1,8 +1,5 @@
 from django import forms
 from django.contrib import admin
-from .models import catagories
-from .validator import ibanValidator
-from captcha.fields import CaptchaField
 
 
 class GetNewData(forms.Form):
@@ -30,19 +27,3 @@ class catagoriesAdminForm(forms.ModelForm):  # pragma: no cover
         super(catagoriesAdminForm, self).__init__(*args, **kwargs)
         self.fields['Rekening'].widget = admin.widgets.AdminTextareaWidget()
         self.fields['regex'].widget = admin.widgets.AdminTextareaWidget()
-
-
-class inputDatabase(forms.Form):
-    catNames = catagories.objects.all()
-    catagory = forms.ModelChoiceField(queryset=catNames, required=True)
-    iban = forms.CharField(
-        max_length=34, strip=True, required=False, validators=[ibanValidator],
-        widget=forms.TextInput(attrs={
-                                    'placeholder': 'Enter a valid IBAN number'
-                                    }))
-    keyWord = forms.CharField(
-        max_length=30, strip=True, required=False,
-        widget=forms.TextInput(attrs={
-                                    'placeholder': 'Enter one or more Keywords'
-                                    }))
-    captcha = CaptchaField()
