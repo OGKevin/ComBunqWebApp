@@ -1,7 +1,5 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-# from django.template import loader
-# from . import master
 from .databaseInput import addTegenrekening, store
 import json
 from .forms import GetNewData, inputDatabase
@@ -11,7 +9,6 @@ from collections import OrderedDict
 
 
 def Manager(request):
-    # # NOTE: Colecting user input to match againts catagory in db
     if request.method == 'POST':
         form = GetNewData(request.POST)
         inputData = json.loads(
@@ -19,14 +16,12 @@ def Manager(request):
         return HttpResponse(json.dumps(addTegenrekening(inputData)))
     else:
         form = GetNewData()
-    # # NOTE: endNote
     return render(request, 'Manager/index.html', {'from': form})
 
 
 def managerForm(request):  # pragma: no cover
     if request.method == 'POST':  # NOTE: cant test post due to captcha
         form = inputDatabase(request.POST)
-        # print ('post')
         if form.is_valid():
             data = form.cleaned_data
             store(data)

@@ -1,7 +1,4 @@
 from .models import catagories
-# import json
-
-# NOTE: starting from the beginning with new databse models
 
 
 def sortInfo(transactions):
@@ -32,5 +29,4 @@ def sortInfo(transactions):
                 x['Catagory'] = 'Other'
     returnInfo = {
         'catagories': list(catOBJ.items()), 'transactions': transactions}
-    # print (json.dumps(returnInfo, indent=4))
     return returnInfo
