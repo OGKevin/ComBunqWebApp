@@ -23,14 +23,10 @@ def Manager(request):
     return render(request, 'Manager/index.html', {'from': form})
 
 
-def googleFrom(request):
-    return render(request, 'Manager/googleFrom.html')
-
-
-def managerForm(request):
-    if request.method == 'POST':
+def managerForm(request):  # pragma: no cover
+    if request.method == 'POST':  # NOTE: cant test post due to captcha
         form = inputDatabase(request.POST)
-        print ('post')
+        # print ('post')
         if form.is_valid():
             data = form.cleaned_data
             store(data)
