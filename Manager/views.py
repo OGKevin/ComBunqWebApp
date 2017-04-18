@@ -2,10 +2,11 @@ from django.shortcuts import render
 from django.http import HttpResponse
 # from django.template import loader
 # from . import master
-from .automaticDbInput import addTegenrekening
+from .databaseInput import addTegenrekening, store
 import json
-from .forms import GetNewData
+from .forms import GetNewData, inputDatabase
 from collections import OrderedDict
+
 # Create your views here.
 
 
@@ -22,5 +23,14 @@ def Manager(request):
     return render(request, 'Manager/index.html', {'from': form})
 
 
-def googleFrom(request):
-    return render(request, 'Manager/googleFrom.html')
+def managerForm(request):  # pragma: no cover
+    if request.method == 'POST':  # NOTE: cant test post due to captcha
+        form = inputDatabase(request.POST)
+        # print ('post')
+        if form.is_valid():
+            data = form.cleaned_data
+            store(data)
+            return render(request, 'Manager/thanks.html', {'data': data})
+    else:
+        form = inputDatabase()
+    return render(request, 'Manager/form.html', {'form': form})

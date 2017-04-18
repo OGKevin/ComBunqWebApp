@@ -1,12 +1,10 @@
 from .models import catagories
-# from .automaticDbInput import addTegenrekening
 # import json
 
 # NOTE: starting from the beginning with new databse models
 
 
 def sortInfo(transactions):
-    # addTegenrekening(transactions)
     catOBJ = {'Other': 0}
     cat = catagories.objects
     for x in transactions:

@@ -13,16 +13,17 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
-from Manager.views import Manager, googleFrom
+from Manager.views import Manager, managerForm
 from . import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', views.home, name='home'),
     url(r'^Manager/(?i)$', Manager, name='Manager'),
-    url(r'^Manager/googleForm(?i)$', googleFrom, name='googleFrom'),
+    url(r'^Manager/form(?i)$', managerForm, name='managerForm'),
+    url(r'^captcha/', include('captcha.urls')),
 ] + static(settings.STATIC_URL)
