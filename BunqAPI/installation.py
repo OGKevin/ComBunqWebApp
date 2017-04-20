@@ -1,16 +1,15 @@
 #!/usr/bin/env python
 
-# Use this code to generate a new RSA private key
+# This code demonstrates how to register a new public key.
 #
-# From the private key a public key can be retrieved at any time.
-# Don't forget to store the output.
-
-# NOTE: let the user save their private key and reneter it with the
-# bunq api on each use ?
-
+# Don't forget to store the returned Installation Token.
+# The server public rsa key can always be retrieved as long
+# as you have your private key and the token.
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
+from pprint import pprint
+from bunq import API
 import os
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -46,9 +45,28 @@ def createKey():
 
 
 try:
-    p = open('privateBunq.pem', 'r')
-    print ('private key already generated?\n')
-    print(p.read())
+    with open('privateBunq.pem', 'rb') as f:
+        # IDEA: let users save and paste their generated private key when
+        #  unsing the app?
+        rsa_key = f.read()
 
 except FileNotFoundError:  # noqa
     createKey()
+    with open('privateBunq.pem', 'rb') as f:
+        rsa_key = f.read()
+
+# private part of RSA key pair
+
+
+bunq_api = API(rsa_key, None)
+
+# using the pubkey() helper function to get public part of key pair
+public_key = bunq_api.pubkey().decode()
+
+# you will most probably want to store the token that is returned
+r = bunq_api.query('installation', {'client_public_key': public_key})
+pprint(dict(r.request.headers))
+print()
+pprint(dict(r.headers))
+print()
+pprint(r.json())  # NOTE: Need to save this information

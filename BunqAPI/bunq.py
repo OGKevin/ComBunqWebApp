@@ -107,7 +107,8 @@ class API(object):
             r = requests.request(method, url, headers=headers)
 
         if verify:
-            valid = self.verify(r)
+            valid = self.verify(r)  # noqa
+            # NOTE: why is this not being used ?
 
         return r
 

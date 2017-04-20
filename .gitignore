@@ -175,3 +175,4 @@ OLDmigrations
 secret.txt
 .git.backup
 coverageHTML
+BunqAPI/privateBunq.pem
