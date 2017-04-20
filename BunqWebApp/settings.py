@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'Manager',
     'captcha',
     'simple_history',
+    'BunqAPI',
 ]
 
 MIDDLEWARE = [
