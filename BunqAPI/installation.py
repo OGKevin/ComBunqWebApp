@@ -8,13 +8,13 @@
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
-from pprint import pprint
+# from pprint import pprint
 from tempfile import NamedTemporaryFile
 from .pythonbunq.bunq import API
-import os
+# import os
 import json
 
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
+# os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 # NOTE: generating private key and installation token
 
@@ -31,17 +31,17 @@ def getToken(privateKey):
 
     # you will most probably want to store the token that is returned
     r = bunq_api.query('installation', {'client_public_key': public_key})
-    pprint(dict(r.request.headers))
-    print()
-    pprint(dict(r.headers))
-    print()
-    pprint(r.json())
+    # pprint(dict(r.request.headers))
+    # print()
+    # pprint(dict(r.headers))
+    # print()
+    # pprint(r.json())
     # NOTE: in production these shouldn't be printed
 
     response = r.json()
 
     f = NamedTemporaryFile(
-        dir='./tmp', delete=True, suffix='.json', mode='w'
+        dir='BunqAPI/tmp', delete=True, suffix='.json', mode='w'
         )
     try:
         json.dump(response['Response'][1]['Token'], f, indent=4)
@@ -49,6 +49,8 @@ def getToken(privateKey):
         print (json.dumps(response, indent=4))
     # NOTE: need to call some type of dowanload fuction before the tmp files
     #  are deleted
+    print ('\n\nFiles generated\n\n')
+    return {'privateKey': privateKey, 'token': f.name}
     f.close()
 
 
@@ -67,24 +69,24 @@ def createKey():
       encryption_algorithm=serialization.NoEncryption()
     )
 
-    print(privateKey.decode())  # NOTE: should not be printed in production
+    # print(privateKey.decode())  # NOTE: should not be printed in production
 
     # output PEM encoded version public part of private key
-    publicKey = private_key.public_key().public_bytes(
-      encoding=serialization.Encoding.PEM,
-      format=serialization.PublicFormat.SubjectPublicKeyInfo
-    ).decode()
+    # publicKey = private_key.public_key().public_bytes(
+    #   encoding=serialization.Encoding.PEM,
+    #   format=serialization.PublicFormat.SubjectPublicKeyInfo
+    # ).decode()
 
-    print(publicKey)  # NOTE: should not be printed in production
+    # print(publicKey)  # NOTE: should not be printed in production
     p = NamedTemporaryFile(
-        dir='./tmp', delete=True, suffix='.pem', mode='wb'
+        dir='BunqAPI/tmp', delete=True, suffix='.pem', mode='wb'
         )
-    print ('p.name', p.name)
+    # print ('p.name', p.name)
     p.write(privateKey)
     p.seek(0)
-    getToken(p.name)
+    return getToken(p.name)
     p.close()  # NOTE: gets closed/deleted after its use now it just needs to
     #                  get downloaded
 
 
-createKey()  # TODO: needs to get called via views.py etc
+# createKey()  # TODO: needs to get called via views.py etc

@@ -5,6 +5,7 @@ coverage==4.3.4
 cryptography==1.8.1
 dj-database-url==0.4.2
 Django==1.11
+django-downloadview==1.9
 django-simple-captcha==0.5.5
 django-simple-history==1.8.2
 gunicorn==19.7.1
