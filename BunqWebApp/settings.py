@@ -102,7 +102,7 @@ WSGI_APPLICATION = 'BunqWebApp.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 # http://www.marinamele.com/taskbuster-django-tutorial/install-and-configure-posgresql-for-django
-# pg_ctl -D /usr/local/var/postgres start
+# pg_ctl -D ./db start
 
 if 'TRAVIS' in os.environ:  # pragma: no cover
     DATABASES = {
