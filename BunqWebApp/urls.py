@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from Manager.views import Manager, managerForm
+from BunqAPI.views import generate
 from . import views
 
 urlpatterns = [
@@ -25,5 +26,6 @@ urlpatterns = [
     url(r'^$', views.home, name='home'),
     url(r'^Manager/(?i)$', Manager, name='Manager'),
     url(r'^Manager/form(?i)$', managerForm, name='managerForm'),
+    url(r'^generate$', generate, name='generate'),
     url(r'^captcha/', include('captcha.urls')),
 ] + static(settings.STATIC_URL)
