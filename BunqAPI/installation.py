@@ -8,12 +8,11 @@
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
-# from pprint import pprint
+from pprint import pprint
 from tempfile import NamedTemporaryFile
 from .pythonbunq.bunq import API
 # import os
 import json
-
 # os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 # NOTE: generating private key and installation token
@@ -21,9 +20,17 @@ import json
 
 # private part of RSA key pair
 
+f = None
+p = None
+
+
+def delTemp():
+    p.close()
+    # f.close()
+
+
 def getToken(privateKey):
-    with open(privateKey, 'rb') as f:
-            rsa_key = f.read()
+    rsa_key = privateKey.decode()
     bunq_api = API(rsa_key, None)
 
     # using the pubkey() helper function to get public part of key pair
@@ -39,19 +46,26 @@ def getToken(privateKey):
     # NOTE: in production these shouldn't be printed
 
     response = r.json()
-
-    f = NamedTemporaryFile(
-        dir='BunqAPI/tmp', delete=True, suffix='.json', mode='w'
+    global p
+    p = NamedTemporaryFile(
+        dir='BunqAPI/tmp', delete=False, suffix='.json', mode='w'
         )
     try:
-        json.dump(response['Response'][1]['Token'], f, indent=4)
+        response['Response'][1]['Token']
     except KeyError:
         print (json.dumps(response, indent=4))
+    else:
+        d = {
+            'Response': response['Response'][1]['Token'],
+            'privateKey': privateKey.decode()
+            }
+        pprint(d)
+        json.dump(d, p, indent=4)
     # NOTE: need to call some type of dowanload fuction before the tmp files
     #  are deleted
     print ('\n\nFiles generated\n\n')
-    return {'privateKey': privateKey, 'token': f.name}
-    f.close()
+    return p.name
+    # f.close()
 
 
 def createKey():
@@ -78,14 +92,17 @@ def createKey():
     # ).decode()
 
     # print(publicKey)  # NOTE: should not be printed in production
-    p = NamedTemporaryFile(
-        dir='BunqAPI/tmp', delete=True, suffix='.pem', mode='wb'
-        )
-    # print ('p.name', p.name)
-    p.write(privateKey)
-    p.seek(0)
-    return getToken(p.name)
-    p.close()  # NOTE: gets closed/deleted after its use now it just needs to
+    # global p
+    # p = NamedTemporaryFile(
+    #     dir='BunqAPI/tmp', delete=True, suffix='.json', mode='w'
+    #     )
+    # # print ('p.name', p.name)
+    # json.dump({'privateKey': privateKey.decode()}, p, indent=4)
+    # # p.write({'privateKey': privateKey})
+    # p.seek(0)
+    # print (json.load(p))
+    return getToken(privateKey)
+    # p.close()  # NOTE: gets closed/deleted after its use now it just needs to
     #                  get downloaded
 
 

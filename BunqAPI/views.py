@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .forms import GenerateKeyForm
-from .installation import createKey
+from .installation import createKey, delTemp
 from django.http import HttpResponse
 # from django.http.response import FileResponse
 
@@ -9,16 +9,21 @@ from django.http import HttpResponse
 
 def generate(request):
     if request.method == 'POST':
-        form = GenerateKeyForm(request.POST)
-        if form.is_valid():
+        formKey = GenerateKeyForm(request.POST)
+        if formKey.is_valid():
             print ('\n\nGenerating...\n\n')
             # print (createKey()['privateKey'])
-            response = HttpResponse(
-                createKey()['privateKey'],
+            keyFilePath = createKey()
+            print (keyFilePath)
+            keyFile = HttpResponse(
+                open(keyFilePath, 'r'),
                 content_type='application/force-download')
-            response['Content-Disposition'] = 'attachment;filename="privateKey.pem"'
-            return response  # NOTE: somehting is not right here
+            keyFile['Content-Disposition'] = 'attachment;filename="privateKey.json"'
+            try:
+                return keyFile  # NOTE: somehting is not right here
+            finally:
+                delTemp()
 
     else:
-        form = GenerateKeyForm()
-    return render(request, 'BunqAPI/index.html', {'form': form})
+        formKey = GenerateKeyForm()
+    return render(request, 'BunqAPI/index.html', {'form': formKey})
