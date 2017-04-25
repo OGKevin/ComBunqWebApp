@@ -33,13 +33,17 @@ def getToken(privateKey):
         print ('\n\nFiles generated\n\n')
         pprint(d)
         print ('%s/BunqWebApp.json' % tmpDir)
-        f = open('%s/BunqWebApp.json' % tmpDir, 'w')
+        f = tempfile.NamedTemporaryFile(
+            suffix='.json', dir='%s' % tmpDir, mode='w', delete=False)
         json.dump(d, f, indent=4)
+        # f.write('test')
         f.close()
-        f2 = open('%s/BunqWebApp.json' % tmpDir, 'rb')
-        encFile = open('%s/BunqWebApp.json.enc' % tmpDir, 'wb')
+        f2 = open(f.name, 'rb')
+        encFile = tempfile.NamedTemporaryFile(
+            suffix='.enc', dir='%s' % tmpDir, mode='wb', delete=False
+        )
         encrypt(f2, encFile, '12345')
-        return '%s/BunqWebApp.json.enc' % tmpDir
+        return encFile.name
 
 
 def createKey():
