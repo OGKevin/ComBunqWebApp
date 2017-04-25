@@ -2,13 +2,16 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 from .pythonbunq.bunq import API
-from django.http import HttpResponse
+from .aescrypt import encrypt
+# from django.http import HttpResponse
 import json
-
+import tempfile
+from pprint import pprint
 # NOTE: generating private key and installation token
 
 
 def getToken(privateKey):
+    tmpDir = tempfile.mkdtemp(dir='./BunqAPI/tmp')
     rsa_key = privateKey.decode()
     bunq_api = API(rsa_key, None)
 
@@ -28,11 +31,15 @@ def getToken(privateKey):
             'privateKey': privateKey.decode()
             }
         print ('\n\nFiles generated\n\n')
-        keyFile = HttpResponse(
-            json.dumps(d, indent=4),
-            content_type='application/force-download')
-        keyFile['Content-Disposition'] = 'attachment;filename="BunqWebApp.json"'  # noqa
-        return keyFile
+        pprint(d)
+        print ('%s/BunqWebApp.json' % tmpDir)
+        f = open('%s/BunqWebApp.json' % tmpDir, 'w')
+        json.dump(d, f, indent=4)
+        f.close()
+        f2 = open('%s/BunqWebApp.json' % tmpDir, 'rb')
+        encFile = open('%s/BunqWebApp.json.enc' % tmpDir, 'wb')
+        encrypt(f2, encFile, '12345')
+        return '%s/BunqWebApp.json.enc' % tmpDir
 
 
 def createKey():
