@@ -7,3 +7,4 @@ class GenerateKeyForm(forms.Form):
     captcha = CaptchaField()
     password = forms.CharField(label='password', min_length=8)
     # API = forms.CharField(label='API')
+    userID = forms.CharField(label='userID')
