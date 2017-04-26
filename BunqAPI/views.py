@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .forms import GenerateKeyForm
-from .installation import createKey
+from .installation import createJSON
 from django.utils.encoding import smart_str
 from django.http import HttpResponse
 # from django.http.response import FileResponse
@@ -13,7 +13,9 @@ def generate(request):
         formKey = GenerateKeyForm(request.POST)
         if formKey.is_valid():
             print ('\n\nGenerating...\n\n')
-            dFile = createKey()
+            print (formKey.cleaned_data['password'])
+            password = formKey.cleaned_data['password']
+            dFile = createJSON(password)
             response = HttpResponse(
                 open(dFile, 'rb'), content_type='application/force-download')
             response['Content-Disposition'] = 'attachment; filename=%s' % smart_str('BunqWebApp.json.enc')  # noqa

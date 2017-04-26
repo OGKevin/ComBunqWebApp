@@ -10,7 +10,7 @@ from pprint import pprint
 # NOTE: generating private key and installation token
 
 
-def getToken(privateKey):
+def getToken(privateKey, password):
     tmpDir = tempfile.mkdtemp(dir='./BunqAPI/tmp')
     rsa_key = privateKey.decode()
     bunq_api = API(rsa_key, None)
@@ -42,11 +42,11 @@ def getToken(privateKey):
         encFile = tempfile.NamedTemporaryFile(
             suffix='.enc', dir='%s' % tmpDir, mode='wb', delete=False
         )
-        encrypt(f2, encFile, '12345')
+        encrypt(f2, encFile, password)
         return encFile.name
 
 
-def createKey():
+def createJSON(password):
     # generate private key
     private_key = rsa.generate_private_key(
         public_exponent=65537,
@@ -61,4 +61,4 @@ def createKey():
       encryption_algorithm=serialization.NoEncryption()
     )
 
-    return getToken(privateKey)
+    return getToken(privateKey, password)
