@@ -13,12 +13,12 @@ def generate(request):
         formKey = GenerateKeyForm(request.POST)
         if formKey.is_valid():
             print ('\n\nGenerating...\n\n')
-            print (formKey.cleaned_data['password'])
             password = formKey.cleaned_data['password']
-            dFile = createJSON(password)
+            # userID = formKey.cleaned_data['userID']
+            encryptedData = createJSON(password, None)
             response = HttpResponse(
-                open(dFile, 'rb'), content_type='application/force-download')
-            response['Content-Disposition'] = 'attachment; filename=%s' % smart_str('BunqWebApp.json.enc')  # noqa
+                encryptedData, content_type='application/force-download')
+            response['Content-Disposition'] = 'attachment; filename=%s' % smart_str('BunqWebApp.json')  # noqa
             # response.write(open(dFile, 'r'))
             # It's usually a good idea to set the 'Content-Length' header too.
             # You can also set any other required headers: Cache-Control, etc.

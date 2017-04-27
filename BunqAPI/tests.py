@@ -1,12 +1,12 @@
 from django.test import TestCase
-from .installation import createKey
+from .installation import createJSON
 
 # Create your tests here.
 
 
 class testScript(TestCase):
     def test_installation(self):
-        createKey()
+        createJSON(None)
 
 
 class testView(TestCase):
