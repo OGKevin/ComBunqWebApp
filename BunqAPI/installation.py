@@ -3,14 +3,15 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 from .pythonbunq.bunq import API
 from .encryption import encrypt
+# from django.contrib.auth.models import User
 # from django.http import HttpResponse
 import json
 # import tempfile
-from pprint import pprint
+# from pprint import pprint
 # NOTE: generating private key and installation token
 
 
-def getToken(privateKey):
+def getToken(privateKey, userID):
     # tmpDir = tempfile.mkdtemp(dir='./BunqAPI/tmp')
     rsa_key = privateKey.decode()
     bunq_api = API(rsa_key, None)
@@ -32,18 +33,18 @@ def getToken(privateKey):
             # 'privateKey': privateKey.decode()
             }
         print ('\n\nFiles generated\n\n')
-        pprint(d)
-        secret = encrypt(json.dumps(d))
+        # pprint(d)
+        secret = encrypt(json.dumps(d), userID)
         d2 = {
-            'userID': 123456,
+            'userID': userID,
             'secret': secret,
             'privateKey': privateKey.decode()
         }
-        pprint(json.dumps(d2, indent=4, sort_keys=True))
+        # pprint(json.dumps(d2, indent=4, sort_keys=True))
         return(json.dumps(d2, indent=4, sort_keys=True))
 
 
-def createJSON():
+def createJSON(userID):
     # generate private key
     private_key = rsa.generate_private_key(
         public_exponent=65537,
@@ -58,4 +59,4 @@ def createJSON():
       encryption_algorithm=serialization.NoEncryption()
     )
 
-    return getToken(privateKey)
+    return getToken(privateKey, userID)
