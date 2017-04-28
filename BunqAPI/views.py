@@ -13,9 +13,9 @@ def generate(request):
         formKey = GenerateKeyForm(request.POST)
         if formKey.is_valid():
             print ('\n\nGenerating...\n\n')
-            password = formKey.cleaned_data['password']
+            # password = formKey.cleaned_data['password']
             # userID = formKey.cleaned_data['userID']
-            encryptedData = createJSON(password, None)
+            encryptedData = createJSON()
             response = HttpResponse(
                 encryptedData, content_type='application/force-download')
             response['Content-Disposition'] = 'attachment; filename=%s' % smart_str('BunqWebApp.json')  # noqa

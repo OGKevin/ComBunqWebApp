@@ -19,7 +19,7 @@ def decrypt(enc, key):
     # print (type(json.loads(decodedMsg)))
 
 
-def encrypt(data, userID):
+def encrypt(data):
     random_generator = Random.new().read
     key = RSA.generate(2048, random_generator)
     cipher = PKCS1_OAEP.new(key)
