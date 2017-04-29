@@ -2,8 +2,9 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 from .pythonbunq.bunq import API
-from .encryption import encrypt
-# from django.contrib.auth.models import User
+from .encryption import AESCipher
+import requests
+from django.contrib.auth.models import User
 # from django.http import HttpResponse
 import json
 # import tempfile
@@ -11,7 +12,14 @@ import json
 # NOTE: generating private key and installation token
 
 
-def getToken(privateKey, userID):
+def get_GUID():
+    url = 'https://www.uuidgenerator.net/api/guid'
+    GUID = requests.get(url).content.decode()
+    return GUID
+    # using UUIDGenerator.net for GUID
+
+
+def getToken(privateKey, username, encryption_password):
     # tmpDir = tempfile.mkdtemp(dir='./BunqAPI/tmp')
     rsa_key = privateKey.decode()
     bunq_api = API(rsa_key, None)
@@ -30,21 +38,31 @@ def getToken(privateKey, userID):
     else:
         d = {
             'Token': response['Response'][1]['Token'],
-            # 'privateKey': privateKey.decode()
-            }
-        print ('\n\nFiles generated\n\n')
-        # pprint(d)
-        secret = encrypt(json.dumps(d), userID)
-        d2 = {
-            'userID': userID,
-            'secret': secret,
             'privateKey': privateKey.decode()
+            # 'API':
+            }
+        GUID = get_GUID()
+        user = User.objects.get(username=username)
+        user.profile.GUID = GUID
+        user.save()
+        # pprint(d)
+        k = AESCipher(encryption_password)
+        # print ('\n\n', k.key, '\n\n')
+        secret = AESCipher.encrypt(k, json.dumps(d))
+        # print ('decryt\n\n', AESCipher.decrypt(k, secret))
+        # secretB = encrypt(json.dumps(privateKey.decode()), userID)
+        d2 = {
+            'username': username,
+            'secret': secret,
+            'userID': GUID
+            # 'secretB': secretB
         }
         # pprint(json.dumps(d2, indent=4, sort_keys=True))
+        print ('\n\nFiles generated\n\n')
         return(json.dumps(d2, indent=4, sort_keys=True))
 
 
-def createJSON(userID):
+def createJSON(username, encryption_password):
     # generate private key
     private_key = rsa.generate_private_key(
         public_exponent=65537,
@@ -59,4 +77,4 @@ def createJSON(userID):
       encryption_algorithm=serialization.NoEncryption()
     )
 
-    return getToken(privateKey, userID)
+    return getToken(privateKey, username, encryption_password)

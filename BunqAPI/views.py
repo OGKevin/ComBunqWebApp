@@ -15,11 +15,12 @@ def generate(request):
         if formKey.is_valid():
             print ('\n\nGenerating...\n\n')
             password = formKey.cleaned_data['password']
-            userID = formKey.cleaned_data['userID']
-            user = authenticate(request, username=userID, password=password)
+            username = formKey.cleaned_data['username']
+            encryption_password = formKey.cleaned_data['encryption_password']
+            user = authenticate(request, username=username, password=password)
             if user is not None:
                 # login(request, user)
-                encryptedData = createJSON(userID)
+                encryptedData = createJSON(username, encryption_password)
                 response = HttpResponse(
                     encryptedData, content_type='application/force-download')
                 response['Content-Disposition'] = 'attachment; filename=%s' % smart_str('BunqWebApp.json')  # noqa

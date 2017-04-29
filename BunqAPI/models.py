@@ -7,7 +7,7 @@ from django.dispatch import receiver
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    private_key = models.TextField(blank=True)
+    GUID = models.CharField(blank=True, max_length=68)
 
 
 @receiver(post_save, sender=User)
