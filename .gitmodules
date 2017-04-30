@@ -1,3 +1,0 @@
-[submodule "pythonbunq"]
-	path = BunqAPI/pythonbunq
-	url = https://github.com/madeddie/python-bunq
