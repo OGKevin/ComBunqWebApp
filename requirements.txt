@@ -11,7 +11,7 @@ gunicorn==19.7.1
 idna==2.5
 olefile==0.44
 packaging==16.8
-Pillow==4.1.0
+Pillow==4.1.1
 psycopg2==2.7.1
 pycparser==2.17
 pyparsing==2.2.0
