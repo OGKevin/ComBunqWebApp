@@ -7,9 +7,7 @@ $(function(){
     reader.readAsText(data)
     reader.onload = function(event) {
     var jsonObj = JSON.parse(event.target.result);
-    console.log(jsonObj);
     pass =  $('#id_encryption_password').val()
-    console.log('PASS', pass)
     
     sendPost(jsonObj)
   }
@@ -39,9 +37,7 @@ function sendPost(json) {
             }
         })
         .done(function(response) {
-            // sortedJSON = JSON.parse(response);
-            // console.log('SORTEDJSON', sortedJSON)
-            console.log(response);
+            $("#response").html(response)
             
         })
         .fail(function() {})

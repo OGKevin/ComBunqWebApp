@@ -18,15 +18,20 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from Manager.views import Manager, managerForm
-from BunqAPI.views import generate, decrypt
+from BunqAPI.views import generate, decrypt, error
 from . import views
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', views.home, name='home'),
+    url(r'^accounts/login/$', auth_views.login, name='login'),
+    url(r'^accounts/logout/$', auth_views.logout, name='logout'),
     url(r'^Manager/(?i)$', Manager, name='Manager'),
-    url(r'^Manager/form(?i)$', managerForm, name='managerForm'),
-    url(r'^generate$', generate, name='generate'),
-    url(r'^decrypt$', decrypt, name='decrypt'),
+    url(r'^Manager/form/(?i)$', managerForm, name='managerForm'),
+    url(r'^generate/$', generate, name='generate'),
+    url(r'^decrypt/$', decrypt, name='decrypt'),
+    url(r'^decrypt/error/$', error, name='error'),
+    url(r'^decrypt/error/(?P<error>.*)/$', error, name='error'),
     url(r'^captcha/', include('captcha.urls')),
 ] + static(settings.STATIC_URL)

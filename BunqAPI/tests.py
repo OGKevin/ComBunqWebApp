@@ -6,7 +6,7 @@ from .installation import createJSON
 
 class testScript(TestCase):
     def test_installation(self):
-        createJSON(None)
+        createJSON(None)  # NOTE: need to change this
 
 
 class testView(TestCase):

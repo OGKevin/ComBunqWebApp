@@ -1,7 +1,7 @@
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
-from .pythonbunq.bunq import API
+from .pythonBunq.bunq import API
 from .encryption import AESCipher
 import requests
 from django.contrib.auth.models import User
