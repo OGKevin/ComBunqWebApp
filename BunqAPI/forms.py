@@ -9,5 +9,5 @@ class GenerateKeyForm(forms.Form):
     username = forms.CharField(
         label='username', max_length=150)
     password = forms.CharField(widget=forms.PasswordInput)
-    # API = forms.CharField(label='API')
+    API = forms.CharField(label='API key', widget=forms.Textarea)
     encryption_password = forms.CharField(widget=forms.PasswordInput)

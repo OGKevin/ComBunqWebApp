@@ -16,11 +16,12 @@ def generate(request):
             print ('\n\nGenerating...\n\n')
             password = formKey.cleaned_data['password']
             username = formKey.cleaned_data['username']
+            API = formKey.cleaned_data['API']
             encryption_password = formKey.cleaned_data['encryption_password']
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 # login(request, user)
-                encryptedData = createJSON(username, encryption_password)
+                encryptedData = createJSON(username, encryption_password, API)
                 response = HttpResponse(
                     encryptedData, content_type='application/force-download')
                 response['Content-Disposition'] = 'attachment; filename=%s' % smart_str('BunqWebApp.json')  # noqa

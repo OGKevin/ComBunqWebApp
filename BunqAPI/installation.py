@@ -19,7 +19,7 @@ def get_GUID():
     # using UUIDGenerator.net for GUID
 
 
-def getToken(privateKey, username, encryption_password):
+def getToken(privateKey, username, encryption_password, API_KEY):
     # tmpDir = tempfile.mkdtemp(dir='./BunqAPI/tmp')
     rsa_key = privateKey.decode()
     bunq_api = API(rsa_key, None)
@@ -38,8 +38,8 @@ def getToken(privateKey, username, encryption_password):
     else:
         d = {
             'Token': response['Response'][1]['Token'],
-            'privateKey': privateKey.decode()
-            # 'API':
+            'privateKey': privateKey.decode(),
+            'API': API_KEY
             }
         GUID = get_GUID()
         user = User.objects.get(username=username)
@@ -62,7 +62,7 @@ def getToken(privateKey, username, encryption_password):
         return(json.dumps(d2, indent=4, sort_keys=True))
 
 
-def createJSON(username, encryption_password):
+def createJSON(username, encryption_password, API_KEY):
     # generate private key
     private_key = rsa.generate_private_key(
         public_exponent=65537,
@@ -77,4 +77,4 @@ def createJSON(username, encryption_password):
       encryption_algorithm=serialization.NoEncryption()
     )
 
-    return getToken(privateKey, username, encryption_password)
+    return getToken(privateKey, username, encryption_password, API_KEY)
