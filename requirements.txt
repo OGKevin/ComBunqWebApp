@@ -6,7 +6,7 @@ django-simple-history==1.8.2
 gunicorn==19.7.1
 olefile==0.44
 packaging==16.8
-Pillow==4.1.0
+Pillow==4.1.1
 psycopg2==2.7.1
 pyparsing==2.2.0
 pytz==2017.2
