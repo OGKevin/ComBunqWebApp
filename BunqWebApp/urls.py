@@ -25,7 +25,7 @@ from django.contrib.auth import views as auth_views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', views.home, name='home'),
-    url(r'^accounts/login/$', auth_views.login, name='login'),
+    # url(r'^accounts/login/$', LoginView, name='login'),
     url(r'^accounts/logout/$', auth_views.logout, name='logout'),
     url(r'^Manager/(?i)$', Manager, name='Manager'),
     url(r'^Manager/form/(?i)$', managerForm, name='managerForm'),
@@ -34,4 +34,5 @@ urlpatterns = [
     url(r'^decrypt/error/$', error, name='error'),
     url(r'^decrypt/error/(?P<error>.*)/$', error, name='error'),
     url(r'^captcha/', include('captcha.urls')),
+    url(r'', include('two_factor.urls', 'two_factor')),
 ] + static(settings.STATIC_URL)

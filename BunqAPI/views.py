@@ -3,9 +3,10 @@ from .forms import GenerateKeyForm, decrypt_form
 from .installation import createJSON
 from django.utils.encoding import smart_str
 from django.http import HttpResponse
-from django.contrib.auth import authenticate
+# from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required
+# from django.contrib.auth.decorators import login_required
+from django_otp.decorators import otp_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
 import json
@@ -26,33 +27,27 @@ def error(request, error=None):  # NOTE: render error pages
         raise Http404
 
 
-@login_required
+@otp_required
 def generate(request):
     if request.method == 'POST':
         formKey = GenerateKeyForm(request.POST)
         if formKey.is_valid():
             print ('\n\nGenerating...\n\n')
-            password = formKey.cleaned_data['password']
-            username = formKey.cleaned_data['username']
+            username = request.user.username
             API = formKey.cleaned_data['API']
             encryption_password = formKey.cleaned_data['encryption_password']
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                # login(request, user)
-                encryptedData = createJSON(username, encryption_password, API)
-                response = HttpResponse(
-                    encryptedData, content_type='application/force-download')
-                response['Content-Disposition'] = 'attachment; filename=%s' % smart_str('BunqWebApp.json')  # noqa
-                return response
-            else:
-                return HttpResponse('invalid user')
+            encryptedData = createJSON(username, encryption_password, API)
+            response = HttpResponse(
+                encryptedData, content_type='application/force-download')
+            response['Content-Disposition'] = 'attachment; filename=%s' % smart_str('BunqWebApp.json')  # noqa
+            return response
 
     else:
         formKey = GenerateKeyForm()
     return render(request, 'BunqAPI/index.html', {'form': formKey})
 
 
-@login_required
+@otp_required
 def decrypt(request):
     if request.method == 'POST':
         form = decrypt_form(request.POST)
