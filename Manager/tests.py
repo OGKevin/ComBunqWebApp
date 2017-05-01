@@ -42,7 +42,7 @@ class TestPageAccess(TestCase):
         self.assertEqual(response2.status_code, 200,)
 
     def test_form(self):
-        response = self.client.get('/Manager/form')
+        response = self.client.get('/Manager/form', follow=True)
         self.assertEqual(response.status_code, 200)
 
 
