@@ -26,7 +26,7 @@ pycrypto==2.6.1
 pyparsing==2.2.0
 pytz==2017.2
 PyYAML==3.12
-qrcode==4.0.4
+qrcode==5.3
 requests==2.13.0
 shellescape==3.4.1
 six==1.10.0
