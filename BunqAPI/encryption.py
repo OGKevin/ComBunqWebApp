@@ -1,7 +1,7 @@
 from Crypto.Cipher import AES
 # from Crypto.PublicKey import RSA
 from Crypto import Random
-# import json
+import json
 # from pprint import pprint
 import base64
 import hashlib
@@ -21,11 +21,21 @@ class AESCipher(object):
         return base64.b64encode(iv + cipher.encrypt(raw)).decode()
 
     def decrypt(self, enc):
-        enc = base64.b64decode(enc)
+        try:
+            enc = base64.b64decode(enc)
+        except base64.binascii.Error:
+            return(
+                json.dumps(
+                    {'error': 'something went wrong, maybe u touched the secret?'}))  # noqa
         iv = enc[:AES.block_size]
         cipher = AES.new(self.key, AES.MODE_CBC, iv)
-        return self._unpad(
-            cipher.decrypt(enc[AES.block_size:])).decode('utf-8')
+        try:
+            return self._unpad(
+                cipher.decrypt(enc[AES.block_size:])).decode('utf-8')
+        except UnicodeDecodeError:
+            return(
+                json.dumps(
+                    {'error': 'something went wrong, maybe wrong password?'}))
 
     def _pad(self, s):
         return s + (

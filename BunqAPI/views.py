@@ -11,7 +11,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
 import json
 from .encryption import AESCipher
-from pprint import pprint
+# from pprint import pprint
 
 # from django.http.response import FileResponse
 
@@ -58,19 +58,19 @@ def decrypt(request):
             return redirect('./error/not_logged_in')
         else:
             userGUID = user.profile.GUID
-            print(user)
-            print(userGUID)
+            # print(user)
+            # print(userGUID)
             inputData = json.loads(
                 request.POST['json'])
             password = request.POST['pass']
-            print(password)
-            pprint(inputData)
-            print(type(inputData))
+            # print(password)
+            # pprint(inputData)
+            # print(type(inputData))
             if inputData['userID'] == userGUID:
                 p = AESCipher(password)
                 data = json.loads(AESCipher.decrypt(p, inputData['secret']))
-                pprint(data)
-                print(type(data))
+                # pprint(data)
+                # print(type(data))
                 return HttpResponse(json.dumps(data, indent=4))
             else:
                 return redirect('./error/not_your_file')
