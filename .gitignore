@@ -175,3 +175,7 @@ OLDmigrations
 secret.txt
 .git.backup
 coverageHTML
+BunqAPI/privateBunq.pem
+BunqAPI/response.json
+BunqAPI/token.json
+BunqAPI/tmp

@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
+from django.utils.translation import ugettext_lazy as _
 import json
 import requests
-from django.utils.translation import ugettext_lazy as _
 
 
 def ibanValidator(iban):

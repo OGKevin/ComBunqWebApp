@@ -31,7 +31,7 @@ def addTegenrekening(transactions):
 
 def store(data):
     # NOTE: cant test this via post due to captcha
-    print (data)
+    # print (data)
     keyWord = data['keyWord']
     iban = data['iban']
     p = catagories.objects.get(Naam=data['catagory'])

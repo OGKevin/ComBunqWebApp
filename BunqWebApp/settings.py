@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 
 import os
 import dj_database_url
-
+# from django.core.urlresolvers import reverse_lazy
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -45,9 +45,13 @@ except NameError:
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-
+DEBUG = True
+SECURE_SSL_REDIRECT = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 ALLOWED_HOSTS = ['.combunqweb.herokuapp.com', '.127.0.0.1']
+LOGIN_URL = 'two_factor:login'
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_SECURE = True
 
 
 # Application definition
@@ -63,6 +67,11 @@ INSTALLED_APPS = [
     'Manager',
     'captcha',
     'simple_history',
+    'BunqAPI',
+    'django_otp',
+    'django_otp.plugins.otp_static',
+    'django_otp.plugins.otp_totp',
+    'two_factor',
 ]
 
 MIDDLEWARE = [
@@ -72,6 +81,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django_otp.middleware.OTPMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'simple_history.middleware.HistoryRequestMiddleware',
@@ -101,7 +111,7 @@ WSGI_APPLICATION = 'BunqWebApp.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 # http://www.marinamele.com/taskbuster-django-tutorial/install-and-configure-posgresql-for-django
-# pg_ctl -D /usr/local/var/postgres start
+# pg_ctl -D ./db start
 
 if 'TRAVIS' in os.environ:  # pragma: no cover
     DATABASES = {
