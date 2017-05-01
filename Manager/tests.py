@@ -4,6 +4,9 @@ from .models import catagories
 from .databaseInput import store
 from .validator import ibanValidator
 from django.core.exceptions import ValidationError
+from . import master
+from pprint import pprint
+import json
 # Create your tests here.
 
 
@@ -18,7 +21,7 @@ class TestPageAccess(TestCase):
     """docstring for TestPageAccess."""
 
     def test_HomePage(self):
-        response = self.client.get('/')
+        response = self.client.get('/', follow=True)
         self.assertEqual(response.status_code, 200)
 
     def test_ManagerPage(self):
@@ -38,7 +41,7 @@ class TestPageAccess(TestCase):
             ':"NL01BUNQ1234567890","Naam":"bunq","Omschrijving":"Slice heeft'
             ' deze request verstuurd voor de groep Family."}]'
         )
-        response2 = self.client.post('/Manager/', {'json': json})
+        response2 = self.client.post('/Manager', {'json': json}, follow=True)
         self.assertEqual(response2.status_code, 200,)
 
     def test_form(self):
@@ -66,3 +69,8 @@ class testScript(TestCase):
             ibanValidator('unvalid iban')
         except ValidationError:
             print ('validator passed unvalid iban')
+
+    def test_master(self):
+        transactions = json.loads('[{"Datum":"2017-03-31","Bedrag":"-0,01","Rekening":"NL01BUNQ1234567890","Tegenrekening":"NL48ABNA0502830042","Naam":"Spotify by Adyen","Omschrijving":"Payment description"},{"Datum":"2017-03-31","Bedrag":"1,64","Rekening":"NL01BUNQ1234567890","Tegenrekening":"NL01BUNQ1234567890","Naam":"bunq","Omschrijving":"Slice heeft deze request verstuurd voor de groep Family."}]') # noqa
+        # NOTE: need to add catagories that stored in db
+        pprint(master.sortInfo(transactions))
