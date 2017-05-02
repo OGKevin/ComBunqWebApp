@@ -7,7 +7,10 @@ from django.core.management.base import BaseCommand
 
 
 class Command(BaseCommand):
-    """docstring for Command."""
+    """docstring for Command.
+
+    There is actually no use for this anymore. This was usefull when
+    #5 was still in play, now the /manager/form is being used."""
     def handle(self, *args, **options):
         print (
             'This scrpit will add new catagories and filters to the database'

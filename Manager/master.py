@@ -2,6 +2,9 @@ from .models import catagories
 
 
 def sortInfo(transactions):
+    '''
+     Does the catagory soorting of the transactions.
+    '''
     catOBJ = {'Other': 0}
     cat = catagories.objects
     for x in transactions:

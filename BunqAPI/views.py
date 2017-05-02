@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .forms import GenerateKeyForm, decrypt_form
-from .installation import createJSON
+from .installation import installation
 from django.utils.encoding import smart_str
 from django.http import HttpResponse
 # from django.contrib.auth import authenticate
@@ -19,6 +19,10 @@ from .encryption import AESCipher
 
 
 def error(request, error=None):  # NOTE: render error pages
+    '''
+    Views to show error pages. This is not working smooth, need to think of
+    another way to show errors.
+    '''
     if error == 'not_your_file':
         return render(request, 'BunqAPI/error/notYourFile.html')
     elif error == 'not_logged_in':
@@ -27,8 +31,12 @@ def error(request, error=None):  # NOTE: render error pages
         raise Http404
 
 
-@otp_required
+@otp_required  # NOTE: forces the user to log in with 2FA
 def generate(request):
+    '''
+    This is working smooth.
+    View that handles the /generate page.
+    '''
     if request.method == 'POST':
         formKey = GenerateKeyForm(request.POST)
         if formKey.is_valid():
@@ -36,7 +44,8 @@ def generate(request):
             username = request.user.username
             API = formKey.cleaned_data['API']
             encryption_password = formKey.cleaned_data['encryption_password']
-            encryptedData = createJSON(username, encryption_password, API)
+            data = installation(username, encryption_password, API)
+            encryptedData = data.encrypt()
             response = HttpResponse(
                 encryptedData, content_type='application/force-download')
             response['Content-Disposition'] = 'attachment; filename=%s' % smart_str('BunqWebApp.json')  # noqa
@@ -49,6 +58,9 @@ def generate(request):
 
 @otp_required
 def decrypt(request):
+    ''''View that handles /decrypt page. However need to think of new way
+    to decpyt the file and use it, this is not the right way to do it.
+    Well atleast the JS part is a little bit messy.'''
     if request.method == 'POST':
         form = decrypt_form(request.POST)
         try:
@@ -58,19 +70,12 @@ def decrypt(request):
             return redirect('./error/not_logged_in')
         else:
             userGUID = user.profile.GUID
-            # print(user)
-            # print(userGUID)
             inputData = json.loads(
                 request.POST['json'])
             password = request.POST['pass']
-            # print(password)
-            # pprint(inputData)
-            # print(type(inputData))
             if inputData['userID'] == userGUID:
                 p = AESCipher(password)
                 data = json.loads(AESCipher.decrypt(p, inputData['secret']))
-                # pprint(data)
-                # print(type(data))
                 return HttpResponse(json.dumps(data, indent=4))
             else:
                 return redirect('./error/not_your_file')

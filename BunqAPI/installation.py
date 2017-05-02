@@ -12,69 +12,84 @@ import json
 # NOTE: generating private key and installation token
 
 
-def get_GUID():
-    url = 'https://www.uuidgenerator.net/api/guid'
-    GUID = requests.get(url).content.decode()
-    return GUID
-    # using UUIDGenerator.net for GUID
+class installation(object):
+    """docstring for installation.
+    
+    Genereating information to store in the encrypted JSON.
+    Each generation will create a new GUID and store this in the user's profile.  # noqa
+    
+    'token': is the instalation token used https://doc.bunq.com/api/1/call/installation  # noqa
+    
+    'password': is the password used to encrypted the JSON file
+    
+    'GUID': gets generated each time the user generates a new file. This is
+            used to check if the file actually belogs to the logged in user
+            
+    'RSA_key': the RSA key used to make API calls"""
+    def __init__(self, username, password, API_KEY):
+        self.username = username
+        self.password = password
+        self.API_KEY = API_KEY
+        self.GUID = self.get_GUID()
+        self.RSA_key = self.RSA()
+        self.token = self.getToken()
 
+    def get_GUID(self):
+        url = 'https://www.uuidgenerator.net/api/guid'
+        GUID = requests.get(url).content.decode()
+        return GUID
+        # using UUIDGenerator.net for GUID
 
-def getToken(privateKey, username, encryption_password, API_KEY):
-    # tmpDir = tempfile.mkdtemp(dir='./BunqAPI/tmp')
-    rsa_key = privateKey.decode()
-    bunq_api = API(rsa_key, None)
+    def getToken(self):
+        rsa_key = self.RSA_key
+        bunq_api = API(rsa_key, None)
 
-    # using the pubkey() helper function to get public part of key pair
-    public_key = bunq_api.pubkey().decode()
+        # using the pubkey() helper function to get public part of key pair
+        public_key = bunq_api.pubkey().decode()
 
-    r = bunq_api.query('installation', {'client_public_key': public_key})
+        r = bunq_api.query('installation', {'client_public_key': public_key})
 
-    response = r.json()
-    try:
-        response['Response'][1]['Token']
-    except KeyError:
-        print (json.dumps(response, indent=4))
-        # IDEA: need to return error html page
-    else:
+        response = r.json()
+        try:
+            return response['Response'][1]['Token']
+        except KeyError:
+            print (json.dumps(response, indent=4))
+            raise KeyError
+        #     # IDEA: need to return error html page
+
+    def encrypt(self):
         d = {
-            'Token': response['Response'][1]['Token'],
-            'privateKey': privateKey.decode(),
-            'API': API_KEY
+            'Token': self.token,
+            'privateKey': self.RSA_key,
+            'API': self.API_KEY
             }
-        GUID = get_GUID()
-        user = User.objects.get(username=username)
+        GUID = self.GUID
+        user = User.objects.get(username=self.username)
         user.profile.GUID = GUID
         user.save()
-        # pprint(d)
-        k = AESCipher(encryption_password)
-        # print ('\n\n', k.key, '\n\n')
+        k = AESCipher(self.password)
         secret = AESCipher.encrypt(k, json.dumps(d))
-        # print ('decryt\n\n', AESCipher.decrypt(k, secret))
-        # secretB = encrypt(json.dumps(privateKey.decode()), userID)
         d2 = {
-            'username': username,
+            'username': self.username,
             'secret': secret,
             'userID': GUID
-            # 'secretB': secretB
         }
-        # pprint(json.dumps(d2, indent=4, sort_keys=True))
         print ('\n\nFiles generated\n\n')
         return(json.dumps(d2, indent=4, sort_keys=True))
 
+    def RSA(self):
+        # generate private key
+        private_key = rsa.generate_private_key(
+            public_exponent=65537,
+            key_size=2048,
+            backend=default_backend()
+        )
 
-def createJSON(username, encryption_password, API_KEY):
-    # generate private key
-    private_key = rsa.generate_private_key(
-        public_exponent=65537,
-        key_size=2048,
-        backend=default_backend()
-    )
+        # output PEM encoded version of private key
+        privateKey = private_key.private_bytes(
+          encoding=serialization.Encoding.PEM,
+          format=serialization.PrivateFormat.PKCS8,
+          encryption_algorithm=serialization.NoEncryption()
+        )
 
-    # output PEM encoded version of private key
-    privateKey = private_key.private_bytes(
-      encoding=serialization.Encoding.PEM,
-      format=serialization.PrivateFormat.PKCS8,
-      encryption_algorithm=serialization.NoEncryption()
-    )
-
-    return getToken(privateKey, username, encryption_password, API_KEY)
+        return privateKey.decode()

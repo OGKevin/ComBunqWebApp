@@ -25,7 +25,9 @@ class GetNewData(forms.Form):
 
 
 class catagoriesAdminForm(forms.ModelForm):  # pragma: no cover
-    """docstring for catagoriesAdmin."""
+    """docstring for catagoriesAdmin.
+
+    Nothing special here just changing the appearance of the admin page."""
     def __init__(self, *args, **kwargs):
         super(catagoriesAdminForm, self).__init__(*args, **kwargs)
         self.fields['Rekening'].widget = admin.widgets.AdminTextareaWidget()
@@ -33,6 +35,9 @@ class catagoriesAdminForm(forms.ModelForm):  # pragma: no cover
 
 
 class inputDatabase(forms.Form):
+    """docstring for inputDatabase.
+
+    This is the form shown on /manager/form."""
     catNames = catagories.objects.all()
     catagory = forms.ModelChoiceField(queryset=catNames, required=True)
     iban = forms.CharField(

@@ -22,6 +22,10 @@ from BunqAPI.views import generate, decrypt, error
 from . import views
 from django.contrib.auth import views as auth_views
 
+'''
+Each app needs to get its own URL conf. It works fine this way but its not
+ideal.
+'''
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', views.home, name='home'),
