@@ -1,0 +1,19 @@
+<head>
+  {%load static%}
+  <script type='text/javascript' src="{%static "js-cookie/src/js.cookie.js"%}"></script>
+  <script type='text/javascript' src="{%static "jquery/dist/jquery.min.js"%}"></script>
+  <script type='text/javascript' src="{%static "BunqAPI/JS/decrypt.js"%}"></script>
+
+</head>
+<p> <a href=".."><--Back</a> </p>
+
+<body id="body">
+
+  <form enctype="multipart/form-data" method="post" id="encryption_form">
+    {% csrf_token %} {{form}}
+    <button type="sumbit" name="button" id="file_decrypt">decrypt</button>
+  </form>
+  <div class="" id="response">
+
+  </div>
+</body>

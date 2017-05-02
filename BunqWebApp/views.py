@@ -1,9 +1,32 @@
-# from django.shortcuts import render
-from django.http import HttpResponse
+from django.shortcuts import render, redirect
+from .forms import registration
+from django.contrib.auth.models import User
+# from django.http import HttpResponse
+from django.contrib.auth import authenticate, login
+# from django.http import HttpResponse
 # from django.template import loader
 
 # Create your views here.
 
 
 def home(request):
-    return HttpResponse('Homepage dummy --> <a href="./Manager" >/Manager</a>')
+    return render(request, 'Home/index.html')
+
+
+def register(request):
+    if request.method == 'POST':
+        form = registration(request.POST)
+        if form.is_valid():
+            print('valid form')
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = User.objects.create_user(username, '', password)
+            user.save()
+            auth = authenticate(username=username, password=password)
+            if auth is not None:
+                login(request, auth)
+
+                return redirect('../two_factor/setup')
+    else:
+        form = registration()
+    return render(request, 'registration/register.html', {'form': form})

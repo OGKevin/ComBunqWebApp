@@ -1,5 +1,6 @@
 [run]
 source =
+  BunqAPI
   BunqWebApp
   Manager
   
@@ -7,4 +8,5 @@ omit =
   BunqWebApp/wsgi.py
   Manager/apps.py
   Manager/migrations
+  BunqAPI/apps.py
   
