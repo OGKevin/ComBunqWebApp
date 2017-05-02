@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 # from django.http import HttpResponse
 import json
 # import tempfile
-# from pprint import pprint
+from pprint import pprint
 # NOTE: generating private key and installation token
 
 
@@ -38,6 +38,7 @@ def getToken(privateKey, username, encryption_password, API_KEY):
     else:
         d = {
             'Token': response['Response'][1]['Token'],
+            'ServerPublicKey': response['Response'][2]['ServerPublicKey'],
             'privateKey': privateKey.decode(),
             'API': API_KEY
             }
@@ -78,3 +79,47 @@ def createJSON(username, encryption_password, API_KEY):
     )
 
     return getToken(privateKey, username, encryption_password, API_KEY)
+
+
+class session(object):
+    """docstring for sessoin."""
+    def __init__(self, f):
+        self.token = f['Token']['token']
+        self.rsa_key = f['privateKey']
+        self.api_key = f['API']
+        self.server_key = f['ServerPublicKey']['server_public_key']
+        print (self)
+
+    def register(self):
+        bunq_api = API(self.rsa_key, self.token, self.server_key)
+
+        # r = bunq_api.query('session-server', {'secret': api_key}, verify=True)  # noqa
+        r = bunq_api.query('device-server', {'secret': self.api_key, 'description': 'dev-server'})  # noqa
+
+        # r.json()['Response'][1]['Token'] would work too, but I mistrust predefined  # noqa
+        # order, never know when someone starts shuffling things around
+        if r.status_code == 200:
+            print('\n\n')
+            pprint(r.json())
+            return 'device registered'
+        else:
+            print('\n\n')
+            pprint(r.json()['Error'][0])
+            return r.json()
+
+    def start_session(self):
+            bunq_api = API(self.rsa_key, self.token, self.server_key)
+
+            # r = bunq_api.query('session-server', {'secret': api_key}, verify=True)  # noqa
+            r = bunq_api.query('session-server', {'secret': self.api_key})  # noqa
+
+            # r.json()['Response'][1]['Token'] would work too, but I mistrust predefined  # noqa
+            # order, never know when someone starts shuffling things around
+            if r.status_code == 200:
+                print('\n\n')
+                pprint(r.json())
+                return r.json()
+            else:
+                print('\n\n')
+                pprint(r.json()['Error'][0])
+                return r.json()
