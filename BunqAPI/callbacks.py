@@ -114,22 +114,23 @@ class callback(object):
         https://doc.bunq.com/api/1/call/payment
         '''
         self.bunq.ap = self.user.profile.session_token
+        url = 'user/%s/monetary-account/%s/' % (userID, accountID)
         if mode == 'normal':
             r = self.bunq_api.query(
-                'user/%s/monetary-account/%s/payment/%s' % (
-                    userID, accountID, paymentID), verify=True
+                '%s/payment/%s' % (
+                    url, paymentID), verify=True
             )
 
             self.response(r)
         elif mode == 'draft':
             r = self.bunq_api.query(
-                'user/%s/monetary-account/%s/draft-payment/%s' % (
-                    userID, accountID, paymentID), verify=True
+                '%s/draft-payment/%s' % (
+                    url, paymentID), verify=True
             )
             self.response(r)
         elif mode == 'schedule':
             r = self.bunq_api.query(
-                'user/%s/monetary-account/%s/schedule-payment/%s' % (
-                    userID, accountID, paymentID), verify=True
+                '%s/schedule-payment/%s' % (
+                    url, paymentID), verify=True
             )
             self.response(r)
