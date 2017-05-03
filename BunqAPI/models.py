@@ -6,6 +6,10 @@ from django.dispatch import receiver
 
 
 class Profile(models.Model):
+    """docstring for Profile.
+
+    This model gives each user all these fields except 'user'.
+    """
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     GUID = models.CharField(blank=True, max_length=68)
 

@@ -9,6 +9,12 @@ import hashlib
 
 
 class AESCipher(object):
+    """docstring for AESCipher.
+
+    Copied this from a gist on GitHub need to research so i can link it.
+
+    Passwords are encoded with sha256 before they are used to encrypt the
+    contents. Encrypted contents are encoded in base64"""
 
     def __init__(self, key):
         self.bs = 32

@@ -5,6 +5,10 @@ import requests
 
 
 def ibanValidator(iban):
+    '''
+    checks if the provided iban is a valid one before storing it into the
+    database.
+    '''
     url = 'https://openiban.com/validate/'
     check = json.loads(requests.get(
         "".join([url, iban])).content.decode())

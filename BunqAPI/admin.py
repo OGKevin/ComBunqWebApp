@@ -5,5 +5,7 @@ from .models import Profile
 
 @admin.register(Profile)
 class pofile_admin(admin.ModelAdmin):
-    """docstring for pofile_admin."""
+    """docstring for pofile_admin.
+
+    User profiels can now be viewed from the admin page"""
     pass

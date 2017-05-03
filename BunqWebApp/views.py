@@ -10,10 +10,16 @@ from django.contrib.auth import authenticate, login
 
 
 def home(request):
+    '''
+    The dummy home page.
+    '''
     return render(request, 'Home/index.html')
 
 
 def register(request):
+    '''
+    View that handles the registration page.
+    '''
     if request.method == 'POST':
         form = registration(request.POST)
         if form.is_valid():
