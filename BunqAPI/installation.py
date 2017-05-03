@@ -29,6 +29,7 @@ class installation(object):
     'RSA_key': the RSA key used to make API calls"""
     def __init__(self, username, password, API_KEY):
         self.username = username
+        self.user = User.objects.get(username=self.username)
         self.password = password
         self.API_KEY = API_KEY
         self.GUID = self.get_GUID()
@@ -68,16 +69,16 @@ class installation(object):
             'ServerPublicKey': self.r['ServerPublicKey']
             # NOTE: need to add this
             }
-        GUID = self.GUID
-        user = User.objects.get(username=self.username)
-        user.profile.GUID = GUID
-        user.save()
+        # GUID = self.GUID
+        # user = User.objects.get(username=self.username)
+        self.user.profile.GUID = self.GUID
+        self.user.save()
         k = AESCipher(self.password)
         secret = AESCipher.encrypt(k, json.dumps(d))
         d2 = {
             'username': self.username,
             'secret': secret,
-            'userID': GUID
+            'userID': self.GUID
         }
         print ('\n\nFiles generated\n\n')
         return(json.dumps(d2, indent=4, sort_keys=True))
@@ -110,6 +111,10 @@ class session(object):
         print (self)
 
     def register(self):
+        '''
+        Registers the device
+        https://doc.bunq.com/api/1/call/device-server/method/post
+        '''
         bunq_api = API(self.rsa_key, self.token, self.server_key)
 
         # r = bunq_api.query('session-server', {'secret': api_key}, verify=True)  # noqa
@@ -126,19 +131,34 @@ class session(object):
             pprint(r.json()['Error'][0])
             return r.json()
 
-    def start_session(self):
-            bunq_api = API(self.rsa_key, self.token, self.server_key)
+    def start_session(self, user):
+        '''
+        Starts a server-session according to
+        https://doc.bunq.com/api/1/call/session-server/method/post
+        the response can also be seen via this link on the docs. This session
+        token is needed to make future API calls to the API. Therefore its
+        getting stored in the database in the user profile.
 
-            # r = bunq_api.query('session-server', {'secret': api_key}, verify=True)  # noqa
-            r = bunq_api.query('session-server', {'secret': self.api_key})  # noqa
+        From the docs:
+        A session expires after the same amount of time you have set for auto
+        logout in your user account. If a request is made 30 seconds before a
+        session expires, it will automatically be extended.
+        '''
+        bunq_api = API(self.rsa_key, self.token, self.server_key)
 
-            # r.json()['Response'][1]['Token'] would work too, but I mistrust predefined  # noqa
-            # order, never know when someone starts shuffling things around
-            if r.status_code == 200:
-                print('\n\n')
-                pprint(r.json())
-                return r.json()
-            else:
-                print('\n\n')
-                pprint(r.json()['Error'][0])
-                return r.json()
+        # r = bunq_api.query('session-server', {'secret': api_key}, verify=True)  # noqa
+        r = bunq_api.query('session-server', {'secret': self.api_key})  # noqa
+
+        # r.json()['Response'][1]['Token'] would work too, but I mistrust predefined  # noqa
+        # order, never know when someone starts shuffling things around
+        if r.status_code == 200:
+            print('\n\n')
+            pprint(r.json())
+            session_token = r.json()['Response'][1]['Token']['token']
+            user.profile.session_token = session_token
+            user.save()
+            return r.json()
+        else:
+            print('\n\n')
+            pprint(r.json()['Error'][0])
+            return r.json()

@@ -99,7 +99,8 @@ def decrypt(request):
                         # return HttpResponse(json.dumps(register(data), indent=4))
                 elif action == 'start_session':
                     s = session(data)
-                    return HttpResponse(json.dumps(s.start_session(), indent=4))
+                    return HttpResponse(
+                        json.dumps(s.start_session(user), indent=4))
             else:
                 return redirect('./error/not_your_file')
 
