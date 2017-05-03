@@ -8,7 +8,6 @@ from django.contrib.auth.models import User
 # from django.http import HttpResponse
 import json
 # import tempfile
-from pprint import pprint
 # NOTE: generating private key and installation token
 
 
@@ -99,66 +98,3 @@ class installation(object):
         )
 
         return privateKey.decode()
-
-
-class session(object):
-    """docstring for sessoin."""
-    def __init__(self, f):
-        self.token = f['Token']['token']
-        self.rsa_key = f['privateKey']
-        self.api_key = f['API']
-        self.server_key = f['ServerPublicKey']['server_public_key']
-        print (self)
-
-    def register(self):
-        '''
-        Registers the device
-        https://doc.bunq.com/api/1/call/device-server/method/post
-        '''
-        bunq_api = API(self.rsa_key, self.token, self.server_key)
-
-        # r = bunq_api.query('session-server', {'secret': api_key}, verify=True)  # noqa
-        r = bunq_api.query('device-server', {'secret': self.api_key, 'description': 'dev-server'})  # noqa
-
-        # r.json()['Response'][1]['Token'] would work too, but I mistrust predefined  # noqa
-        # order, never know when someone starts shuffling things around
-        if r.status_code == 200:
-            print('\n\n')
-            pprint(r.json())
-            return 'device registered'
-        else:
-            print('\n\n')
-            pprint(r.json()['Error'][0])
-            return r.json()
-
-    def start_session(self, user):
-        '''
-        Starts a server-session according to
-        https://doc.bunq.com/api/1/call/session-server/method/post
-        the response can also be seen via this link on the docs. This session
-        token is needed to make future API calls to the API. Therefore its
-        getting stored in the database in the user profile.
-
-        From the docs:
-        A session expires after the same amount of time you have set for auto
-        logout in your user account. If a request is made 30 seconds before a
-        session expires, it will automatically be extended.
-        '''
-        bunq_api = API(self.rsa_key, self.token, self.server_key)
-
-        # r = bunq_api.query('session-server', {'secret': api_key}, verify=True)  # noqa
-        r = bunq_api.query('session-server', {'secret': self.api_key})  # noqa
-
-        # r.json()['Response'][1]['Token'] would work too, but I mistrust predefined  # noqa
-        # order, never know when someone starts shuffling things around
-        if r.status_code == 200:
-            print('\n\n')
-            pprint(r.json())
-            session_token = r.json()['Response'][1]['Token']['token']
-            user.profile.session_token = session_token
-            user.save()
-            return r.json()
-        else:
-            print('\n\n')
-            pprint(r.json()['Error'][0])
-            return r.json()

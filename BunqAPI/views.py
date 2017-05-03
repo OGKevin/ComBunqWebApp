@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from .forms import GenerateKeyForm, decrypt_form
-from .installation import installation, session
+from .installation import installation
+from .callbacks import callback
 from django.utils.encoding import smart_str
 from django.http import HttpResponse
 # from django.contrib.auth import authenticate
@@ -90,7 +91,7 @@ def decrypt(request):
                             {'error': 'something went wrong, maybe wrong password?'})  # noqa
                     )
                 if action == 'register':
-                    s = session(data)
+                    s = callback(data, None)
                     try:
                         return HttpResponse(json.dumps(s.register(), indent=4))  # noqa
                     except KeyError:
@@ -98,9 +99,9 @@ def decrypt(request):
                         # print(type(data))
                         # return HttpResponse(json.dumps(register(data), indent=4))
                 elif action == 'start_session':
-                    s = session(data)
+                    s = callback(data, user)
                     return HttpResponse(
-                        json.dumps(s.start_session(user), indent=4))
+                        json.dumps(s.start_session(), indent=4))
             else:
                 return redirect('./error/not_your_file')
 
