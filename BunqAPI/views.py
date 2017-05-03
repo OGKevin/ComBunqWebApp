@@ -13,7 +13,7 @@ from django.http import Http404
 import base64
 import json
 from .encryption import AESCipher
-# from pprint import pprint
+from pprint import pprint
 
 # from django.http.response import FileResponse
 
@@ -115,7 +115,16 @@ def API(request, selector):
         f = json.loads(request.POST['json'])
         p = request.POST['pass']
         u = User.objects.get(username=request.user)
-        API = callback(f, u, p)
+        try:
+            API = callback(f, u, p)
+        except UnicodeDecodeError:
+            e = {
+                "error_description_translated": "During decpyting something whent wrong, maybe you entreded a wrong password?"  # noqa
+            }
+            return HttpResponse(json.dumps(e))
+
         r = getattr(API, selector)()
-        print('callback\n\n', r)
+        print('\n\nthis is r')
+        pprint(r)
+        print('\n\n')
         return HttpResponse(json.dumps(r))

@@ -7,8 +7,6 @@ class callback(AESCipher):
     """docstring for sessoin."""
     def __init__(self, f, user, password):
         AESCipher.__init__(self, password)
-        print(f)
-        print(type(f))
         f = self.decrypt(f['secret'])
         token = f['Token']['token']
         server_key = f['ServerPublicKey']['server_public_key']
@@ -59,7 +57,7 @@ class callback(AESCipher):
             pprint(r.json()['Error'][0])
             return r.json()['Error'][0]
 
-    def set_up(self, userID, accountID):
+    def set_up(self, userID='', accountID=''):
         '''
         This method can be called after device registration and starting a
         session. This will set a userID and accountID.
@@ -75,8 +73,8 @@ class callback(AESCipher):
         If an id is given then the info of that specific user is retrieved.
         '''
         r = self.bunq_api.query('user/%s' % id, verify=True)
-
-        self.response(r)
+        print('this is users')
+        return self.response(r)
 
     def accounts(self):
         '''
@@ -86,7 +84,7 @@ class callback(AESCipher):
         '''
         r = self.bunq_api.query(self.url, verify=True)
 
-        self.response(r)
+        return self.response(r)
 
     def payment(self, mode='normal', paymentID=''):
         '''
@@ -104,19 +102,19 @@ class callback(AESCipher):
                     url, paymentID), verify=True
             )
 
-            self.response(r)
+            return self.response(r)
         elif mode == 'draft':
             r = self.bunq_api.query(
                 '%s/draft-payment/%s' % (
                     url, paymentID), verify=True
             )
-            self.response(r)
+            return self.response(r)
         elif mode == 'schedule':
             r = self.bunq_api.query(
                 '%s/schedule-payment/%s' % (
                     url, paymentID), verify=True
             )
-            self.response(r)
+            return self.response(r)
 
     def request(self, inquiryID=''):
         '''
@@ -127,7 +125,7 @@ class callback(AESCipher):
         r = self.bunq_api.query(
             '%s/rerequest-inquiry/%s' % (url, inquiryID)
         )
-        self.response(r)
+        return self.response(r)
 
     def card(self, cardID=''):
         '''
@@ -138,7 +136,7 @@ class callback(AESCipher):
         r = self.bunq_api.query(
             '%s/card/%s' % (url, cardID)
         )
-        self.response(r)
+        return self.response(r)
 
     def mastercard_action(self, cardID=''):
         '''
@@ -148,7 +146,7 @@ class callback(AESCipher):
         r = self.bunq_api.query(
             '%s/mastercard-action/%s' % (self.url, cardID)
         )
-        self.response(r)
+        return self.response(r)
 
     def response(self, response):
         if response.status_code == 200:
@@ -156,5 +154,5 @@ class callback(AESCipher):
             pprint(response.json())
             return response.json()
         else:
-            pprint(response.json()['Error'][0])
+            # pprint(response.json()['Error'][0])
             return response.json()['Error'][0]
