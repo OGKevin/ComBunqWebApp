@@ -2,6 +2,7 @@
   {%load static%}
   <script type='text/javascript' src="{%static "js-cookie/src/js.cookie.js"%}"></script>
   <script type='text/javascript' src="{%static "jquery/dist/jquery.min.js"%}"></script>
+  <script type='text/javascript' src="{%static "mustache/mustache.min.js"%}"></script>
   <script type='text/javascript' src="{%static "BunqAPI/JS/decrypt.js"%}"></script>
 
 </head>
@@ -11,10 +12,23 @@
 
   <form enctype="multipart/form-data" method="post" id="encryption_form">
     {% csrf_token %} {{form}}
-    <button type="sumbit" name="button" id="file_decrypt">decrypt</button>
-    <button id='start_session' type="" name="">start session</button>
   </form>
+  <button type="" name="" id="file_decrypt">decrypt</button>
+  <button id='start_session' type="" name="">start session</button>
   <div class="" id="response">
-
+    
   </div>
+  <script type="x-tmpl-mustache" id='template'>
+  {% verbatim %} {{! NOTE: Ignore django templte renderer}}
+  <h1>Welcome {{2.UserCompany.public_nick_name}}</h1>
+  <p>
+  The sessions has started succesfully.
+  <br />
+  For this sessions, {{1.Token.token}} is being used to sign the API calls.
+  <br />
+  {{! NOTE: this needs to be in min}}
+  This sessios will expire in {{2.UserCompany.session_timeout}} seconds.
+  </p>
+{% endverbatim %}
+  </script>
 </body>
