@@ -108,3 +108,13 @@ def decrypt(request):
     else:
         form = decrypt_form()
     return render(request, 'BunqAPI/decrypt.html', {'form': form})
+
+
+def API(request, selector):
+    if request.method == 'POST':
+        f = json.loads(request.POST['json'])
+        p = request.POST['pass']
+        u = User.objects.get(username=request.user)
+        API = callback(f, u, p)
+        print(getattr(API, selector)())
+        return HttpResponse(json.dumps(getattr(API, selector)()))

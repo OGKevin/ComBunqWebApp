@@ -23,13 +23,14 @@ $(function() {
     /* Act on the event */
     // event.preventDefault();
     get_file()
-    sendPost(jsonObj, 'register')
+    console.log($(this)[0].id);
+    sendPost(jsonObj, $(this)[0].id)
   });
 
   $('#start_session').click(function(event) {
     get_file()
     // event.preventDefault();
-    sendPost(jsonObj, 'start_session')
+    sendPost(jsonObj, $(this)[0].id)
   });
   $("#users").click(function(event) {
     /* Act on the event */
@@ -67,13 +68,12 @@ function sendPost(json, action) {
   }
   frm = $("#encryption_form");
   $.ajax({
-      url: frm.attr('action'),
+      url: '/API/' + action,
       type: frm.attr('method'),
       dataType: '',
       data: {
         'json': JSON.stringify(json),
-        'pass': $('#id_encryption_password').val(),
-        'action': action
+        'pass': $('#id_encryption_password').val()
       },
       beforeSend: function(xhr, settings) {
         if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
@@ -83,6 +83,8 @@ function sendPost(json, action) {
     })
     .done(function(response) {
       r = JSON.parse(response)
+      // r = response
+      console.log(r);
       // $("#response").html(response)
       if (r.Response) {
         show(r.Response, false)

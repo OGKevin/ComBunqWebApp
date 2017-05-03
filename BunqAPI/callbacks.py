@@ -1,10 +1,15 @@
 from pprint import pprint
 from .pythonBunq.bunq import API
+from .encryption import AESCipher
 
 
-class callback(object):
+class callback(AESCipher):
     """docstring for sessoin."""
-    def __init__(self, f, user):
+    def __init__(self, f, user, password):
+        AESCipher.__init__(self, password)
+        print(f)
+        print(type(f))
+        f = self.decrypt(f['secret'])
         token = f['Token']['token']
         server_key = f['ServerPublicKey']['server_public_key']
         rsa_key = f['privateKey']
@@ -52,7 +57,7 @@ class callback(object):
         else:
             print('\n\n')
             pprint(r.json()['Error'][0])
-            return r.json()
+            return r.json()['Error'][0]
 
     def set_up(self, userID, accountID):
         '''

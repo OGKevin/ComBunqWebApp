@@ -1,7 +1,7 @@
 from Crypto.Cipher import AES
 # from Crypto.PublicKey import RSA
 from Crypto import Random
-# import json
+import json
 # from pprint import pprint
 import base64
 import hashlib
@@ -33,8 +33,8 @@ class AESCipher(object):
         iv = enc[:AES.block_size]
         cipher = AES.new(self.key, AES.MODE_CBC, iv)
 
-        return self._unpad(
-            cipher.decrypt(enc[AES.block_size:])).decode('utf-8')
+        return json.loads(self._unpad(
+            cipher.decrypt(enc[AES.block_size:])).decode('utf-8'))
 
     def _pad(self, s):
         return s + (
