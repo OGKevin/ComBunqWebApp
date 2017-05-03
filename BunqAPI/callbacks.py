@@ -24,21 +24,9 @@ class callback(object):
         Registers the device
         https://doc.bunq.com/api/1/call/device-server/method/post
         '''
-        # bunq_api = API(self.rsa_key, self.token, self.server_key)
 
-        # r = bunq_api.query('session-server', {'secret': api_key}, verify=True)  # noqa
         r = self.bunq_api.query('device-server', {'secret': self.api_key, 'description': 'dev-server'})  # noqa
 
-        # r.json()['Response'][1]['Token'] would work too, but I mistrust predefined  # noqa
-        # order, never know when someone starts shuffling things around
-        # if r.status_code == 200:
-        #     print('\n\n')
-        #     pprint(r.json())
-        #     return 'device registered'
-        # else:
-        #     print('\n\n')
-        #     pprint(r.json()['Error'][0])
-        #     return r.json()
         self.response(r)
 
     def start_session(self):
@@ -54,13 +42,9 @@ class callback(object):
         logout in your user account. If a request is made 30 seconds before a
         session expires, it will automatically be extended.
         '''
-        # bunq_api = API(self.rsa_key, self.token, self.server_key)
 
-        # r = bunq_api.query('session-server', {'secret': api_key}, verify=True)  # noqa
         r = self.bunq_api.query('session-server', {'secret': self.api_key})  # noqa
 
-        # r.json()['Response'][1]['Token'] would work too, but I mistrust predefined  # noqa
-        # order, never know when someone starts shuffling things around
         if r.status_code == 200:
             print('\n\n')
             # pprint(r.json())
@@ -83,13 +67,6 @@ class callback(object):
         self.bunq_api.token = self.user.profile.session_token
         r = self.bunq_api.query('user/%s' % id, verify=True)
 
-        # if r.status_code == 200:
-        #     pass
-        #     print("success")
-        #     # pprint(r.json())
-        #
-        # else:
-        #     pprint(r.json()['Error'])
         self.response(r)
 
     def get_accounts(self, userID, accountID=''):
