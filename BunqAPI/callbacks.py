@@ -41,6 +41,8 @@ class callback(object):
         A session expires after the same amount of time you have set for auto
         logout in your user account. If a request is made 30 seconds before a
         session expires, it will automatically be extended.
+
+        When the session expires the token will be unusbale.
         '''
 
         r = self.bunq_api.query('session-server', {'secret': self.api_key})  # noqa
@@ -58,7 +60,7 @@ class callback(object):
             pprint(r.json()['Error'][0])
             return r.json()
 
-    def get_users(self, id=''):
+    def users(self, id=''):
         '''
         Returns a list of all the users belonging to this API key.
         https://doc.bunq.com/api/1/call/user/
@@ -69,7 +71,7 @@ class callback(object):
 
         self.response(r)
 
-    def get_accounts(self, userID, accountID=''):
+    def accounts(self, userID, accountID=''):
         '''
         Returns a list of all accounts:
         https://doc.bunq.com/api/1/call/monetary-account/
@@ -90,7 +92,7 @@ class callback(object):
 
         https://doc.bunq.com/api/1/call/payment
         '''
-        self.bunq.ap = self.user.profile.session_token
+        self.bunq_api.token = self.user.profile.session_token
         url = 'user/%s/monetary-account/%s/' % (userID, accountID)
         if mode == 'normal':
             r = self.bunq_api.query(
@@ -111,3 +113,15 @@ class callback(object):
                     url, paymentID), verify=True
             )
             self.response(r)
+
+    def request(self, userID, accountID, inquiryID=''):
+        '''
+        Retuns all request for a user's account
+        https://doc.bunq.com/api/1/call/request-inquiry
+        '''
+        url = 'user/%s/monetary-account/%s/' % (userID, accountID)
+        self.bunq_api.token = self.user.profile.session_token
+        r = self.bunq_api.query(
+            '%s/rerequest-inquiry/%s' % (url, inquiryID)
+        )
+        self.response(r)
