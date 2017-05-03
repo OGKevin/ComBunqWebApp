@@ -19,17 +19,23 @@ $(function() {
       "Too many requests. You can do a maximum of 1 POST call per 1 second to this endpoint."
   On the seccond click it work as intended with the exception of the above issue.
   */
+  $("#load_file").click(function(event) {
+    /* Act on the event */
+    get_file()
+    $("#response").html('File is loaded')
+  });
   $('#register').click(function(event) {
     /* Act on the event */
     // event.preventDefault();
-    get_file()
+    // get_file()
     console.log($(this)[0].id);
     sendPost(jsonObj, $(this)[0].id)
   });
 
   $('#start_session').click(function(event) {
-    get_file()
+    // get_file()
     // event.preventDefault();
+    console.log('click');
     sendPost(jsonObj, $(this)[0].id)
   });
   $("#users").click(function(event) {

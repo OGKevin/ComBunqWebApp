@@ -116,5 +116,6 @@ def API(request, selector):
         p = request.POST['pass']
         u = User.objects.get(username=request.user)
         API = callback(f, u, p)
-        print(getattr(API, selector)())
-        return HttpResponse(json.dumps(getattr(API, selector)()))
+        r = getattr(API, selector)()
+        print('callback\n\n', r)
+        return HttpResponse(json.dumps(r))
