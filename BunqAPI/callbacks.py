@@ -5,19 +5,15 @@ from .pythonBunq.bunq import API
 class callback(object):
     """docstring for sessoin."""
     def __init__(self, f, user):
-        self.token = f['Token']['token']
-        self.rsa_key = f['privateKey']
+        token = f['Token']['token']
+        server_key = f['ServerPublicKey']['server_public_key']
+        rsa_key = f['privateKey']
         self.api_key = f['API']
-        self.server_key = f['ServerPublicKey']['server_public_key']
         self.user = user
-        self.bunq_api = API(self.rsa_key, self.token, self.server_key)
-
-    def response(self, response):
-        if response.status_code == 200:
-            print("succes")
-            pprint(response.json())
-        else:
-            pprint(response.json()['Error'])
+        self.bunq_api = API(rsa_key, token, server_key)
+        self.userID = ''
+        self.accountID = ''
+        self.account_url = 'user/%s/monetary-account/%s/' % (self.userID, self.accountID) # noqa
 
     def register(self):
         '''
@@ -27,7 +23,7 @@ class callback(object):
 
         r = self.bunq_api.query('device-server', {'secret': self.api_key, 'description': 'dev-server'})  # noqa
 
-        self.response(r)
+        return self.response(r)
 
     def start_session(self):
         '''
@@ -49,16 +45,23 @@ class callback(object):
 
         if r.status_code == 200:
             print('\n\n')
-            # pprint(r.json())
             session_token = r.json()['Response'][1]['Token']['token']
             self.user.profile.session_token = session_token
             self.user.save()
-            self.get_users()
             return r.json()
         else:
             print('\n\n')
             pprint(r.json()['Error'][0])
             return r.json()
+
+    def set_up(self, userID, accountID):
+        '''
+        This method can be called after device registration and starting a
+        session. This will set a userID and accountID.
+        '''
+        self.userID = userID
+        self.accountID = accountID
+        self.bunq_api.token = self.user.profile.session_token
 
     def users(self, id=''):
         '''
@@ -66,24 +69,21 @@ class callback(object):
         https://doc.bunq.com/api/1/call/user/
         If an id is given then the info of that specific user is retrieved.
         '''
-        self.bunq_api.token = self.user.profile.session_token
         r = self.bunq_api.query('user/%s' % id, verify=True)
 
         self.response(r)
 
-    def accounts(self, userID, accountID=''):
+    def accounts(self):
         '''
         Returns a list of all accounts:
         https://doc.bunq.com/api/1/call/monetary-account/
         When usign a GET method a specific account can be returned.
         '''
-        self.bunq_api = self.user.profile.session_token
-        r = self.bunq_api.query(
-            '/user/%s/monetary-account/%s' % (userID, accountID), verify=True)
+        r = self.bunq_api.query(self.url, verify=True)
 
         self.response(r)
 
-    def payment(self, userID, accountID, mode='normal', paymentID=''):
+    def payment(self, mode='normal', paymentID=''):
         '''
         Returns a list of all transactions from an account. If an payment id is
         given then a specific transaction will be returned.
@@ -92,8 +92,7 @@ class callback(object):
 
         https://doc.bunq.com/api/1/call/payment
         '''
-        self.bunq_api.token = self.user.profile.session_token
-        url = 'user/%s/monetary-account/%s/' % (userID, accountID)
+        url = self.url
         if mode == 'normal':
             r = self.bunq_api.query(
                 '%s/payment/%s' % (
@@ -114,14 +113,43 @@ class callback(object):
             )
             self.response(r)
 
-    def request(self, userID, accountID, inquiryID=''):
+    def request(self, inquiryID=''):
         '''
         Retuns all request for a user's account
         https://doc.bunq.com/api/1/call/request-inquiry
         '''
-        url = 'user/%s/monetary-account/%s/' % (userID, accountID)
-        self.bunq_api.token = self.user.profile.session_token
+        url = self.url
         r = self.bunq_api.query(
             '%s/rerequest-inquiry/%s' % (url, inquiryID)
         )
         self.response(r)
+
+    def card(self, cardID=''):
+        '''
+        Return all the cards available to the user. Or a specific card if a
+        cardID is given
+        '''
+        url = 'user/%s/card' % self.userID
+        r = self.bunq_api.query(
+            '%s/card/%s' % (url, cardID)
+        )
+        self.response(r)
+
+    def mastercard_action(self, cardID=''):
+        '''
+        MasterCard transaction view. Will return all the transaction made with
+        a specific card or from all cards.
+        '''
+        r = self.bunq_api.query(
+            '%s/mastercard-action/%s' % (self.url, cardID)
+        )
+        self.response(r)
+
+    def response(self, response):
+        if response.status_code == 200:
+            print("succes")
+            pprint(response.json())
+            return response.json()
+        else:
+            pprint(response.json()['Error'][0])
+            return response.json()['Error'][0]

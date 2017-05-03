@@ -21,12 +21,10 @@ $(function() {
   $('#file_decrypt').click(function(event) {
     /* Act on the event */
     // event.preventDefault();
-    console.log('click register');
     get_file()
     sendPost(jsonObj, 'register')
     
     $('#start_session').click(function(event) {
-      console.log('click start sessoin');
       get_file()
       // event.preventDefault();
       sendPost(jsonObj, 'start_session')
@@ -62,14 +60,9 @@ function sendPost(json, action) {
     .done(function(response) {
       r = JSON.parse(response)
       // $("#response").html(response)
-      console.log(r);
-      console.log(r.error);
-      if (r.Error) {
-        show(r.Error[0].error_description_translated, true);
-      } else if (r.Response) {
-        show(r.Response, false);
-      } else if (r.error) {
-        show(r.error, true)
+      if (r.Response){show(r.Response, false)}
+      else {
+        show(r, true)
       }
 
 
@@ -85,13 +78,11 @@ function show(j, error) {
   // Mustache.parse(template)
   var rendered;
   if (error) {
-    $("#response").html(j)
+    $("#response").html(j.error_description_translated)
 
   } else {
-    console.log(j);
   
     rendered = Mustache.render(template, j)
-    console.log('RENDERED', rendered)
     $("#response").html(rendered)
   }
 }
