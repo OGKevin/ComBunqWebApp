@@ -13,7 +13,9 @@ class callback(AESCipher):
         rsa_key = f['privateKey']
         self.api_key = f['API']
         self.user = user
+        # NOTE: this triggers the jsonpickle/jsonpickle/#171 issue
         self.bunq_api = API(rsa_key, token, server_key)
+
         self.userID = ''
         self.accountID = ''
         self.account_url = 'user/%s/monetary-account/%s/' % (self.userID, self.accountID) # noqa
