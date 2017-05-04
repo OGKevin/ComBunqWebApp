@@ -5,7 +5,6 @@ from .encryption import AESCipher
 from .callbacks import callback
 from pprint import pprint
 import json
-import jsonpickle
 # from .pythonBunq.bunq import API
 
 
@@ -13,11 +12,7 @@ import jsonpickle
 
 class callbacks(TestCase):
     """docstring for callbaks.
-    This is to test the jsonpickle/jsonpickle/#171.
-
-    Via previous test i could conclude that the API class is the source of the
-    issue, therefore I've changed this test to specificly encode the API class.
-    This will return in a import error as shown on the issue.
+    This test will fail on other pc's due to static IP requirement.
     """
     def setUp(self):
         self.password = '12345'
@@ -27,12 +22,8 @@ class callbacks(TestCase):
 
     def test_callback(self):
         p = callback(self.f, self.user, self.password)
-        print('\n\n', p.bunq_api)
-        l = jsonpickle.encode(p.bunq_api)
-        print('\n\n', l)
-        # NOTE: this raises the error
-        k = jsonpickle.decode(l)
-        print('\n\n', k)
+        print('\n\n', p.__dict__)
+        pprint(p.start_session())
 
 
 class testScript(TestCase):

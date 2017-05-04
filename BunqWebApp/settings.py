@@ -53,9 +53,6 @@ LOGIN_URL = 'two_factor:login'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_COOKIE_SECURE = False
 
-# NOTE: this might no be needed if using jsonpickle
-SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
-
 # Application definition
 
 INSTALLED_APPS = [

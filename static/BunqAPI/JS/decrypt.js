@@ -46,6 +46,8 @@ $(function() {
   $("#accounts").click(function(event) {
     /* Act on the event */
     console.log('accounts');
+    sendPost(jsonObj, $(this)[0].id)
+    
   });
   $("#set_up").click(function(event) {
     /* Act on the event */

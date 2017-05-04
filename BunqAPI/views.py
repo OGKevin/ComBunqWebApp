@@ -13,8 +13,7 @@ from django.http import Http404
 import base64
 import json
 from .encryption import AESCipher
-from pprint import pprint
-import jsonpickle
+# from pprint import pprint
 
 # from django.http.response import FileResponse
 
@@ -98,7 +97,7 @@ def decrypt(request):
                     except KeyError:
                         return HttpResponse(json.dumps(data, indent=4))
                         # print(type(data))
-                        # return HttpResponse(json.dumps(register(data), indent=4))
+                        # return HttpResponse(json.dumps(register(data), indent=4))  # noqa
                 elif action == 'start_session':
                     s = callback(data, user)
                     return HttpResponse(
@@ -116,10 +115,6 @@ def API(request, selector):
     '''
     The view that handles API calls.
 
-    Need to store the Object instance in the sessoin wokring with jsonpickle
-    to convert from Object to JSON and visa versa. However ran in a issue im
-    not sure on how to fix.
-    https://github.com/jsonpickle/jsonpickle/issues/171
     '''
     if request.method == 'POST':
         f = json.loads(request.POST['json'])
@@ -128,13 +123,6 @@ def API(request, selector):
         if f['userID'] == u.profile.GUID:
             try:
                 API = callback(f, u, p)
-                # pprint((jsonpickle.encode(API)))
-                request.session['API'] = jsonpickle.encode(API)
-                # API = request.session['API']
-
-                # NOTE: this is not working
-                print(jsonpickle.decode(request.session['API']))
-
             except UnicodeDecodeError:
                 e = {
                 "error_description_translated": "During decpyting something whent wrong, maybe you entreded a wrong password?"  # noqa

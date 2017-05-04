@@ -1,6 +1,9 @@
 from pprint import pprint
 from .pythonBunq.bunq import API
 from .encryption import AESCipher
+from django.contrib.sessions.backends.db import SessionStore
+from django.contrib.sessions.models import Session
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class callback(AESCipher):
@@ -13,12 +16,17 @@ class callback(AESCipher):
         rsa_key = f['privateKey']
         self.api_key = f['API']
         self.user = user
-        # NOTE: this triggers the jsonpickle/jsonpickle/#171 issue
-        self.bunq_api = API(rsa_key, token, server_key)
+        self.init_api = API(rsa_key, token, server_key)
 
-        self.userID = ''
-        self.accountID = ''
-        self.account_url = 'user/%s/monetary-account/%s/' % (self.userID, self.accountID) # noqa
+        try:
+            self.s = Session.objects.get(session_key=user.profile.session_token)  # noqa
+            session_token = self.s.get_decoded()['session_token']
+            self.bunq_api = API(rsa_key, session_token, server_key)
+            self.userID = self.s.get_decoded()['userID']
+            self.accountID = self.s.get_decoded()['accountID']
+            self.account_url = 'user/%s/monetary-account/%s/' % (self.userID, self.accountID) # noqa
+        except ObjectDoesNotExist:
+            print('Sessoin not created yet')
 
     def register(self):
         '''
@@ -26,7 +34,7 @@ class callback(AESCipher):
         https://doc.bunq.com/api/1/call/device-server/method/post
         '''
 
-        r = self.bunq_api.query('device-server', {'secret': self.api_key, 'description': 'dev-server'})  # noqa
+        r = self.init_api.query('device-server', {'secret': self.api_key, 'description': 'dev-server'})  # noqa
 
         return self.response(r)
 
@@ -46,16 +54,16 @@ class callback(AESCipher):
         When the session expires the token will be unusbale.
         '''
 
-        r = self.bunq_api.query('session-server', {'secret': self.api_key})  # noqa
+        r = self.init_api.query('session-server', {'secret': self.api_key})  # noqa
 
         if r.status_code == 200:
             print('\n\n')
             session_token = r.json()['Response'][1]['Token']['token']
-            self.user.profile.session_token = session_token
+            s = SessionStore()
+            s['session_token'] = session_token
+            s.create()
+            self.user.profile.session_token = s.session_key
             self.user.save()
-            self.bunq_api.token = self.user.profile.session_token
-
-            print (self.bunq_api.token)
             return r.json()
         else:
             print('\n\n')
@@ -67,8 +75,9 @@ class callback(AESCipher):
         This method can be called after device registration and starting a
         session. This will set a userID and accountID.
         '''
-        self.userID = userID
-        self.accountID = accountID
+        self.s['userID'] = userID
+        self.s['accountID'] = accountID
+        self.s.save()
 
     def users(self, id=''):
         '''
@@ -86,7 +95,7 @@ class callback(AESCipher):
         https://doc.bunq.com/api/1/call/monetary-account/
         When usign a GET method a specific account can be returned.
         '''
-        r = self.bunq_api.query(self.url, verify=True)
+        r = self.bunq_api.query(self.account_url, verify=True)
 
         return self.response(r)
 
@@ -99,7 +108,7 @@ class callback(AESCipher):
 
         https://doc.bunq.com/api/1/call/payment
         '''
-        url = self.url
+        url = self.account_url
         if mode == 'normal':
             r = self.bunq_api.query(
                 '%s/payment/%s' % (
@@ -125,7 +134,7 @@ class callback(AESCipher):
         Retuns all request for a user's account
         https://doc.bunq.com/api/1/call/request-inquiry
         '''
-        url = self.url
+        url = self.account_url
         r = self.bunq_api.query(
             '%s/rerequest-inquiry/%s' % (url, inquiryID)
         )
@@ -148,7 +157,7 @@ class callback(AESCipher):
         a specific card or from all cards.
         '''
         r = self.bunq_api.query(
-            '%s/mastercard-action/%s' % (self.url, cardID)
+            '%s/mastercard-action/%s' % (self.account_url, cardID)
         )
         return self.response(r)
 
@@ -158,5 +167,5 @@ class callback(AESCipher):
             pprint(response.json())
             return response.json()
         else:
-            # pprint(response.json()['Error'][0])
+            pprint(response.json()['Error'][0])
             return response.json()['Error'][0]
