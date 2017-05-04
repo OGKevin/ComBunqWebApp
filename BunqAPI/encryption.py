@@ -20,6 +20,10 @@ class AESCipher(object):
         self.bs = 32
         self.key = hashlib.sha256(key.encode()).digest()
 
+    def __repr__(self):
+        # NOTE: this might not be configred right.
+        return self.__name__
+
     def encrypt(self, raw):
         raw = self._pad(raw)
         iv = Random.new().read(AES.block_size)

@@ -18,6 +18,10 @@ class callback(AESCipher):
         self.accountID = ''
         self.account_url = 'user/%s/monetary-account/%s/' % (self.userID, self.accountID) # noqa
 
+    def __repr__(self):
+        # NOTE: this might not be configured right.
+        return self.__name__
+
     def register(self):
         '''
         Registers the device
@@ -51,6 +55,9 @@ class callback(AESCipher):
             session_token = r.json()['Response'][1]['Token']['token']
             self.user.profile.session_token = session_token
             self.user.save()
+            self.bunq_api.token = self.user.profile.session_token
+            
+            print (self.bunq_api.token)
             return r.json()
         else:
             print('\n\n')
@@ -64,7 +71,6 @@ class callback(AESCipher):
         '''
         self.userID = userID
         self.accountID = accountID
-        self.bunq_api.token = self.user.profile.session_token
 
     def users(self, id=''):
         '''

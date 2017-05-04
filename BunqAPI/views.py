@@ -14,6 +14,7 @@ import base64
 import json
 from .encryption import AESCipher
 from pprint import pprint
+import jsonpickle
 
 # from django.http.response import FileResponse
 
@@ -110,21 +111,43 @@ def decrypt(request):
     return render(request, 'BunqAPI/decrypt.html', {'form': form})
 
 
+@otp_required
 def API(request, selector):
+    '''
+    The view that handles API calls.
+
+    Need to store the Object instance in the sessoin wokring with jsonpickle
+    to convert from Object to JSON and visa versa. However ran in a issue im
+    not sure on how to fix.
+    https://github.com/jsonpickle/jsonpickle/issues/171
+    '''
     if request.method == 'POST':
         f = json.loads(request.POST['json'])
         p = request.POST['pass']
         u = User.objects.get(username=request.user)
-        try:
-            API = callback(f, u, p)
-        except UnicodeDecodeError:
-            e = {
+        if f['userID'] == u.profile.GUID:
+            try:
+                API = callback(f, u, p)
+                # pprint((jsonpickle.encode(API)))
+                request.session['API'] = jsonpickle.encode(API)
+                # API = request.session['API']
+
+                # NOTE: this is not working
+                print(jsonpickle.decode(request.session['API']))
+
+            except UnicodeDecodeError:
+                e = {
                 "error_description_translated": "During decpyting something whent wrong, maybe you entreded a wrong password?"  # noqa
+                }
+                return HttpResponse(json.dumps(e))
+
+            r = getattr(API, selector)()
+            # print('\n\nthis is r')
+            # pprint(r)
+            print('\n\n')
+            return HttpResponse(json.dumps(r))
+        else:
+            e = {
+                'error_description_translated': 'This file is not yours to use.' # noqa
             }
             return HttpResponse(json.dumps(e))
-
-        r = getattr(API, selector)()
-        print('\n\nthis is r')
-        pprint(r)
-        print('\n\n')
-        return HttpResponse(json.dumps(r))
