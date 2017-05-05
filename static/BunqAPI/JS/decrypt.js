@@ -1,5 +1,12 @@
 $(function() {
   var jsonObj;
+  var userID = '';
+  $("#lock_ids").click(function(event) {
+    /* Act on the event */
+    console.log('set_up');
+    userID = $('#userID').val()
+  });
+  
 
   function get_file() {
     data = $("#id_encrypted_file")[0].files[0]
@@ -9,16 +16,6 @@ $(function() {
       jsonObj = JSON.parse(event.target.result);
     }
   }
-
-  /*
-  This is not working smooth, it seems that if you press the start_session button
-  the POST request is being send twice (check js console).
-  
-  On the first click (both buttons combined), the file is not being read.
-  Thie error will be raised:
-      "Too many requests. You can do a maximum of 1 POST call per 1 second to this endpoint."
-  On the seccond click it work as intended with the exception of the above issue.
-  */
   $("#load_file").click(function(event) {
     /* Act on the event */
     get_file()
@@ -36,22 +33,19 @@ $(function() {
     // get_file()
     // event.preventDefault();
     console.log('click');
-    sendPost(jsonObj, $(this)[0].id)
+    sendPost(jsonObj, $(this)[0].id, start_session_template)
   });
   $("#users").click(function(event) {
     /* Act on the event */
     console.log('users');
-    sendPost(jsonObj, $(this)[0].id)
+    sendPost(jsonObj, $(this)[0].id + '/' + userID +'/', ussers_template)
   });
   $("#accounts").click(function(event) {
     /* Act on the event */
     console.log('accounts');
-    sendPost(jsonObj, $(this)[0].id)
+    sendPost(jsonObj, $(this)[0].id + '/' + userID +'/', ussers_template)
+
     
-  });
-  $("#set_up").click(function(event) {
-    /* Act on the event */
-    console.log('set_up');
   });
   $("#payment").click(function(event) {
     /* Act on the event */
@@ -67,7 +61,7 @@ $(function() {
   });
 });
 
-function sendPost(json, action) {
+function sendPost(json, action, template) {
   $('#response').html('Loading...')
   csrftoken = Cookies.get('csrftoken')
 
@@ -96,7 +90,7 @@ function sendPost(json, action) {
       console.log(r);
       // $("#response").html(response)
       if (r.Response) {
-        show(r.Response, false)
+        show(r.Response, false, template)
       } else {
         show(r, true)
       }
@@ -109,16 +103,20 @@ function sendPost(json, action) {
     .always(function() {});
 }
 
-function show(j, error) {
-  var template = $('#template').html()
-  // Mustache.parse(template)
-  var rendered;
+function show(j, error, template) {
+  // var template = $('#template').html()
+  // // Mustache.parse(template)
+  // var rendered;
   if (error) {
     $("#response").html(j.error_description_translated)
 
   } else {
 
-    rendered = Mustache.render(template, j)
-    $("#response").html(rendered)
+    // rendered = Mustache.render(template, j)
+    // $("#response").html(rendered)
+    $.get(template, function(template){
+      var rendered = Mustache.render(template, j)
+      $('#response').html(rendered)
+    })
   }
 }

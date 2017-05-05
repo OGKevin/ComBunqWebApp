@@ -1,59 +1,44 @@
 <head>
   {%load static%}
-  <script type='text/javascript' src="{%static "js-cookie/src/js.cookie.js"%}"></script>
-  <script type='text/javascript' src="{%static "jquery/dist/jquery.min.js"%}"></script>
-  <script type='text/javascript' src="{%static "mustache/mustache.min.js"%}"></script>
-  <script type='text/javascript' src="{%static "BunqAPI/JS/decrypt.js"%}"></script>
+  <script type='text/javascript' src="{%static "js-cookie/src/js.cookie.js "%}"></script>
+  <script type='text/javascript' src="{%static "jquery/dist/jquery.min.js "%}"></script>
+  <script type='text/javascript' src="{%static "mustache/mustache.min.js "%}"></script>
+
+  <!-- NOTE: load the templates used by Mustache -->
+  <script>
+    var start_session_template = '{%static 'BunqAPI/templates/mustache/start_session.html '%}'
+    var ussers_template = '{%static 'BunqAPI/templates/mustache/users.html'%}'
+  </script>
+
+  <script type='text/javascript' src="{%static "BunqAPI/JS/decrypt.js "%}"></script>
 
 </head>
-<p> <a href=".."><--Back</a> </p>
+<p>
+  <a href="..">
+    <--Back</a>
+</p>
 
 <body id="body">
 
   <form enctype="multipart/form-data" method="post" id="encryption_form">
     {% csrf_token %} {{form}}
   </form>
-  <button type="" name="" id="load_file">load file</button>
-  <button type="" name="" id="register">register</button>
-  <button id='start_session' type="" name="">start session</button>
-  <button id="users">users</button>
-  <button id="accounts">accounts</button>
-  <button id="set_up">lock user & account id</button>
-  <button id="payment">payment</button>
-  <button id="card">cards</button>
-  <button id='mastercard_action'>mastercard_action</button>
-  <div class="" id="response">
-    
+  <div class="">
+    <input type="text" name="" value="" placeholder="user ID" id="userID">
+    <input type="text" name="" value="" placeholder="account ID" id="accountID">
   </div>
-  <script type="x-tmpl-mustache" id='template'>
-  {% verbatim %} {{! NOTE: Ignore django templte renderer}}
-  <h1>Welcome {{2.UserCompany.public_nick_name}}</h1>
-  <p>
-  The sessions has started succesfully.
-  <br />
-  For this sessions, {{1.Token.token}} is being used to sign the API calls.
-  <br />
-  {{! NOTE: this needs to be in min}}
-  This sessios will expire in {{2.UserCompany.session_timeout}} seconds. Unless
-  an API call has been made during the last 30 seconds.
-  </p>
-  
-<h1>Users</h1>
-{{#2.UserCompany}}
-<p>
-Company found
-</p>
-<ul>
-<p>
-Name: {{public_nick_name}}
-</p>
-<p>
-UserID: {{id}}
-</p>
-</ul>
+  <div class="">
+    <button type="" name="" id="load_file">load file</button>
+    <button type="" name="" id="register">register</button>
+    <button id='start_session' type="" name="">start session</button>
+    <button id="users">users</button>
+    <button id="accounts">accounts</button>
+    <button id="lock_ids">lock user & account id</button>
+    <button id="payment">payment</button>
+    <button id="card">cards</button>
+    <button id='mastercard_action'>mastercard_action</button>
+  </div>
+  <div class="" id="response">
 
-{{/2.UserCompany}}
-
-{% endverbatim %}
-  </script>
+  </div>
 </body>

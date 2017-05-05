@@ -1,0 +1,42 @@
+
+<h1>Welcome {{2.UserCompany.public_nick_name}}</h1>
+<p>
+The sessions has started succesfully.
+<br />
+For this sessions, {{1.Token.token}} is being used to sign the API calls.
+<br />
+{{! NOTE: this needs to be in min}}
+This sessios will expire in {{2.UserCompany.session_timeout}} seconds. Unless
+an API call has been made during the last 30 seconds.
+</p>
+
+<h1>Users</h1>
+{{#2.UserCompany}}
+<p>
+Company found
+</p>
+<ul>
+<p>
+Name: {{public_nick_name}}
+</p>
+<p>
+UserID: {{id}}
+</p>
+</ul>
+
+{{/2.UserCompany}}
+
+{{#2.UserPerson}}
+<p>
+Person found
+</p>
+<ul>
+<p>
+Name: {{public_nick_name}}
+</p>
+<p>
+UserID: {{id}}
+</p>
+</ul>
+
+{{/2.UserPerson}}

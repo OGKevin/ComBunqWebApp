@@ -8,7 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 class callback(AESCipher):
     """docstring for sessoin."""
-    def __init__(self, f, user, password):
+    def __init__(self, f, user, password, userID='', accountID=''):
         AESCipher.__init__(self, password)
         f = self.decrypt(f['secret'])
         token = f['Token']['token']
@@ -17,14 +17,14 @@ class callback(AESCipher):
         self.api_key = f['API']
         self.user = user
         self.init_api = API(rsa_key, token, server_key)
+        self.userID = userID
+        self.accountID = accountID
+        self.account_url = 'user/%s/monetary-account/%s/' % (self.userID, self.accountID) # noqa
 
         try:
             self.s = Session.objects.get(session_key=user.profile.session_token)  # noqa
             session_token = self.s.get_decoded()['session_token']
             self.bunq_api = API(rsa_key, session_token, server_key)
-            self.userID = self.s.get_decoded()['userID']
-            self.accountID = self.s.get_decoded()['accountID']
-            self.account_url = 'user/%s/monetary-account/%s/' % (self.userID, self.accountID) # noqa
         except ObjectDoesNotExist:
             print('Sessoin not created yet')
 
@@ -85,7 +85,7 @@ class callback(AESCipher):
         https://doc.bunq.com/api/1/call/user/
         If an id is given then the info of that specific user is retrieved.
         '''
-        r = self.bunq_api.query('user/%s' % id, verify=True)
+        r = self.bunq_api.query('user/%s' % self.userID, verify=True)
         print('this is users')
         return self.response(r)
 

@@ -111,7 +111,11 @@ def decrypt(request):
 
 
 @otp_required
-def API(request, selector):
+def API(request, selector, userID='', accountID=''):
+    print('this is selector --> %s' % selector)
+    print('this is userID --> %s' % userID)
+    print('this is accountID --> %s' % accountID)
+
     '''
     The view that handles API calls.
 
@@ -122,14 +126,14 @@ def API(request, selector):
         u = User.objects.get(username=request.user)
         if f['userID'] == u.profile.GUID:
             try:
-                API = callback(f, u, p)
+                API = callback(f, u, p, userID, accountID)
             except UnicodeDecodeError:
                 e = {
                 "error_description_translated": "During decpyting something whent wrong, maybe you entreded a wrong password?"  # noqa
                 }
                 return HttpResponse(json.dumps(e))
 
-            r = getattr(API, selector)()
+            r = getattr(API, selector.strip('/'))()
             # print('\n\nthis is r')
             # pprint(r)
             print('\n\n')
