@@ -6,8 +6,8 @@
 
 [![N|Solid](https://lh3.googleusercontent.com/B0u_lzpnrZMdR8o3ece3N9sLQtOgc1UayCJLYUhzJh7Xkr4oJEdQk0-PJFhx0-a0CA=w300)][BunqPic]
 
-[![Build Status](https://travis-ci.org/OGKevin/ComBunqWebApp.svg?branch=master)](https://travis-ci.org/OGKevin/ComBunqWebApp)
-[![Coverage Status](https://coveralls.io/repos/github/OGKevin/ComBunqWebApp/badge.svg?branch=master)](https://coveralls.io/github/OGKevin/ComBunqWebApp?branch=master)
+[![Build Status](https://travis-ci.org/OGKevin/ComBunqWebApp.svg?branch=feature%2FBunqAPI)](https://travis-ci.org/OGKevin/ComBunqWebApp)
+[![Coverage Status](https://coveralls.io/repos/github/OGKevin/ComBunqWebApp/badge.svg?branch=feature%2FBunqAPI)](https://coveralls.io/github/OGKevin/ComBunqWebApp?branch=feature%2FBunqAPI)
 [![Code Climate](https://codeclimate.com/github/OGKevin/ComBunqWebApp/badges/gpa.svg)](https://codeclimate.com/github/OGKevin/ComBunqWebApp)
 [![Updates](https://pyup.io/repos/github/OGKevin/ComBunqWebApp/shield.svg)](https://pyup.io/repos/github/OGKevin/ComBunqWebApp/)
 [![Greenkeeper badge](https://badges.greenkeeper.io/OGKevin/ComBunqWebApp.svg)](https://greenkeeper.io/)
@@ -116,7 +116,7 @@ U can also make use of placeholder texts :-)
 
 #### Back End
 
-For this project we're going to use [Django][django] and [Heroku][heroku], make sure you have these 2 softwares installed. 
+For this project we're going to use [Django][django] and [Heroku][heroku], make sure you have these 2 softwares installed.
 Before you perform any of the following commands make sure your are in the root directory of the project.
 
 1. run ```$ pip install -r requirements.txt``` to install the python packages used in this project. It might be a good idea to setup and use [virtualenv][virtualenv].
