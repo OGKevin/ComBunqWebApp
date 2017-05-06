@@ -1,0 +1,27 @@
+<style media="screen">
+table, th, td {
+  border: 1px solid black;
+}
+</style>
+<h1>Accounts</h1>
+{{#0.MonetaryAccountBank}}
+<h3>Monetary bank account found</h3>
+Description: {{description}}<br>
+Id: {{id}}<br>
+Balance: {{balance.value}}<br>
+<table>
+  <tr>
+    <th>Name/Alias</th>
+    <th>Type</th>
+    <th>Value</th>
+  </tr>
+  {{#alias}}
+  <tr>
+    <td>{{name}}</td>
+    <td>{{type}}</td>
+    <td>{{value}}</td>
+    
+  </tr>
+  {{/alias}}
+</table>
+{{/0.MonetaryAccountBank}}

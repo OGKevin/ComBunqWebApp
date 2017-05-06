@@ -19,7 +19,7 @@ class callback(AESCipher):
         self.init_api = API(rsa_key, token, server_key)
         self.userID = userID
         self.accountID = accountID
-        self.account_url = 'user/%s/monetary-account/%s/' % (self.userID, self.accountID) # noqa
+        self.account_url = 'user/%s/monetary-account/%s' % (self.userID, self.accountID) # noqa
 
         try:
             self.s = Session.objects.get(session_key=user.profile.session_token)  # noqa

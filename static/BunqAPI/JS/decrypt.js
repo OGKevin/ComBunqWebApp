@@ -1,12 +1,14 @@
 $(function() {
-  var jsonObj;
-  var userID = '';
+  var jsonObj,
+    userID = '',
+    accountID = '';
   $("#lock_ids").click(function(event) {
     /* Act on the event */
     console.log('set_up');
     userID = $('#userID').val()
+    accountID = $("#accountID").val()
   });
-  
+
 
   function get_file() {
     data = $("#id_encrypted_file")[0].files[0]
@@ -38,14 +40,14 @@ $(function() {
   $("#users").click(function(event) {
     /* Act on the event */
     console.log('users');
-    sendPost(jsonObj, $(this)[0].id + '/' + userID +'/', ussers_template)
+    sendPost(jsonObj, $(this)[0].id + '/' + userID + '/', ussers_template)
   });
   $("#accounts").click(function(event) {
     /* Act on the event */
     console.log('accounts');
-    sendPost(jsonObj, $(this)[0].id + '/' + userID +'/', ussers_template)
+    sendPost(jsonObj, $(this)[0].id + '/' + userID + '/' + accountID, accounts_template)
 
-    
+
   });
   $("#payment").click(function(event) {
     /* Act on the event */
@@ -114,7 +116,7 @@ function show(j, error, template) {
 
     // rendered = Mustache.render(template, j)
     // $("#response").html(rendered)
-    $.get(template, function(template){
+    $.get(template, function(template) {
       var rendered = Mustache.render(template, j)
       $('#response').html(rendered)
     })
