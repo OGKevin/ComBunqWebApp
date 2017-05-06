@@ -1,32 +1,27 @@
-<h1>Users</h1>
-{{#.}}
-{{#UserCompany}}
+<h1>Users</h1> {{#.}} {{#UserCompany}}
 <p>
-Company found
+  Company found
 </p>
 <ul>
-<p>
-Name: {{public_nick_name}}
-</p>
-<p>
-UserID: {{id}}
-</p>
+  <p>
+    Name: {{public_nick_name}}
+  </p>
+  <p>
+    UserID: {{id}}
+  </p>
 </ul>
 
-{{/UserCompany}}
-
-{{#UserPerson}}
+{{/UserCompany}} {{#UserPerson}}
 <p>
-Person found
+  Person found
 </p>
 <ul>
-<p>
-Name: {{public_nick_name}}
-</p>
-<p>
-UserID: {{id}}
-</p>
+  <p>
+    Name: {{public_nick_name}}
+  </p>
+  <p>
+    UserID: {{id}}
+  </p>
 </ul>
 
-{{/UserPerson}}
-{{/.}}
+{{/UserPerson}} {{/.}}

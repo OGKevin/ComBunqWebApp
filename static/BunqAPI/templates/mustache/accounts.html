@@ -1,15 +1,12 @@
 <style media="screen">
-table, th, td {
-  border: 1px solid black;
-}
+  table,
+  th,
+  td {
+    border: 1px solid black;
+  }
 </style>
-<h1>Accounts</h1>
-{{#.}}
-{{#MonetaryAccountBank}}
-<h3>Monetary bank account found</h3>
-Description: {{description}}<br>
-Id: {{id}}<br>
-Balance: {{balance.value}}<br>
+<h1>Accounts</h1> {{#.}} {{#MonetaryAccountBank}}
+<h3>Monetary bank account found</h3> Description: {{description}}<br> Id: {{id}}<br> Balance: {{balance.value}}<br>
 <table>
   <tr>
     <th>Name/Alias</th>
@@ -21,9 +18,8 @@ Balance: {{balance.value}}<br>
     <td>{{name}}</td>
     <td>{{type}}</td>
     <td>{{value}}</td>
-    
+
   </tr>
   {{/alias}}
 </table>
-{{/MonetaryAccountBank}}
-{{/.}}
+{{/MonetaryAccountBank}} {{/.}}
