@@ -52,6 +52,8 @@ $(function() {
   $("#payment").click(function(event) {
     /* Act on the event */
     console.log('payment');
+    sendPost(jsonObj, $(this)[0].id + '/' + userID + '/' + accountID, payments_template)
+    
   });
   $("#card").click(function(event) {
     /* Act on the event */

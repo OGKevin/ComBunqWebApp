@@ -1,5 +1,6 @@
 <h1>Users</h1>
-{{#0.UserCompany}}
+{{#.}}
+{{#UserCompany}}
 <p>
 Company found
 </p>
@@ -12,9 +13,9 @@ UserID: {{id}}
 </p>
 </ul>
 
-{{/0.UserCompany}}
+{{/UserCompany}}
 
-{{#0.UserPerson}}
+{{#UserPerson}}
 <p>
 Person found
 </p>
@@ -27,4 +28,5 @@ UserID: {{id}}
 </p>
 </ul>
 
-{{/0.UserPerson}}
+{{/UserPerson}}
+{{/.}}

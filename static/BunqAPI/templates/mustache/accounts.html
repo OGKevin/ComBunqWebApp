@@ -4,7 +4,8 @@ table, th, td {
 }
 </style>
 <h1>Accounts</h1>
-{{#0.MonetaryAccountBank}}
+{{#.}}
+{{#MonetaryAccountBank}}
 <h3>Monetary bank account found</h3>
 Description: {{description}}<br>
 Id: {{id}}<br>
@@ -24,4 +25,5 @@ Balance: {{balance.value}}<br>
   </tr>
   {{/alias}}
 </table>
-{{/0.MonetaryAccountBank}}
+{{/MonetaryAccountBank}}
+{{/.}}
