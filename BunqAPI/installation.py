@@ -55,7 +55,7 @@ class installation(object):
             return {
                 'token': response['Response'][1]['Token'],
                 'ServerPublicKey': response['Response'][2]['ServerPublicKey']}
-        except KeyError:
+        except KeyError:  # pragma: no cover
             print (json.dumps(response, indent=4))
             raise KeyError
         #     # IDEA: need to return error html page

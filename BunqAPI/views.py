@@ -38,6 +38,9 @@ def generate(request):
     '''
     This is working smooth.
     View that handles the /generate page.
+
+    Need to find a way to test views where OTP is required.
+    Maybe with mock tests or monkeyPatch.
     '''
     if request.method == 'POST':
         formKey = GenerateKeyForm(request.POST)
@@ -60,9 +63,10 @@ def generate(request):
 
 @otp_required
 def decrypt(request):
-    ''''View that handles /decrypt page. However need to think of new way
-    to decpyt the file and use it, this is not the right way to do it.
-    Well atleast the JS part is a little bit messy.'''
+    '''
+    Need to rewrtie this to just show a page and load the form.
+    Need to use mock test or monkeyPatch.
+    '''
     if request.method == 'POST':
         form = decrypt_form(request.POST)
         try:
@@ -112,6 +116,9 @@ def decrypt(request):
 
 @otp_required
 def API(request, selector, userID='', accountID=''):
+    '''
+    Need to use mock test to test this code.
+    '''
     print('this is selector --> %s' % selector)
     print('this is userID --> %s' % userID)
     print('this is accountID --> %s' % accountID)

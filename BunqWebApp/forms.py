@@ -13,10 +13,10 @@ class registration(forms.Form):
         widget=forms.PasswordInput
     )
 
-    def clean(self):
+    def clean(self):  # pragma: no cover
         password = self.cleaned_data.get('password')
         confirm_password = self.cleaned_data.get('confirm_password')
 
         if password != confirm_password:
-            raise forms.ValidationError('Passwords dont match')
+            raise forms.ValidationError('Passwords do not match')
         return self.cleaned_data

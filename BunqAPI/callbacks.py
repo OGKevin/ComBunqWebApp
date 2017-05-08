@@ -65,19 +65,22 @@ class callback(AESCipher):
             self.user.profile.session_token = s.session_key
             self.user.save()
             return r.json()
-        else:
+        else:  # pragma: no cover
             print('\n\n')
             pprint(r.json()['Error'][0])
             return r.json()['Error'][0]
 
-    def set_up(self, userID='', accountID=''):
-        '''
-        This method can be called after device registration and starting a
-        session. This will set a userID and accountID.
-        '''
-        self.s['userID'] = userID
-        self.s['accountID'] = accountID
-        self.s.save()
+    # def set_up(self, userID='', accountID=''):
+    #     '''
+    #     This method can be called after device registration and starting a
+    #     session. This will set a userID and accountID.
+    #
+    #     I've added this in the JS part of the page so there is no use for this  # noqa
+    #     function atm.
+    #     '''
+    #     self.s['userID'] = userID
+    #     self.s['accountID'] = accountID
+    #     self.s.save()
 
     def users(self, id=''):
         '''
