@@ -4,7 +4,6 @@ $(function() {
     accountID = '';
   $("#lock_ids").click(function(event) {
     /* Act on the event */
-    console.log('set_up');
     userID = $('#userID').val()
     accountID = $("#accountID").val()
   });
@@ -27,41 +26,34 @@ $(function() {
     /* Act on the event */
     // event.preventDefault();
     // get_file()
-    console.log($(this)[0].id);
     sendPost(jsonObj, $(this)[0].id)
   });
 
   $('#start_session').click(function(event) {
     // get_file()
     // event.preventDefault();
-    console.log('click');
     sendPost(jsonObj, $(this)[0].id, start_session_template)
   });
   $("#users").click(function(event) {
     /* Act on the event */
-    console.log('users');
     sendPost(jsonObj, $(this)[0].id + '/' + userID + '/', ussers_template)
   });
   $("#accounts").click(function(event) {
     /* Act on the event */
-    console.log('accounts');
     sendPost(jsonObj, $(this)[0].id + '/' + userID + '/' + accountID, accounts_template)
 
 
   });
   $("#payment").click(function(event) {
     /* Act on the event */
-    console.log('payment');
     sendPost(jsonObj, $(this)[0].id + '/' + userID + '/' + accountID, payments_template)
     
   });
   $("#card").click(function(event) {
     /* Act on the event */
-    console.log('card');
   });
   $("#mastercard_action").click(function(event) {
     /* Act on the event */
-    console.log('mastercard_action');
   });
 });
 
@@ -91,7 +83,6 @@ function sendPost(json, action, template) {
     .done(function(response) {
       r = JSON.parse(response)
       // r = response
-      console.log(r);
       // $("#response").html(response)
       if (r.Response) {
         show(r.Response, false, template)
