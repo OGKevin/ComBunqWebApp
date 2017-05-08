@@ -8,7 +8,6 @@ from django.contrib.auth.models import User
 # from django.http import HttpResponse
 import json
 # import tempfile
-# from pprint import pprint
 # NOTE: generating private key and installation token
 
 
@@ -18,7 +17,8 @@ class installation(object):
     Genereating information to store in the encrypted JSON.
     Each generation will create a new GUID and store this in the user's profile.  # noqa
     
-    'token': is the instalation token used https://doc.bunq.com/api/1/call/installation  # noqa
+    'r': is the instalation token used https://doc.bunq.com/api/1/call/installation  # noqa
+         and the publick server key.
     
     'password': is the password used to encrypted the JSON file
     
@@ -28,11 +28,12 @@ class installation(object):
     'RSA_key': the RSA key used to make API calls"""
     def __init__(self, username, password, API_KEY):
         self.username = username
+        self.user = User.objects.get(username=self.username)
         self.password = password
         self.API_KEY = API_KEY
         self.GUID = self.get_GUID()
         self.RSA_key = self.RSA()
-        self.token = self.getToken()
+        self.r = self.getToken()
 
     def get_GUID(self):
         url = 'https://www.uuidgenerator.net/api/guid'
@@ -51,28 +52,32 @@ class installation(object):
 
         response = r.json()
         try:
-            return response['Response'][1]['Token']
-        except KeyError:
+            return {
+                'token': response['Response'][1]['Token'],
+                'ServerPublicKey': response['Response'][2]['ServerPublicKey']}
+        except KeyError:  # pragma: no cover
             print (json.dumps(response, indent=4))
             raise KeyError
         #     # IDEA: need to return error html page
 
     def encrypt(self):
         d = {
-            'Token': self.token,
+            'Token': self.r['token'],
             'privateKey': self.RSA_key,
-            'API': self.API_KEY
+            'API': self.API_KEY,
+            'ServerPublicKey': self.r['ServerPublicKey']
+            # NOTE: need to add this
             }
-        GUID = self.GUID
-        user = User.objects.get(username=self.username)
-        user.profile.GUID = GUID
-        user.save()
+        # GUID = self.GUID
+        # user = User.objects.get(username=self.username)
+        self.user.profile.GUID = self.GUID
+        self.user.save()
         k = AESCipher(self.password)
         secret = AESCipher.encrypt(k, json.dumps(d))
         d2 = {
             'username': self.username,
             'secret': secret,
-            'userID': GUID
+            'userID': self.GUID
         }
         print ('\n\nFiles generated\n\n')
         return(json.dumps(d2, indent=4, sort_keys=True))

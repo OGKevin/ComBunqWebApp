@@ -27,21 +27,14 @@ class AESCipher(object):
         return base64.b64encode(iv + cipher.encrypt(raw)).decode()
 
     def decrypt(self, enc):
-        try:
-            enc = base64.b64decode(enc)
-        except base64.binascii.Error:
-            return(
-                json.dumps(
-                    {'error': 'something went wrong, maybe u touched the secret?'}))  # noqa
+
+        enc = base64.b64decode(enc)
+
         iv = enc[:AES.block_size]
         cipher = AES.new(self.key, AES.MODE_CBC, iv)
-        try:
-            return self._unpad(
-                cipher.decrypt(enc[AES.block_size:])).decode('utf-8')
-        except UnicodeDecodeError:
-            return(
-                json.dumps(
-                    {'error': 'something went wrong, maybe wrong password?'}))
+
+        return json.loads(self._unpad(
+            cipher.decrypt(enc[AES.block_size:])).decode('utf-8'))
 
     def _pad(self, s):
         return s + (

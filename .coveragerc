@@ -9,4 +9,6 @@ omit =
   Manager/apps.py
   Manager/migrations
   BunqAPI/apps.py
+  BunqAPI/callbacks.py
+  BunqAPI/pythonBunq/bunq.py
   

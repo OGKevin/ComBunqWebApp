@@ -46,13 +46,12 @@ except NameError:
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = False
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 ALLOWED_HOSTS = ['.combunqweb.herokuapp.com', '.127.0.0.1']
 LOGIN_URL = 'two_factor:login'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-SESSION_COOKIE_SECURE = True
-
+SESSION_COOKIE_SECURE = False
 
 # Application definition
 

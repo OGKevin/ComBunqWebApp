@@ -26,6 +26,7 @@
     "amcharts": "^3.14.5",
     "jquery": "^3.2.1",
     "js-cookie": "^2.1.4",
+    "mustache": "^2.3.0",
     "papaparse": "^4.2.0",
     "vanilla-datatables": "^1.1.6"
   }

@@ -9,9 +9,11 @@ class Profile(models.Model):
     """docstring for Profile.
 
     This model gives each user all these fields except 'user'.
+    Not sure how long the session_token actaully is.
     """
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     GUID = models.CharField(blank=True, max_length=68)
+    session_token = models.CharField(blank=True, max_length=150)
 
 
 @receiver(post_save, sender=User)
