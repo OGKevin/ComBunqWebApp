@@ -57,7 +57,6 @@ class callback(AESCipher):
         r = self.init_api.query('session-server', {'secret': self.api_key})  # noqa
 
         if r.status_code == 200:
-            print('\n\n')
             session_token = r.json()['Response'][1]['Token']['token']
             s = SessionStore()
             s['session_token'] = session_token
@@ -66,7 +65,6 @@ class callback(AESCipher):
             self.user.save()
             return r.json()
         else:  # pragma: no cover
-            print('\n\n')
             pprint(r.json()['Error'][0])
             return r.json()['Error'][0]
 
@@ -89,7 +87,6 @@ class callback(AESCipher):
         If an id is given then the info of that specific user is retrieved.
         '''
         r = self.bunq_api.query('user/%s' % self.userID, verify=True)
-        print('this is users')
         return self.response(r)
 
     def accounts(self):
@@ -167,7 +164,7 @@ class callback(AESCipher):
     def response(self, response):
         if response.status_code == 200:
             print("succes")
-            pprint(response.json())
+            # pprint(response.json())
             return response.json()
         else:
             pprint(response.json()['Error'][0])

@@ -118,12 +118,6 @@ def decrypt(request):
 def API(request, selector, userID='', accountID=''):
     '''
     Need to use mock test to test this code.
-    '''
-    print('this is selector --> %s' % selector)
-    print('this is userID --> %s' % userID)
-    print('this is accountID --> %s' % accountID)
-
-    '''
     The view that handles API calls.
 
     '''
@@ -141,9 +135,6 @@ def API(request, selector, userID='', accountID=''):
                 return HttpResponse(json.dumps(e))
 
             r = getattr(API, selector.strip('/'))()
-            # print('\n\nthis is r')
-            # pprint(r)
-            print('\n\n')
             return HttpResponse(json.dumps(r))
         else:
             e = {
