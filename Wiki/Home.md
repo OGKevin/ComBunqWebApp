@@ -15,7 +15,7 @@ This app is hosted on [heroku] and uses the included database. Currently the app
 
 ---
 
-##Resources
+## Resources
 
 * [How to use](#how-to-use)
   * [Set up](#set-up)
@@ -25,7 +25,7 @@ This app is hosted on [heroku] and uses the included database. Currently the app
 
 ---
 
-##How to use
+## How to use
 
 #### Set up
 1. The app works with bunq's [exported CSV] or the [bunq api]. To make use of the [bunq api] you must create an account first. That can be done on the [registration page].
