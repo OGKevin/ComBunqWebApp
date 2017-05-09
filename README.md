@@ -19,12 +19,13 @@ Community BunqWeb is going to be a web interface for bunqers using the [Bunq API
 
 
 
-Disclaimer: Bunq itself has nothing to do with this project
+***Disclaimer: Bunq itself has nothing to do with this project***
 
 
 
-View the app live based on the latest release: <https://combunqweb.herokuapp.com/manager>
+View the app live based on the latest release: <https://combunqweb.herokuapp.com/>
 
+View the [wiki]
 # Goals
 
   - Bunqer can see his/her current(total) balance
@@ -195,5 +196,6 @@ MIT
    [npm]:<https://www.npmjs.com/>
 
    [virtualenv]:<https://virtualenv.pypa.io/en/stable/>
+   [wiki]:<../master/Wiki/Home.md>
 
    
