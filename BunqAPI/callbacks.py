@@ -7,7 +7,24 @@ from django.core.exceptions import ObjectDoesNotExist
 
 
 class callback(AESCipher):
-    """docstring for sessoin."""
+    """docstring for sessoin.
+        This class handles the callbacks to the bunq api.
+
+        f = the contents of the users ecnrypted json.
+        api_token = the api token from the bunq app.
+        user = is the currently logged in user.
+        init_api = is the pythonBunq.bunq.api instance before session token
+        userID = is the provided user id that can be used to retrieve data
+                 of a specific user register to the API key.
+        accountID = cardID = id's to retrieve a specific card or account
+                    belonging to the user id.
+        account_url = url used by most endpoints
+        s = is the server session token stored in the django sessoin. The key
+            for this session is sotred in the database, only logged in users
+            can retreive their keys.
+        bunq_api = is the pythonBunq.bunq.api instace after the session token
+                   is retrieved.
+    """
     def __init__(self, f, user, password, userID='', accountID=''):
         AESCipher.__init__(self, password)
         f = self.decrypt(f['secret'])
@@ -147,7 +164,7 @@ class callback(AESCipher):
         '''
         url = 'user/%s/card' % self.userID
         r = self.bunq_api.query(
-            '%s/card/%s' % (url, cardID)
+            '%s/%s' % (url, self.accountID)
         )
         return self.response(r)
 

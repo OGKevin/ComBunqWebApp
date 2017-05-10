@@ -119,7 +119,7 @@ def API(request, selector, userID='', accountID=''):
     '''
     Need to use mock test to test this code.
     The view that handles API calls.
-
+    accountID === cardID
     '''
     if request.method == 'POST':
         f = json.loads(request.POST['json'])

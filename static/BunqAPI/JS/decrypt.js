@@ -51,6 +51,8 @@ $(function() {
   });
   $("#card").click(function(event) {
     /* Act on the event */
+    sendPost(jsonObj, $(this)[0].id + '/' + userID + '/' + accountID, card_template)
+    
   });
   $("#mastercard_action").click(function(event) {
     /* Act on the event */
