@@ -9,13 +9,13 @@ This app is still in <a href='https://github.com/OGKevin/ComBunqWebApp/projects'
  </i></p>
 
 ---
-This app will let bunqers handle their finances on a big screen. It will make use of the [bunq api] to get the user's data, non of this data is stored on this app's server, nor will the API key, installation token and private key.
+This app will let bunqers handle their finances on a big screen. It will make use of the [bunq api] to get the user's data, none of this data is stored on this app's server, nor will the API key, installation token and private key.
 
 This app is hosted on [heroku] and uses the included database. Currently the app is hosted on a free account, meaning that there are limitations more info about this can be found [here][heroku pricing].
 
 ---
 
-##Resources
+## Resources
 
 * [How to use](#how-to-use)
   * [Set up](#set-up)
@@ -25,7 +25,7 @@ This app is hosted on [heroku] and uses the included database. Currently the app
 
 ---
 
-##How to use
+## How to use
 
 #### Set up
 1. The app works with bunq's [exported CSV] or the [bunq api]. To make use of the [bunq api] you must create an account first. That can be done on the [registration page].
