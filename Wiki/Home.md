@@ -15,16 +15,6 @@ This app is hosted on [heroku] and uses the included database. Currently the app
 
 ---
 
-## Resources
-
-* [How to use](#how-to-use)
-  * [Set up](#set-up)
-  * [Buttons](#buttons)
-    * [Buttons explained](#buttons-explained)
-* [Examples](#examples)
-
----
-
 ## How to use
 
 #### Set up
@@ -32,9 +22,9 @@ This app is hosted on [heroku] and uses the included database. Currently the app
 
 2. After creating an account you should generate an API key. From the bunq [website][API key]:
 
-  <img src='https://www.bunq.com/files/pages/pages-api/security-nl.png' width=300>
-  <img src='https://www.bunq.com/files/pages/pages-api/api-keys-nl.png' width=300>
-  <img src='https://www.bunq.com/files/pages/pages-api/create-key-nl.png' width=300><br>
+  <img src='https://www.bunq.com/files/pages/pages-api/security-nl.png' width=250>
+  <img src='https://www.bunq.com/files/pages/pages-api/api-keys-nl.png' width=250>
+  <img src='https://www.bunq.com/files/pages/pages-api/create-key-nl.png' width=250><br>
   
   ***Remember that bunq will charge for API usage, pricing can be found on page 8 & 9 of their [documentation][API price].***
 
