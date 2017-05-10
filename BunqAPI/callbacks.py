@@ -147,7 +147,7 @@ class callback(AESCipher):
         '''
         url = 'user/%s/card' % self.userID
         r = self.bunq_api.query(
-            '%s/card/%s' % (url, cardID)
+            '%s/%s' % (url, cardID)
         )
         return self.response(r)
 

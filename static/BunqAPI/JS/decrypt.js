@@ -51,6 +51,8 @@ $(function() {
   });
   $("#card").click(function(event) {
     /* Act on the event */
+    sendPost(jsonObj, $(this)[0].id + '/' + userID + '/' + accountID, card_template)
+    
   });
   $("#mastercard_action").click(function(event) {
     /* Act on the event */
@@ -85,6 +87,7 @@ function sendPost(json, action, template) {
       // r = response
       // $("#response").html(response)
       if (r.Response) {
+        console.log(r.Response);
         show(r.Response, false, template)
       } else {
         show(r, true)
