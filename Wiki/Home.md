@@ -59,7 +59,7 @@ This app is hosted on [heroku] and uses the included database. Currently the app
 
 ### Buttons
 
-To get your data you can make use of the buttons porivede on the [decrypt] page. Each button will make an API call, even if you already have pressed the button before on the same session, this is because no data is getting stored.
+To get your data you can make use of the buttons provided on the [decrypt] page. Each button will make an API call, even if you already have pressed the button before on the same session, this is because no data is getting stored.
 
 ##### Buttons explained
 
