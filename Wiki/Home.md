@@ -64,6 +64,7 @@ The buttons listed below are supported.
 | Accounts | Retrieves the bank accounts belonging to the user. To make this call an user ID must be provided in the user ID box. Each account has its own account ID. To get more information about this account the account ID must be provided. | https://doc.bunq.com/api/1/call/monetary-account |
 | Lock user & account ID | Like load file, when this button is pressed javascript will read the values entered in the user ID & account ID. These boxes can be empty.| - |
 |Payment | Retrieves all the transactions belonging to an account. To use this button an user & account ID must be provided. | https://doc.bunq.com/api/1/call/payment |
+|Cards|Retrieves a list will all the Maestro Cards belonging to an user. When a card id is given information about a specific card is returned. |https://doc.bunq.com/api/1/call/card |
 
 
 
