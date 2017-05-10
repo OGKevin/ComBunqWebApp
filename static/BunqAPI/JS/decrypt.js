@@ -87,7 +87,6 @@ function sendPost(json, action, template) {
       // r = response
       // $("#response").html(response)
       if (r.Response) {
-        console.log(r.Response);
         show(r.Response, false, template)
       } else {
         show(r, true)
