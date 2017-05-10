@@ -27,7 +27,7 @@ pyparsing==2.2.0
 pytz==2017.2
 PyYAML==3.12
 qrcode==5.3
-requests==2.13.0
+requests==2.14.1
 shellescape==3.4.1
 six==1.10.0
 whitenoise==3.3.0
