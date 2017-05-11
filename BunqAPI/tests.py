@@ -78,7 +78,10 @@ class testScript(TestCase):
 
 class testView(TestCase):
     """docstring for testView.
-    This test is supposed to test the views."""
+    This test is supposed to test the views.
+    Need to find a way to simulate logged in with 2FA
+
+    """
     def setUp(self):
         def otp_required():
             return True

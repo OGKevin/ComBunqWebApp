@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from .forms import GenerateKeyForm, decrypt_form
 from .installation import installation
 from .callbacks import callback
@@ -8,29 +8,12 @@ from django.http import HttpResponse
 from django.contrib.auth.models import User
 # from django.contrib.auth.decorators import login_required
 from django_otp.decorators import otp_required
-from django.core.exceptions import ObjectDoesNotExist
-from django.http import Http404
-import base64
 import json
-from .encryption import AESCipher
 # from pprint import pprint
 
 # from django.http.response import FileResponse
 
 # Create your views here.
-
-
-def error(request, error=None):  # NOTE: render error pages
-    '''
-    Views to show error pages. This is not working smooth, need to think of
-    another way to show errors.
-    '''
-    if error == 'not_your_file':
-        return render(request, 'BunqAPI/error/notYourFile.html')
-    elif error == 'not_logged_in':
-        return render(request, 'BunqAPI/error/notLogIn.html')
-    else:
-        raise Http404
 
 
 @otp_required  # NOTE: forces the user to log in with 2FA
@@ -64,51 +47,12 @@ def generate(request):
 @otp_required
 def decrypt(request):
     '''
-    Need to rewrtie this to just show a page and load the form.
+    Need to rewrtie this to just show a page and load the form. # Done
     Need to use mock test or monkeyPatch.
+    This view can be renamed.
     '''
     if request.method == 'POST':
         form = decrypt_form(request.POST)
-        try:
-            user = User.objects.get(username=request.user)
-        except ObjectDoesNotExist:
-            print('user does not extist')
-            return redirect('./error/not_logged_in')
-        else:
-            userGUID = user.profile.GUID
-            inputData = json.loads(
-                request.POST['json'])
-            password = request.POST['pass']
-            action = request.POST['action']
-            if inputData['userID'] == userGUID:
-                p = AESCipher(password)
-                try:
-                    data = json.loads(AESCipher.decrypt(p, inputData['secret'])) # noqa
-                except base64.binascii.Error:
-                    return HttpResponse(
-                        json.dumps(
-                            {'error': 'something went wrong, maybe u touched the secret?'})  # noqa
-                    )
-                except UnicodeDecodeError:
-                    return HttpResponse(
-                        json.dumps(
-                            {'error': 'something went wrong, maybe wrong password?'})  # noqa
-                    )
-                if action == 'register':
-                    s = callback(data, None)
-                    try:
-                        return HttpResponse(json.dumps(s.register(), indent=4))  # noqa
-                    except KeyError:
-                        return HttpResponse(json.dumps(data, indent=4))
-                        # print(type(data))
-                        # return HttpResponse(json.dumps(register(data), indent=4))  # noqa
-                elif action == 'start_session':
-                    s = callback(data, user)
-                    return HttpResponse(
-                        json.dumps(s.start_session(), indent=4))
-            else:
-                return redirect('./error/not_your_file')
-
     else:
         form = decrypt_form()
     return render(request, 'BunqAPI/decrypt.html', {'form': form})
