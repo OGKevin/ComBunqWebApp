@@ -1,3 +1,5 @@
+var dataTable;
+
 $(function() {
   var jsonObj,
     userID = '',
@@ -56,6 +58,23 @@ $(function() {
   });
   $("#mastercard_action").click(function(event) {
     /* Act on the event */
+  });
+  $("#export").click(function(event) {
+    /* Act on the event */
+    pages = $("#pages").val()
+    if (dataTable) {
+      curentPage = dataTable.currentPage
+      if (pages) {
+        
+        dataTable.export('csv', 'Bunq-transactions', ';', '\r\n', [pages])
+      }else {
+        dataTable.export('csv', 'Bunq-transactions', ';', '\r\n', curentPage)
+        
+      }
+    }else {
+      $("#loading").html('Table is not created yet?')
+      console.log('Table not created');
+    }
   });
 });
 
@@ -125,7 +144,6 @@ function show(j, error, template) {
 }
 
 
-var dataTable;
 
 function createTable(input) {
     var rows = [],
@@ -164,13 +182,18 @@ function createTable(input) {
     // Check to see if initialized
     if (dataTable) {
         // Wipe the table
-        dataTable.clear();
+        dataTable.destroy();
 
         // Destroy the containers
-        dataTable.wrapper.parentNode.replaceChild(dataTable.table, dataTable.wrapper);
+        // dataTable.wrapper.parentNode.replaceChild(dataTable.table, dataTable.wrapper);
+        // dataTable.init(options)
     }
 
     // Initialize with the data
     dataTable = new DataTable("#response2", options);
+    // dataTable.destroy()
+}
 
+function exportTable(){
+  
 }
