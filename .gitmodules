@@ -3,4 +3,4 @@
 	url = https://github.com/madeddie/python-bunq.git
 [submodule "Wiki"]
 	path = Wiki
-	url = git@github.com:OGKevin/ComBunqWebApp.wiki.git
+	url = https://github.com/OGKevin/ComBunqWebApp.wiki.git
