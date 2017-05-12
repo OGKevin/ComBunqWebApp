@@ -4,6 +4,8 @@
   <script type='text/javascript' src="{%static "js-cookie/src/js.cookie.js "%}"></script>
   <script type='text/javascript' src="{%static "jquery/dist/jquery.min.js "%}"></script>
   <script type='text/javascript' src="{%static "mustache/mustache.min.js "%}"></script>
+  <script type='text/javascript'src="{%static "vanilla-datatables/vanilla-dataTables.min.js"%}"></script>
+  <link rel="stylesheet" href="{%static "vanilla-datatables/vanilla-dataTables.min.css"%}"/>
 
   <!-- NOTE: load the templates used by Mustache -->
   <script>
@@ -15,7 +17,13 @@
   </script>
 
   <script type='text/javascript' src="{%static "BunqAPI/JS/decrypt.js "%}"></script>
-
+  <style media="screen">
+    table,
+    th,
+    td {
+      border: 1px solid black;
+    }
+  </style>
 </head>
 <p>
   <a href="..">
@@ -42,7 +50,13 @@
     <button id="card">cards</button>
     <button id='mastercard_action'>mastercard_action</button>
   </div>
+  <div id="loading">
+    
+  </div>
   <div class="" id="response">
 
   </div>
+  <table id="response2">
+    
+  </table>
 </body>

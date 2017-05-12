@@ -20,7 +20,7 @@ $(function() {
   $("#load_file").click(function(event) {
     /* Act on the event */
     get_file()
-    $("#response").html('File is loaded')
+    $("#loading").html('File is loaded')
   });
   $('#register').click(function(event) {
     /* Act on the event */
@@ -60,7 +60,7 @@ $(function() {
 });
 
 function sendPost(json, action, template) {
-  $('#response').html('Loading...')
+  $('#loading').html('Loading...')
   csrftoken = Cookies.get('csrftoken')
 
   function csrfSafeMethod(method) {
@@ -86,16 +86,22 @@ function sendPost(json, action, template) {
       r = JSON.parse(response)
       // r = response
       // $("#response").html(response)
-      if (r.Response) {
-        show(r.Response, false, template)
-      } else {
+      if (r.error_description_translated) {
         show(r, true)
+        $("#loading").html('')
+      }else if (r.Response[0].Payment) {
+        createTable(r.Response)
+        $("#loading").html('')
+      } else if (r.Response){
+        show(r.Response, false, template)
+        $("#loading").html('')
       }
+      //
+      // else {
+      //   show(r, true)
+      // }
 
-
-
-
-    })
+})
     .fail(function() {})
     .always(function() {});
 }
@@ -116,4 +122,55 @@ function show(j, error, template) {
       $('#response').html(rendered)
     })
   }
+}
+
+
+var dataTable;
+
+function createTable(input) {
+    var rows = [],
+        headers = [
+          'Payment ID',
+          'Account ID',
+          'Date',
+          'Ammount',
+          'Account IBAN',
+          'Payee IBAN',
+          'Name',
+          'Description',
+          'Type'
+        ]
+
+    for (var i = 0; i < input.length; i++) {
+        rows.push([
+          input[i].Payment.id,
+          input[i].Payment.monetary_account_id,
+          input[i].Payment.updated,
+          input[i].Payment.amount.value,
+          input[i].Payment.alias.iban,
+          input[i].Payment.counterparty_alias.iban,
+          input[i].Payment.counterparty_alias.label_user.public_nick_name,
+          input[i].Payment.description,
+          input[i].Payment.type
+        ])
+    }
+    options = {
+        data: {
+            'headings': headers,
+            "rows": rows
+        }
+    }
+
+    // Check to see if initialized
+    if (dataTable) {
+        // Wipe the table
+        dataTable.clear();
+
+        // Destroy the containers
+        dataTable.wrapper.parentNode.replaceChild(dataTable.table, dataTable.wrapper);
+    }
+
+    // Initialize with the data
+    dataTable = new DataTable("#response2", options);
+
 }
