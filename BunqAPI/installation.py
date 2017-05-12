@@ -33,7 +33,7 @@ class installation(object):
         self.API_KEY = API_KEY
         self.GUID = self.get_GUID()
         self.RSA_key = self.RSA()
-        self.r = self.getToken()
+        self.r = self.get_token()
 
     def get_GUID(self):
         url = 'https://www.uuidgenerator.net/api/guid'
@@ -41,7 +41,7 @@ class installation(object):
         return GUID
         # using UUIDGenerator.net for GUID
 
-    def getToken(self):
+    def get_token(self):
         rsa_key = self.RSA_key
         bunq_api = API(rsa_key, None)
 
