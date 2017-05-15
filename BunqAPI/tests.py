@@ -6,7 +6,7 @@ from .encryption import AESCipher
 from pprint import pprint
 import json
 import base64
-from django_otp import decorators
+# from django_otp import decorators
 
 # from .pythonBunq.bunq import API
 
@@ -82,15 +82,9 @@ class testView(TestCase):
     Need to find a way to simulate logged in with 2FA
 
     """
-    def setUp(self):
-        def otp_required():
-            return True
-        decorators.otp_required = otp_required
-        print (decorators.otp_required)
 
     def test_generate(self):
         response = self.client.get('/generate', follow=True)
-        print(response)
         self.assertEqual(response.status_code, 200)
 
         response2 = self.client.post('/generate', follow=True)

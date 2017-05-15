@@ -13,7 +13,7 @@ class registration(forms.Form):
         widget=forms.PasswordInput
     )
 
-    def clean(self):  # pragma: no cover
+    def clean(self):
         password = self.cleaned_data.get('password')
         confirm_password = self.cleaned_data.get('confirm_password')
 

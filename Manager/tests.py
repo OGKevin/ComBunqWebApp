@@ -1,7 +1,7 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.core.management import call_command
 from .models import catagories
-from .databaseInput import store
+from .databaseInput import store, addTegenrekening
 from .validator import ibanValidator
 from django.core.exceptions import ValidationError
 from . import master
@@ -33,7 +33,7 @@ class TestPageAccess(TestCase):
         catagories.objects.create(
             Naam='Bunq test', Rekening=['NL48ABNA0502830042'], regex=['test']
         )
-        json = (
+        data = (
             '[{"Datum":"2017-03-31","Bedrag":"-0,01","Rekening":"NL01BUNQ12345'
             '67890","Tegenrekening":"NL48ABNA0502830042","Naam":"test by Ad'
             'yen","Omschrijving":"Payment description"},{"Datum":"2017-03-31"'
@@ -41,7 +41,8 @@ class TestPageAccess(TestCase):
             ':"NL01BUNQ1234567890","Naam":"bunq","Omschrijving":"Slice heeft'
             ' deze request verstuurd voor de groep Family."}]'
         )
-        response2 = self.client.post('/Manager', {'json': json}, follow=True)
+        c = Client()
+        response2 = c.post('/Manager', {'json': data}, follow=True)
         self.assertEqual(response2.status_code, 200,)
 
     def test_form(self):
@@ -74,3 +75,15 @@ class testScript(TestCase):
         transactions = json.loads('[{"Datum":"2017-03-31","Bedrag":"-0,01","Rekening":"NL01BUNQ1234567890","Tegenrekening":"NL48ABNA0502830042","Naam":"Spotify by Adyen","Omschrijving":"Payment description"},{"Datum":"2017-03-31","Bedrag":"1,64","Rekening":"NL01BUNQ1234567890","Tegenrekening":"NL01BUNQ1234567890","Naam":"bunq","Omschrijving":"Slice heeft deze request verstuurd voor de groep Family."}]') # noqa
         # NOTE: need to add catagories that stored in db
         pprint(master.sortInfo(transactions))
+
+    def test_addTegenrekening(self):
+        data = (
+            '[{"Datum":"2017-03-31","Bedrag":"-0,01","Rekening":"NL01BUNQ12345'
+            '67890","Tegenrekening":"NL48ABNA0502830042","Naam":"test by Ad'
+            'yen","Omschrijving":"Payment description"},{"Datum":"2017-03-31"'
+            ',"Bedrag":"1,64","Rekening":"NL01BUNQ1234567990","Tegenrekening"'
+            ':"NL01BUNQ1234567890","Naam":"bunq","Omschrijving":"Slice heeft'
+            ' deze request verstuurd voor de groep Family."}]'
+        )
+
+        pprint(addTegenrekening(json.loads(data)))
