@@ -1,9 +1,14 @@
 from django.test import TestCase
-from .installation import installation
+from BunqAPI.installation import installation
 from django.contrib.auth.models import User
-from .encryption import AESCipher
+from BunqAPI.encryption import AESCipher
+# from .callbacks import callback
 from pprint import pprint
 import json
+import base64
+# from django_otp import decorators
+
+# from .pythonBunq.bunq import API
 
 
 # Create your tests here.
@@ -26,24 +31,43 @@ class testScript(TestCase):
         decryt = AESCipher('wrong password')
         encryt = json.loads(installation(
             'test', 'password', 'API_KEY').encrypt())
-        d = AESCipher.decrypt(decryt, encryt['secret'])
-        pprint(d)
+        try:
+            AESCipher.decrypt(decryt, encryt['secret'])
+        except UnicodeDecodeError:
+            print('wrong password')
 
     def test_installation_error2(self):
         decryt = AESCipher('password')
         encryt = json.loads(installation(
             'test', 'password', 'API_KEY').encrypt())
         secret = encryt['secret'] = 'destroyed'
-        d = AESCipher.decrypt(decryt, secret)
-        pprint(d)
+        try:
+            AESCipher.decrypt(decryt, secret)
+        except base64.binascii.Error:
+            print('secret might be corrupt')
 
 
 class testView(TestCase):
     """docstring for testView.
-    This test is supposed to test the views."""
+    This test is supposed to test the views.
+    Need to find a way to simulate logged in with 2FA
+
+    """
+
     def test_generate(self):
         response = self.client.get('/generate', follow=True)
         self.assertEqual(response.status_code, 200)
 
         response2 = self.client.post('/generate', follow=True)
         self.assertEqual(response2.status_code, 200)
+
+    def test_decrypt(self):
+        response = self.client.get('/decrypt', follow=True)
+        self.assertEqual(response.status_code, 200)
+
+        response2 = self.client.post('/decrypt', follow=True)
+        self.assertEqual(response2.status_code, 200)
+
+    def test_api(self):
+        response = self.client.post('/API/register', follow=True)
+        self.assertEqual(response.status_code, 200)

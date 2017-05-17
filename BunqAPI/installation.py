@@ -1,14 +1,13 @@
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
-from .pythonBunq.bunq import API
-from .encryption import AESCipher
+from apiwrapper.clients.api_client_non_persisting import ApiClientNonPersisting as API  # noqa
+from apiwrapper.endpoints.endpointcontroller import EndpointController as Endpoints  # noqa
+# from BunqAPI.pythonBunq.bunq import API
+from BunqAPI.encryption import AESCipher
 import requests
 from django.contrib.auth.models import User
-# from django.http import HttpResponse
 import json
-# import tempfile
-from pprint import pprint
 # NOTE: generating private key and installation token
 
 
@@ -29,11 +28,12 @@ class installation(object):
     'RSA_key': the RSA key used to make API calls"""
     def __init__(self, username, password, API_KEY):
         self.username = username
+        self.user = User.objects.get(username=self.username)
         self.password = password
         self.API_KEY = API_KEY
         self.GUID = self.get_GUID()
         self.RSA_key = self.RSA()
-        self.r = self.getToken()
+        self.r = self.get_token()
 
     def get_GUID(self):
         url = 'https://www.uuidgenerator.net/api/guid'
@@ -41,22 +41,19 @@ class installation(object):
         return GUID
         # using UUIDGenerator.net for GUID
 
-    def getToken(self):
+    def get_token(self):
         rsa_key = self.RSA_key
-        bunq_api = API(rsa_key, None)
+        bunq_api = Endpoints(API(rsa_key, None))
 
-        # using the pubkey() helper function to get public part of key pair
-        public_key = bunq_api.pubkey().decode()
+        r = bunq_api.installation.create_installation()
 
-        r = bunq_api.query('installation', {'client_public_key': public_key})
-
-        response = r.json()
+        # NOTE: need to rewrite this to check status code...
         try:
             return {
-                'token': response['Response'][1]['Token'],
-                'ServerPublicKey': response['Response'][2]['ServerPublicKey']}
-        except KeyError:
-            print (json.dumps(response, indent=4))
+                'token': r['Response'][1]['Token'],
+                'ServerPublicKey': r['Response'][2]['ServerPublicKey']}
+        except KeyError:  # pragma: no cover
+            print (json.dumps(r, indent=4))
             raise KeyError
         #     # IDEA: need to return error html page
 
@@ -68,16 +65,14 @@ class installation(object):
             'ServerPublicKey': self.r['ServerPublicKey']
             # NOTE: need to add this
             }
-        GUID = self.GUID
-        user = User.objects.get(username=self.username)
-        user.profile.GUID = GUID
-        user.save()
+        self.user.profile.GUID = self.GUID
+        self.user.save()
         k = AESCipher(self.password)
         secret = AESCipher.encrypt(k, json.dumps(d))
         d2 = {
             'username': self.username,
             'secret': secret,
-            'userID': GUID
+            'userID': self.GUID
         }
         print ('\n\nFiles generated\n\n')
         return(json.dumps(d2, indent=4, sort_keys=True))
@@ -119,11 +114,9 @@ class session(object):
         # order, never know when someone starts shuffling things around
         if r.status_code == 200:
             print('\n\n')
-            pprint(r.json())
             return 'device registered'
         else:
             print('\n\n')
-            pprint(r.json()['Error'][0])
             return r.json()
 
     def start_session(self):
@@ -136,9 +129,7 @@ class session(object):
             # order, never know when someone starts shuffling things around
             if r.status_code == 200:
                 print('\n\n')
-                pprint(r.json())
                 return r.json()
             else:
                 print('\n\n')
-                pprint(r.json()['Error'][0])
                 return r.json()

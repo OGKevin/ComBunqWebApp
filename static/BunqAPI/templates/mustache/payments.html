@@ -1,0 +1,30 @@
+<style media="screen">
+  table,
+  th,
+  td {
+    border: 1px solid black;
+  }
+</style>
+
+<h1>Payments</h1>
+
+<table>
+  <tr>
+    <th>Date</th>
+    <th>Amount</th>
+    <th>Account IBAN</th>
+    <th>Payee IBAN</th>
+    <th>Name</th>
+    <th>Description</th>
+  </tr>
+  {{#.}}
+  <tr>
+    <td>{{Payment.updated}}</td>
+    <td>{{Payment.amount.value}}</td>
+    <td>{{Payment.alias.iban}}</td>
+    <td>{{Payment.counterparty_alias.iban}}</td>
+    <td>{{Payment.counterparty_alias.label_user.public_nick_name}}</td>
+    <td>{{Payment.description}}</td>
+  </tr>
+  {{/.}}
+</table>

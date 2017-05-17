@@ -53,7 +53,6 @@ LOGIN_URL = 'two_factor:login'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_COOKIE_SECURE = False
 
-
 # Application definition
 
 INSTALLED_APPS = [

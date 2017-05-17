@@ -7,6 +7,10 @@ source =
 omit =
   BunqWebApp/wsgi.py
   Manager/apps.py
-  Manager/migrations
+  Manager/migrations/*
+  BunqAPI/migrations/*
   BunqAPI/apps.py
+  BunqAPI/callbacks.py
+  BunqAPI/pythonBunq/bunq.py
+  *__init__.py*
   

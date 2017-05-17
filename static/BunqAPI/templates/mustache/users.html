@@ -1,0 +1,27 @@
+<h1>Users</h1> {{#.}} {{#UserCompany}}
+<p>
+  Company found
+</p>
+<ul>
+  <p>
+    Name: {{public_nick_name}}
+  </p>
+  <p>
+    UserID: {{id}}
+  </p>
+</ul>
+
+{{/UserCompany}} {{#UserPerson}}
+<p>
+  Person found
+</p>
+<ul>
+  <p>
+    Name: {{public_nick_name}}
+  </p>
+  <p>
+    UserID: {{id}}
+  </p>
+</ul>
+
+{{/UserPerson}} {{/.}}
