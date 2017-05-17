@@ -1,8 +1,8 @@
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
-from . import validator
+from BunqWebApp import validator
 from django.core.exceptions import ValidationError
-from . import forms
+from BunqWebApp import forms
 
 
 class Validation(TestCase):

@@ -1,9 +1,10 @@
-from pprint import pprint
-from .pythonBunq.bunq import API
-from .encryption import AESCipher
+# from pprint import pprint
+from BunqAPI.encryption import AESCipher
 from django.contrib.sessions.backends.db import SessionStore
 from django.contrib.sessions.models import Session
 from django.core.exceptions import ObjectDoesNotExist
+from apiwrapper.endpoints.endpointcontroller import EndpointController as Endpoints  # noqa
+from apiwrapper.clients.api_client_non_persisting import ApiClientNonPersisting as API2  # noqa
 
 
 class callback(AESCipher):
@@ -25,23 +26,34 @@ class callback(AESCipher):
         bunq_api = is the pythonBunq.bunq.api instace after the session token
                    is retrieved.
     """
-    def __init__(self, f, user, password, userID='', accountID=''):
+    def __init__(self, f, user, password, userID=None, accountID=None):
         AESCipher.__init__(self, password)
         f = self.decrypt(f['secret'])
         token = f['Token']['token']
         server_key = f['ServerPublicKey']['server_public_key']
         rsa_key = f['privateKey']
-        self.api_key = f['API']
+        api_key = f['API']
         self.user = user
-        self.init_api = API(rsa_key, token, server_key)
-        self.userID = userID
-        self.accountID = accountID
-        self.account_url = 'user/%s/monetary-account/%s' % (self.userID, self.accountID) # noqa
+        # self.init_api = API(rsa_key, token, server_key)
+        self.init_api = API2(
+            privkey=rsa_key, api_key=api_key, installation_token=token,
+            server_pubkey=server_key)
+
+        if userID:
+            self.userID = int(userID)
+        if accountID:
+            self.accountID = int(accountID)
+
+        # self.account_url = 'user/%s/monetary-account/%s' % (self.userID, self.accountID) # noqa
 
         try:
-            self.s = Session.objects.get(session_key=user.profile.session_token)  # noqa
-            session_token = self.s.get_decoded()['session_token']
-            self.bunq_api = API(rsa_key, session_token, server_key)
+            s = Session.objects.get(session_key=user.profile.session_token)  # noqa
+            session_token = s.get_decoded()['session_token']
+            bunq_api = API2(
+                privkey=rsa_key, api_key=api_key,
+                session_token=session_token, server_pubkey=server_key)
+            self.bunq_api = Endpoints(bunq_api)
+
         except ObjectDoesNotExist:
             print('Sessoin not created yet')
 
@@ -51,9 +63,8 @@ class callback(AESCipher):
         https://doc.bunq.com/api/1/call/device-server/method/post
         '''
 
-        r = self.init_api.query('device-server', {'secret': self.api_key, 'description': 'dev-server'})  # noqa
-
-        return self.response(r)
+        endpoint = Endpoints(self.init_api)
+        return endpoint.device_server.create_new_device_server('dev-server')
 
     def start_session(self):
         '''
@@ -70,41 +81,28 @@ class callback(AESCipher):
 
         When the session expires the token will be unusbale.
         '''
+        endpoint = Endpoints(self.init_api)
+        r = endpoint.session_server.create_new_session_server()
 
-        r = self.init_api.query('session-server', {'secret': self.api_key})  # noqa
+        session_token = r['Response'][1]['Token']['token']
+        s = SessionStore()
+        s['session_token'] = session_token
+        s.create()
+        self.user.profile.session_token = s.session_key
+        self.user.save()
+        return r
 
-        if r.status_code == 200:
-            session_token = r.json()['Response'][1]['Token']['token']
-            s = SessionStore()
-            s['session_token'] = session_token
-            s.create()
-            self.user.profile.session_token = s.session_key
-            self.user.save()
-            return r.json()
-        else:  # pragma: no cover
-            pprint(r.json()['Error'][0])
-            return r.json()['Error'][0]
-
-    # def set_up(self, userID='', accountID=''):
-    #     '''
-    #     This method can be called after device registration and starting a
-    #     session. This will set a userID and accountID.
-    #
-    #     I've added this in the JS part of the page so there is no use for this  # noqa
-    #     function atm.
-    #     '''
-    #     self.s['userID'] = userID
-    #     self.s['accountID'] = accountID
-    #     self.s.save()
-
-    def users(self, id=''):
+    def users(self):
         '''
         Returns a list of all the users belonging to this API key.
         https://doc.bunq.com/api/1/call/user/
         If an id is given then the info of that specific user is retrieved.
         '''
-        r = self.bunq_api.query('user/%s' % self.userID, verify=True)
-        return self.response(r)
+
+        try:
+            return self.bunq_api.user.get_user_by_id(self.userID)
+        except AttributeError:
+            return self.bunq_api.user.get_all_users()
 
     def accounts(self):
         '''
@@ -112,9 +110,18 @@ class callback(AESCipher):
         https://doc.bunq.com/api/1/call/monetary-account/
         When usign a GET method a specific account can be returned.
         '''
-        r = self.bunq_api.query(self.account_url, verify=True)
-
-        return self.response(r)
+        try:
+            return self.bunq_api.monetary_account.get_account_by_id(
+                self.userID, self.accountID)
+        except AttributeError:
+            try:
+                return self.bunq_api.monetary_account.get_all_accounts_for_user(  # noqa
+                    self.userID
+                    )
+            except AttributeError as b:
+                return {
+                    'Error': [{'error_description_translated': '%s' % b}]
+                }
 
     def payment(self, mode='normal', paymentID=''):
         '''
@@ -125,64 +132,29 @@ class callback(AESCipher):
 
         https://doc.bunq.com/api/1/call/payment
         '''
-        url = self.account_url
         if mode == 'normal':
-            r = self.bunq_api.query(
-                '%s/payment/%s' % (
-                    url, paymentID), verify=True
-            )
+            try:
+                return self.bunq_api.payment.get_all_payments_for_account(
+                    self.userID, self.accountID)
+            except AttributeError as e:
+                return {
+                    'Error': [{'error_description_translated': '%s' % e}]
+                }
 
-            return self.response(r)
-        elif mode == 'draft':
-            r = self.bunq_api.query(
-                '%s/draft-payment/%s' % (
-                    url, paymentID), verify=True
-            )
-            return self.response(r)
-        elif mode == 'schedule':
-            r = self.bunq_api.query(
-                '%s/schedule-payment/%s' % (
-                    url, paymentID), verify=True
-            )
-            return self.response(r)
-
-    def request(self, inquiryID=''):
-        '''
-        Retuns all request for a user's account
-        https://doc.bunq.com/api/1/call/request-inquiry
-        '''
-        url = self.account_url
-        r = self.bunq_api.query(
-            '%s/rerequest-inquiry/%s' % (url, inquiryID)
-        )
-        return self.response(r)
-
-    def card(self, cardID=''):
+    def card(self):
         '''
         Return all the cards available to the user. Or a specific card if a
         cardID is given
         '''
-        url = 'user/%s/card' % self.userID
-        r = self.bunq_api.query(
-            '%s/%s' % (url, self.accountID)
-        )
-        return self.response(r)
-
-    def mastercard_action(self, cardID=''):
-        '''
-        MasterCard transaction view. Will return all the transaction made with
-        a specific card or from all cards.
-        '''
-        r = self.bunq_api.query(
-            '%s/mastercard-action/%s' % (self.account_url, cardID)
-        )
-        return self.response(r)
-
-    def response(self, response):
-        if response.status_code == 200:
-            print("succes")
-            # pprint(response.json())
-            return response.json()
-        else:
-            pprint(response.json()['Error'][0])
-            return response.json()['Error'][0]
+        try:
+            return self.bunq_api.card.get_card_for_user_by_id(
+                self.userID, self.accountID)
+        except AttributeError:
+            try:
+                return self.bunq_api.card.get_all_cards_for_user(
+                    self.userID
+                )
+            except AttributeError as b:
+                return {
+                    'Error': [{'error_description_translated': '%s' % b}]
+                }

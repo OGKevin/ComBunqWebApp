@@ -1,13 +1,13 @@
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
-from .pythonBunq.bunq import API
-from .encryption import AESCipher
+from apiwrapper.clients.api_client_non_persisting import ApiClientNonPersisting as API  # noqa
+from apiwrapper.endpoints.endpointcontroller import EndpointController as Endpoints  # noqa
+# from BunqAPI.pythonBunq.bunq import API
+from BunqAPI.encryption import AESCipher
 import requests
 from django.contrib.auth.models import User
-# from django.http import HttpResponse
 import json
-# import tempfile
 # NOTE: generating private key and installation token
 
 
@@ -43,20 +43,17 @@ class installation(object):
 
     def get_token(self):
         rsa_key = self.RSA_key
-        bunq_api = API(rsa_key, None)
+        bunq_api = Endpoints(API(rsa_key, None))
 
-        # using the pubkey() helper function to get public part of key pair
-        public_key = bunq_api.pubkey().decode()
+        r = bunq_api.installation.create_installation()
 
-        r = bunq_api.query('installation', {'client_public_key': public_key})
-
-        response = r.json()
+        # NOTE: need to rewrite this to check status code...
         try:
             return {
-                'token': response['Response'][1]['Token'],
-                'ServerPublicKey': response['Response'][2]['ServerPublicKey']}
+                'token': r['Response'][1]['Token'],
+                'ServerPublicKey': r['Response'][2]['ServerPublicKey']}
         except KeyError:  # pragma: no cover
-            print (json.dumps(response, indent=4))
+            print (json.dumps(r, indent=4))
             raise KeyError
         #     # IDEA: need to return error html page
 
@@ -68,10 +65,8 @@ class installation(object):
             'ServerPublicKey': self.r['ServerPublicKey']
             # NOTE: need to add this
             }
-        # GUID = self.GUID
-        # user = User.objects.get(username=self.username)
-        self.user.profile.GUID = self.GUID
-        self.user.save()
+        # self.user.profile.GUID = self.GUID
+        # self.user.save()
         k = AESCipher(self.password)
         secret = AESCipher.encrypt(k, json.dumps(d))
         d2 = {

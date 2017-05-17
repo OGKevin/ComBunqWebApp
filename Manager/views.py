@@ -8,7 +8,7 @@ from collections import OrderedDict
 # Create your views here.
 
 
-def Manager(request):
+def Manager(request):  # pragma: no cover
     if request.method == 'POST':
         form = GetNewData(request.POST)
         inputData = json.loads(

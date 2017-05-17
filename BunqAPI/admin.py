@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Profile
+from BunqAPI.models import Profile
 # Register your models here.
 
 

@@ -1,5 +1,5 @@
 from django import forms
-from . import validator
+from BunqWebApp import validator
 
 
 class registration(forms.Form):

@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .forms import registration
+from BunqWebApp.forms import registration
 from django.contrib.auth.models import User
 # from django.http import HttpResponse
 from django.contrib.auth import authenticate, login

@@ -73,7 +73,6 @@ $(function() {
       }
     }else {
       $("#loading").html('Table is not created yet?')
-      console.log('Table not created');
     }
   });
 });
@@ -105,16 +104,17 @@ function sendPost(json, action, template) {
       r = JSON.parse(response)
       // r = response
       // $("#response").html(response)
-      if (r.error_description_translated) {
-        show(r, true)
-        $("#loading").html('')
-      }else if (r.Response[0].Payment) {
-        createTable(r.Response)
-        $("#loading").html('')
-      } else if (r.Response){
-        show(r.Response, false, template)
-        $("#loading").html('')
-      }
+      if (r.Error !== undefined) {
+             show(r.Error[0], true)
+              $("#loading").html('')
+            }else if (r.Response[0].Payment) {
+              createTable(r.Response)
+              $("#loading").html('')
+            } else if (r.Response){
+              show(r.Response, false, template)
+              $("#loading").html('')
+            }
+      
       //
       // else {
       //   show(r, true)
@@ -146,6 +146,7 @@ function show(j, error, template) {
 
 
 function createTable(input) {
+  
     var rows = [],
         headers = [
           'Payment ID',

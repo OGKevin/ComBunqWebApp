@@ -19,7 +19,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from Manager.views import Manager, managerForm
 from BunqAPI.views import generate, decrypt, API
-from . import views
+from BunqWebApp import views
 from django.contrib.auth import views as auth_views
 
 '''

@@ -1,7 +1,7 @@
 from django.shortcuts import render
-from .forms import GenerateKeyForm, decrypt_form
-from .installation import installation
-from .callbacks import callback
+from BunqAPI.forms import GenerateKeyForm, decrypt_form
+from BunqAPI.installation import installation
+from BunqAPI.callbacks import callback
 from django.utils.encoding import smart_str
 from django.http import HttpResponse
 # from django.contrib.auth import authenticate
@@ -16,7 +16,7 @@ import json
 # Create your views here.
 
 
-@otp_required  # NOTE: forces the user to log in with 2FA
+@otp_required  # NOTE: forces the user to log in with 2FA  # pragma: no cover
 def generate(request):
     '''
     This is working smooth.
@@ -44,7 +44,7 @@ def generate(request):
     return render(request, 'BunqAPI/index.html', {'form': formKey})
 
 
-@otp_required
+@otp_required  # pragma: no cover
 def decrypt(request):
     '''
     Need to rewrtie this to just show a page and load the form. # Done
@@ -58,8 +58,8 @@ def decrypt(request):
     return render(request, 'BunqAPI/decrypt.html', {'form': form})
 
 
-@otp_required
-def API(request, selector, userID='', accountID=''):
+@otp_required  # pragma: no cover
+def API(request, selector, userID=None, accountID=None):
     '''
     Need to use mock test to test this code.
     The view that handles API calls.
