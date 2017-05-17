@@ -179,3 +179,4 @@ BunqAPI/privateBunq.pem
 BunqAPI/response.json
 BunqAPI/token.json
 BunqAPI/tmp
+apiwrapper/config/parameters.ini
