@@ -28,7 +28,7 @@ $(function() {
     /* Act on the event */
     // event.preventDefault();
     // get_file()
-    sendPost(jsonObj, $(this)[0].id)
+    sendPost(jsonObj, $(this)[0].id, register_template)
   });
 
   $('#start_session').click(function(event) {
