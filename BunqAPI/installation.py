@@ -65,8 +65,8 @@ class installation(object):
             'ServerPublicKey': self.r['ServerPublicKey']
             # NOTE: need to add this
             }
-        # self.user.profile.GUID = self.GUID
-        # self.user.save()
+        self.user.profile.GUID = self.GUID
+        self.user.save()
         k = AESCipher(self.password)
         secret = AESCipher.encrypt(k, json.dumps(d))
         d2 = {
