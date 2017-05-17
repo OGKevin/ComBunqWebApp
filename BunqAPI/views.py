@@ -74,7 +74,7 @@ def API(request, selector, userID=None, accountID=None):
                 API = callback(f, u, p, userID, accountID)
             except UnicodeDecodeError:
                 e = {
-                "error_description_translated": "During decpyting something whent wrong, maybe you entreded a wrong password?"  # noqa
+                "Error": [{"error_description_translated": "During decpyting something whent wrong, maybe you entreded a wrong password?"}]  # noqa
                 }
                 return HttpResponse(json.dumps(e))
 
@@ -82,6 +82,6 @@ def API(request, selector, userID=None, accountID=None):
             return HttpResponse(json.dumps(r))
         else:
             e = {
-                'error_description_translated': 'This file is not yours to use.' # noqa
+            'Error': [{'error_description_translated': 'This file is not yours to use.'}] # noqa
             }
             return HttpResponse(json.dumps(e))
