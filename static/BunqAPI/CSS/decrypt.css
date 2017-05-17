@@ -1,0 +1,33 @@
+h1 {
+  text-align: center;
+}
+
+#response {
+  display: flex;
+  flex-flow: column;
+  align-items: left;
+}
+th,td {
+  border: 1px solid black;
+}
+#topBar {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+#actions {
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-start;
+}
+
+#display {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+#info {
+  display: flex;
+  flex-direction: column;
+}
