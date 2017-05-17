@@ -13,7 +13,6 @@ def sortInfo(transactions):
         try:
             catName = str(filt[0])
         except IndexError:
-            print ('catagory not found in database\nAdding it to "Other"')
             catOBJ['Other'] += ammount
             x['Catagory'] = 'Other'
 
@@ -27,7 +26,6 @@ def sortInfo(transactions):
                     catOBJ[catName] = ammount
                     x['Catagory'] = catName
             else:
-                print ("empty Tegenrekening")
                 catOBJ['Other'] += ammount
                 x['Catagory'] = 'Other'
     returnInfo = {

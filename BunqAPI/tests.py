@@ -2,16 +2,11 @@ from django.test import TestCase
 from BunqAPI.installation import installation
 from django.contrib.auth.models import User
 from BunqAPI.encryption import AESCipher
-# from .callbacks import callback
-from pprint import pprint
 import json
 import base64
-# from django_otp import decorators
-
-# from .pythonBunq.bunq import API
-
 
 # Create your tests here.
+
 
 class testScript(TestCase):
     """docstring for testScript.
@@ -25,31 +20,33 @@ class testScript(TestCase):
         encryt = json.loads(installation(
             'test', 'password', 'API_KEY').encrypt())
         d = AESCipher.decrypt(decryt, encryt['secret'])
-        pprint(d)
+        self.assertIs(len(d), 4)
+        self.assertTrue(isinstance(d, dict))
 
     def installation_error1(self):
         decryt = AESCipher('wrong password')
         encryt = json.loads(installation(
             'test', 'password', 'API_KEY').encrypt())
-        try:
-            AESCipher.decrypt(decryt, encryt['secret'])
-        except UnicodeDecodeError:
-            print('wrong password')
+        self.assertRaises(
+            UnicodeDecodeError,
+            AESCipher.decrypt,
+            decryt, encryt['secret']
+            )
 
     def installation_error2(self):
         decryt = AESCipher('password')
         encryt = json.loads(installation(
             'test', 'password', 'API_KEY').encrypt())
         secret = encryt['secret'] = 'destroyed'
-        try:
-            AESCipher.decrypt(decryt, secret)
-        except base64.binascii.Error:
-            print('secret might be corrupt')
+        self.assertRaises(
+            base64.binascii.Error,
+            AESCipher.decrypt,
+            decryt, secret
+        )
 
     def GUIDs(self):
         guid = User.objects.get(username='test').profile.GUID
-        print('this should be guid\n\n', guid)
-        print(type(guid))
+        self.assertTrue(isinstance(guid, list))
 
     def test_run(self):
         self.installation()

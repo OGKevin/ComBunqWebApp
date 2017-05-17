@@ -3,6 +3,7 @@ source =
   BunqAPI
   BunqWebApp
   Manager
+  apiwrapper
   
 omit =
   BunqWebApp/wsgi.py
@@ -13,4 +14,5 @@ omit =
   BunqAPI/callbacks.py
   BunqAPI/pythonBunq/bunq.py
   *__init__.py*
+  *setup.py*
   

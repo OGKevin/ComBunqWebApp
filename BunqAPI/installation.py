@@ -76,7 +76,6 @@ class installation(object):
             'secret': secret,
             'userID': self.GUID
         }
-        print ('\n\nFiles generated\n\n')
         return(json.dumps(d2, indent=4, sort_keys=True))
 
     def RSA(self):

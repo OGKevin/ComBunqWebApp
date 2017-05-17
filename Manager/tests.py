@@ -5,7 +5,6 @@ from .databaseInput import store, addTegenrekening
 from .validator import ibanValidator
 from django.core.exceptions import ValidationError
 from . import master
-from pprint import pprint
 import json
 # Create your tests here.
 
@@ -66,15 +65,18 @@ class testScript(TestCase):
 
     def test_ibanValidator(self):
         ibanValidator('GB82WEST12345698765432')
-        try:
-            ibanValidator('unvalid iban')
-        except ValidationError:
-            print ('validator passed unvalid iban')
+        self.assertRaises(
+            ValidationError,
+            ibanValidator,
+            'unvalid iban',
+        )
 
     def test_master(self):
         transactions = json.loads('[{"Datum":"2017-03-31","Bedrag":"-0,01","Rekening":"NL01BUNQ1234567890","Tegenrekening":"NL48ABNA0502830042","Naam":"Spotify by Adyen","Omschrijving":"Payment description"},{"Datum":"2017-03-31","Bedrag":"1,64","Rekening":"NL01BUNQ1234567890","Tegenrekening":"NL01BUNQ1234567890","Naam":"bunq","Omschrijving":"Slice heeft deze request verstuurd voor de groep Family."}]') # noqa
         # NOTE: need to add catagories that stored in db
-        pprint(master.sortInfo(transactions))
+        d = master.sortInfo(transactions)
+        self.assertTrue(isinstance(d, dict))
+        self.assertIs(len(d), 2)
 
     def test_addTegenrekening(self):
         data = (
@@ -86,4 +88,6 @@ class testScript(TestCase):
             ' deze request verstuurd voor de groep Family."}]'
         )
 
-        pprint(addTegenrekening(json.loads(data)))
+        d = addTegenrekening(json.loads(data))
+        self.assertTrue(isinstance(d, dict))
+        self.assertIs(len(d), 2)
