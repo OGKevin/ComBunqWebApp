@@ -29,31 +29,30 @@ class callback(AESCipher):
     def __init__(self, f, user, password, userID=None, accountID=None):
         AESCipher.__init__(self, password)
         f = self.decrypt(f['secret'])
-        token = f['Token']['token']
-        server_key = f['ServerPublicKey']['server_public_key']
-        rsa_key = f['privateKey']
-        api_key = f['API']
         self.user = user
-        # self.init_api = API(rsa_key, token, server_key)
         self.init_api = API2(
-            privkey=rsa_key, api_key=api_key, installation_token=token,
-            server_pubkey=server_key)
+            privkey=f['privateKey'],
+            api_key=f['API'],
+            installation_token=f['Token']['token'],
+            server_pubkey=f['ServerPublicKey']['server_public_key']
+            )
 
         if userID:
             self.userID = int(userID)
         if accountID:
             self.accountID = int(accountID)
 
-        # self.account_url = 'user/%s/monetary-account/%s' % (self.userID, self.accountID) # noqa
-
         try:
-            s = Session.objects.get(session_key=user.profile.session_token)  # noqa
-            session_token = s.get_decoded()['session_token']
-            bunq_api = API2(
-                privkey=rsa_key, api_key=api_key,
-                session_token=session_token, server_pubkey=server_key)
-            self.bunq_api = Endpoints(bunq_api)
-
+            self.bunq_api = Endpoints(
+                API2(
+                    privkey=f['privateKey'],
+                    api_key=f['API'],
+                    session_token=Session.objects.get(
+                        session_key=user.profile.session_token
+                            ).get_decoded()['session_token'],
+                    server_pubkey=f['ServerPublicKey']['server_public_key']
+                    )
+            )
         except ObjectDoesNotExist:
             print('Sessoin not created yet')
 
