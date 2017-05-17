@@ -16,31 +16,23 @@
   </script>
 
   <script type='text/javascript' src="{%static "BunqAPI/JS/decrypt.js "%}"></script>
-  <style media="screen">
-    table,
-    th,
-    td {
-      border: 1px solid black;
-    }
-  </style>
+  <link rel='stylesheet' href="{%static "BunqAPI/CSS/decrypt.css "%}"/>
 </head>
-<p>
-  <a href="..">
-    <--Back</a>
-</p>
 
 <body id="body">
-
-  <form enctype="multipart/form-data" method="post" id="encryption_form">
-    {% csrf_token %} {{form}}
-  </form>
-  <div class="">
+   <div id="topBar">
+     <p>
+       <a href="..">
+         <--Back</a>
+       </p>
+    <form enctype="multipart/form-data" method="post" id="encryption_form">
+      {{form}}
+    </form>
+  </div>
+  <div class="" id="actions">
     <input type="number" name="" value="" placeholder="user ID" id="userID">
     <input type="number" name="" value="" placeholder="account/card ID" id="accountID">
     <input type="number" name="" value="" placeholder=" page(s) 1,2,3,5...." id="pages">
-    
-  </div>
-  <div class="">
     <button type="" name="" id="load_file">load file</button>
     <button type="" name="" id="register">register</button>
     <button id='start_session' type="" name="">start session</button>

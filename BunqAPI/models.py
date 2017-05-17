@@ -14,7 +14,14 @@ class Profile(models.Model):
     """
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     GUID = ArrayField(
-        models.CharField(max_length=68, blank=True), size=2, blank=True)
+            models.CharField(
+                        max_length=68,
+                        blank=True,
+                    ),
+            default=['No GUI yet'],
+            blank=True,
+            null=True
+                )
     session_token = models.CharField(blank=True, max_length=150)
 
 

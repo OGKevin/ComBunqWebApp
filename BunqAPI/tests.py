@@ -20,14 +20,14 @@ class testScript(TestCase):
         user = User.objects.create_user('test', '', 'password')
         user.save()
 
-    def test_installation(self):
+    def installation(self):
         decryt = AESCipher('password')
         encryt = json.loads(installation(
             'test', 'password', 'API_KEY').encrypt())
         d = AESCipher.decrypt(decryt, encryt['secret'])
         pprint(d)
 
-    def test_installation_error1(self):
+    def installation_error1(self):
         decryt = AESCipher('wrong password')
         encryt = json.loads(installation(
             'test', 'password', 'API_KEY').encrypt())
@@ -36,7 +36,7 @@ class testScript(TestCase):
         except UnicodeDecodeError:
             print('wrong password')
 
-    def test_installation_error2(self):
+    def installation_error2(self):
         decryt = AESCipher('password')
         encryt = json.loads(installation(
             'test', 'password', 'API_KEY').encrypt())
@@ -45,6 +45,17 @@ class testScript(TestCase):
             AESCipher.decrypt(decryt, secret)
         except base64.binascii.Error:
             print('secret might be corrupt')
+
+    def GUIDs(self):
+        guid = User.objects.get(username='test').profile.GUID
+        print('this should be guid\n\n', guid)
+        print(type(guid))
+
+    def test_run(self):
+        self.installation()
+        self.installation_error1()
+        self.installation_error2()
+        self.GUIDs()
 
 
 class testView(TestCase):
