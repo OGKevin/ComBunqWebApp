@@ -3,12 +3,10 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 from apiwrapper.clients.api_client_non_persisting import ApiClientNonPersisting as API  # noqa
 from apiwrapper.endpoints.endpointcontroller import EndpointController as Endpoints  # noqa
-# from BunqAPI.pythonBunq.bunq import API
 from BunqAPI.encryption import AESCipher
 import requests
 from django.contrib.auth.models import User
 import json
-# NOTE: generating private key and installation token
 
 
 class installation(object):
@@ -29,6 +27,7 @@ class installation(object):
     def __init__(self, username, password, API_KEY):
         self.username = username
         self.user = User.objects.get(username=self.username)
+        self.user_guid = self.user.profile.GUID
         self.password = password
         self.API_KEY = API_KEY
         self.GUID = self.get_GUID()
@@ -65,7 +64,10 @@ class installation(object):
             'ServerPublicKey': self.r['ServerPublicKey']
             # NOTE: need to add this
             }
-        self.user.profile.GUID = self.GUID
+        if len(self.user_guid) > 1:
+            del self.user_guid[0]
+
+        self.user_guid.append(self.GUID)
         self.user.save()
         k = AESCipher(self.password)
         secret = AESCipher.encrypt(k, json.dumps(d))
@@ -93,43 +95,3 @@ class installation(object):
         )
 
         return privateKey.decode()
-
-
-class session(object):
-    """docstring for sessoin."""
-    def __init__(self, f):
-        self.token = f['Token']['token']
-        self.rsa_key = f['privateKey']
-        self.api_key = f['API']
-        self.server_key = f['ServerPublicKey']['server_public_key']
-        print (self)
-
-    def register(self):
-        bunq_api = API(self.rsa_key, self.token, self.server_key)
-
-        # r = bunq_api.query('session-server', {'secret': api_key}, verify=True)  # noqa
-        r = bunq_api.query('device-server', {'secret': self.api_key, 'description': 'dev-server'})  # noqa
-
-        # r.json()['Response'][1]['Token'] would work too, but I mistrust predefined  # noqa
-        # order, never know when someone starts shuffling things around
-        if r.status_code == 200:
-            print('\n\n')
-            return 'device registered'
-        else:
-            print('\n\n')
-            return r.json()
-
-    def start_session(self):
-            bunq_api = API(self.rsa_key, self.token, self.server_key)
-
-            # r = bunq_api.query('session-server', {'secret': api_key}, verify=True)  # noqa
-            r = bunq_api.query('session-server', {'secret': self.api_key})  # noqa
-
-            # r.json()['Response'][1]['Token'] would work too, but I mistrust predefined  # noqa
-            # order, never know when someone starts shuffling things around
-            if r.status_code == 200:
-                print('\n\n')
-                return r.json()
-            else:
-                print('\n\n')
-                return r.json()

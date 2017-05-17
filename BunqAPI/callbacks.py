@@ -84,13 +84,17 @@ class callback(AESCipher):
         endpoint = Endpoints(self.init_api)
         r = endpoint.session_server.create_new_session_server()
 
-        session_token = r['Response'][1]['Token']['token']
-        s = SessionStore()
-        s['session_token'] = session_token
-        s.create()
-        self.user.profile.session_token = s.session_key
-        self.user.save()
-        return r
+        try:
+            session_token = r['Response'][1]['Token']['token']
+            s = SessionStore()
+            s['session_token'] = session_token
+            s.create()
+            self.user.profile.session_token = s.session_key
+            self.user.save()
+        except KeyError:
+            return r
+        else:
+            return r
 
     def users(self):
         '''

@@ -69,7 +69,7 @@ def API(request, selector, userID=None, accountID=None):
         f = json.loads(request.POST['json'])
         p = request.POST['pass']
         u = User.objects.get(username=request.user)
-        if f['userID'] == u.profile.GUID:
+        if f['userID'] in u.profile.GUID:  # noqa
             try:
                 API = callback(f, u, p, userID, accountID)
             except UnicodeDecodeError:
