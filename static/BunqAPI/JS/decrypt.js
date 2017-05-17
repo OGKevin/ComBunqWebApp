@@ -1,3 +1,4 @@
+
 var dataTable;
 
 $(function() {
@@ -78,7 +79,7 @@ $(function() {
 });
 
 function sendPost(json, action, template) {
-  $('#loading').html('Loading...')
+  $('#loading').html('<i class="fa-5x fa fa-spinner fa-spin" aria-hidden="true"></i>')
   csrftoken = Cookies.get('csrftoken')
 
   function csrfSafeMethod(method) {
