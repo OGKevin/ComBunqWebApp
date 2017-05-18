@@ -211,9 +211,9 @@ class callback(AESCipher):
                 self.user.save()
 
                 r = {
-                    'Response': {
+                    'Response': [{
                         'status': 'PDF Generated.....'
-                    }
+                    }]
                 }
                 return r
             else:

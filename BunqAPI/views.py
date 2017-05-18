@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 from django_otp.decorators import otp_required
 import json
 from django.contrib.sessions.models import Session
+import os
 # from pprint import pprint
 
 # from django.http.response import FileResponse
@@ -100,4 +101,9 @@ def invoice_downloader(request):
         with open(file_path, 'rb') as fh:
             response = HttpResponse(fh.read(), content_type="application/force-download")  # noqa
             response['Content-Disposition'] = 'attachment; filename=%s' % smart_str('BunqWebApp_invoice.pdf')  # noqa
-            return response
+            try:
+                return response
+            # except Exception as e:
+            #     raise
+            finally:
+                os.remove(file_path)

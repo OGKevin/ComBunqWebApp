@@ -26,6 +26,7 @@
     "amcharts": "^3.14.5",
     "font-awesome": "^4.7.0",
     "jquery": "^3.2.1",
+    "jquery-file-download": "^1.4.6",
     "js-cookie": "^2.1.4",
     "mustache": "^2.3.0",
     "papaparse": "^4.3.2",

@@ -35,10 +35,10 @@ urlpatterns = [
     url(r'^Manager/form/(?i)$', managerForm, name='managerForm'),
     url(r'^generate/$', generate, name='generate'),
     url(r'^decrypt/$', decrypt, name='decrypt'),
+    url(r'^decrypt/invoice/$', invoice_downloader, name='invoice_downloader'),
     url(r'^API/(?P<selector>[\w-]+)$', API, name='API'),  # noqa,
     url(r'^API/(?P<selector>[\w-]+)/(?P<userID>\d*)$', API, name='API'),  # noqa,
     url(r'^API/(?P<selector>[\w-]+)/(?P<userID>\d*)/(?P<accountID>\d*)$', API, name='API'),  # noqa,
-    url(r'^invoice/$', invoice_downloader, name='invoice_downloader'),
     url(r'^captcha/', include('captcha.urls')),
     url(r'', include('two_factor.urls', 'two_factor')),
 ] + static(settings.STATIC_URL)

@@ -20,7 +20,7 @@ th,td {
   display: flex;
   flex-flow: column;
   justify-content: flex-start;
-  position: fixed;
+  /*position: fixed;*/
 }
 
 #display {

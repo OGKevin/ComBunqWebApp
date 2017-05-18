@@ -46,7 +46,7 @@ $(function() {
 
   });
   $("#mastercard_action").click(function(event) {});
-  $("#export").click(function(event) {
+  $("#export_transactions").click(function(event) {
     pages = $("#pages").val()
     if (dataTable) {
       curentPage = dataTable.currentPage
@@ -60,6 +60,9 @@ $(function() {
     } else {
       $("#loading").html('Table is not created yet?')
     }
+  });
+  $("#export_invoice").click(function(event) {
+    sendPost(jsonObj, 'invoice/' + userID)
   });
 });
 
@@ -88,10 +91,16 @@ function sendPost(json, action, template) {
     })
     .done(function(response) {
       r = JSON.parse(response)
+      console.log('R', r)
       if (r.Error !== undefined) {
         show(r.Error[0], true)
       } else if (r.Response[0].Payment) {
         createTable(r.Response)
+      } else if (r.Response[0].status) {
+        $("#response").html(r.Response[0].status)
+        $.fileDownload('./invoice')
+        .done(function () { alert('File download a success!'); })
+        .fail(function () { alert('File download failed!'); });
       } else if (r.Response) {
         show(r.Response, false, template)
       }
@@ -157,4 +166,8 @@ function createTable(input) {
     dataTable.destroy();
   }
   dataTable = new DataTable("#response2", options);
+}
+
+function download_invoice() {
+  
 }

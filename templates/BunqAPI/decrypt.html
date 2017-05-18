@@ -2,6 +2,7 @@
   {%load static%}
   <script type='text/javascript' src="{%static "js-cookie/src/js.cookie.js"%}"></script>
   <script type='text/javascript' src="{%static "jquery/dist/jquery.min.js"%}"></script>
+  <script type='text/javascript' src="{%static "jquery-file-download/src/Scripts/jquery.fileDownload.js"%}"></script>
   <script type='text/javascript' src="{%static "mustache/mustache.min.js"%}"></script>
   <script type='text/javascript' src="{%static "vanilla-datatables/vanilla-dataTables.min.js"%}"></script>
   <link rel="stylesheet" href="{%static "vanilla-datatables/vanilla-dataTables.min.css"%}"/>
@@ -45,7 +46,8 @@
       <button id="payment">payment</button>
       <button id="card">cards</button>
       <button id='mastercard_action'>mastercard_action</button>
-      <button id='export'>export transactions</button>
+      <button id='export_transactoins'>export transactions</button>
+      <button id='export_invoice'>export invoice</button>
     </div>
     <div class="" id="info">
       <div id="loading"></div>
