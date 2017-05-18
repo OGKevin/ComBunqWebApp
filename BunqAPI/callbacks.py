@@ -18,7 +18,7 @@ class callback(AESCipher):
         f = the contents of the users ecnrypted json.
         api_token = the api token from the bunq app.
         user = is the currently logged in user.
-        init_api = is the pythonBunq.bunq.api instance before session token
+        init_api = is the API2 instance before session token
         userID = is the provided user id that can be used to retrieve data
                  of a specific user register to the API key.
         accountID = cardID = id's to retrieve a specific card or account
@@ -27,7 +27,7 @@ class callback(AESCipher):
         s = is the server session token stored in the django sessoin. The key
             for this session is sotred in the database, only logged in users
             can retreive their keys.
-        bunq_api = is the pythonBunq.bunq.api instace after the session token
+        bunq_api = is the API2 instace after the session token
                    is retrieved.
     """
     def __init__(self, f, user, password, userID=None, accountID=None):
