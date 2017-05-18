@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 # from django.contrib.auth.decorators import login_required
 from django_otp.decorators import otp_required
 import json
+from django.contrib.sessions.models import Session
 # from pprint import pprint
 
 # from django.http.response import FileResponse
@@ -84,3 +85,19 @@ def API(request, selector, userID=None, accountID=None):
             'Error': [{'error_description_translated': 'This file is not yours to use.'}] # noqa
             }
             return HttpResponse(json.dumps(e))
+
+
+@otp_required
+def invoice_downloader(request):
+    if request.method == 'GET':
+        print(request.user)
+        user = User.objects.get(username=request.user)
+        file_path = Session.objects.get(
+            session_key=user.profile.invoice_token
+                ).get_decoded()['invoice_pdf']
+        print(file_path)
+
+        with open(file_path, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="application/force-download")  # noqa
+            response['Content-Disposition'] = 'attachment; filename=%s' % smart_str('BunqWebApp_invoice.pdf')  # noqa
+            return response
