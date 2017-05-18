@@ -1,10 +1,12 @@
-# from pprint import pprint
+from pprint import pprint
 from BunqAPI.encryption import AESCipher
 from django.contrib.sessions.backends.db import SessionStore
 from django.contrib.sessions.models import Session
 from django.core.exceptions import ObjectDoesNotExist
-from apiwrapper.endpoints.endpointcontroller import EndpointController as Endpoints  # noqa
-from apiwrapper.clients.api_client_non_persisting import ApiClientNonPersisting as API2  # noqa
+from apiwrapper.endpoints.controller import Controller as Endpoints  # noqa
+from apiwrapper.clients.api_client import ApiClient as API2  # noqa
+import requests
+import json
 
 
 class callback(AESCipher):
@@ -33,7 +35,7 @@ class callback(AESCipher):
         self.init_api = API2(
             privkey=f['privateKey'],
             api_key=f['API'],
-            installation_token=f['Token']['token'],
+            session_token=f['Token']['token'],
             server_pubkey=f['ServerPublicKey']['server_public_key']
             )
 
@@ -105,7 +107,7 @@ class callback(AESCipher):
         try:
             return self.bunq_api.user.get_user_by_id(self.userID)
         except AttributeError:
-            return self.bunq_api.user.get_all_users()
+            return self.bunq_api.user.get_logged_in_user()
 
     def accounts(self):
         '''
@@ -161,3 +163,27 @@ class callback(AESCipher):
                 return {
                     'Error': [{'error_description_translated': '%s' % b}]
                 }
+
+    def invoice(self):
+        '''
+        Returns the invoice of the user
+        '''
+        def get_pdf(invoice):
+            url = "https://api.sycade.com/btp-int/Invoice/Generate"
+            headers = {
+                'content-type':  "application/json",
+                'cache-control': "no-cache",
+            }
+            r = requests.request("POST", url, data=invoice, headers=headers)
+            pprint(r.text)
+        try:
+            r = self.bunq_api.invoice.get_all_invoices_for_user(
+                self.userID
+            )
+        except AttributeError as e:
+            return {
+                'Error': [{'error_description_translated:' '%s' % e}]
+            }
+        else:
+            pprint(r['Response'][0]['Invoice'])
+            get_pdf(json.dumps(r['Response'][0]['Invoice']))

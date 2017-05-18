@@ -1,8 +1,8 @@
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
-from apiwrapper.clients.api_client_non_persisting import ApiClientNonPersisting as API  # noqa
-from apiwrapper.endpoints.endpointcontroller import EndpointController as Endpoints  # noqa
+from apiwrapper.clients.api_client import ApiClient as API  # noqa
+from apiwrapper.endpoints.controller import Controller as Endpoints  # noqa
 from BunqAPI.encryption import AESCipher
 import requests
 from django.contrib.auth.models import User
