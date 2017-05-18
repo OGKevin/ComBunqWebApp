@@ -9,6 +9,8 @@ from django.contrib.auth.models import User
 # from django.contrib.auth.decorators import login_required
 from django_otp.decorators import otp_required
 import json
+from django.contrib.sessions.models import Session
+import os
 # from pprint import pprint
 
 # from django.http.response import FileResponse
@@ -16,7 +18,7 @@ import json
 # Create your views here.
 
 
-@otp_required  # NOTE: forces the user to log in with 2FA  # pragma: no cover
+@otp_required  # NOTE: forces the user to log in with 2FA
 def generate(request):
     '''
     This is working smooth.
@@ -28,7 +30,6 @@ def generate(request):
     if request.method == 'POST':
         formKey = GenerateKeyForm(request.POST)
         if formKey.is_valid():
-            print ('\n\nGenerating...\n\n')
             username = request.user.username
             API = formKey.cleaned_data['API']
             encryption_password = formKey.cleaned_data['encryption_password']
@@ -44,7 +45,7 @@ def generate(request):
     return render(request, 'BunqAPI/index.html', {'form': formKey})
 
 
-@otp_required  # pragma: no cover
+@otp_required
 def decrypt(request):
     '''
     Need to rewrtie this to just show a page and load the form. # Done
@@ -58,7 +59,7 @@ def decrypt(request):
     return render(request, 'BunqAPI/decrypt.html', {'form': form})
 
 
-@otp_required  # pragma: no cover
+@otp_required
 def API(request, selector, userID=None, accountID=None):
     '''
     Need to use mock test to test this code.
@@ -69,12 +70,12 @@ def API(request, selector, userID=None, accountID=None):
         f = json.loads(request.POST['json'])
         p = request.POST['pass']
         u = User.objects.get(username=request.user)
-        if f['userID'] == u.profile.GUID:
+        if f['userID'] in u.profile.GUID:  # noqa
             try:
                 API = callback(f, u, p, userID, accountID)
             except UnicodeDecodeError:
                 e = {
-                "error_description_translated": "During decpyting something whent wrong, maybe you entreded a wrong password?"  # noqa
+                "Error": [{"error_description_translated": "During decpyting something whent wrong, maybe you entreded a wrong password?"}]  # noqa
                 }
                 return HttpResponse(json.dumps(e))
 
@@ -82,6 +83,27 @@ def API(request, selector, userID=None, accountID=None):
             return HttpResponse(json.dumps(r))
         else:
             e = {
-                'error_description_translated': 'This file is not yours to use.' # noqa
+            'Error': [{'error_description_translated': 'This file is not yours to use.'}] # noqa
             }
             return HttpResponse(json.dumps(e))
+
+
+@otp_required
+def invoice_downloader(request):
+    if request.method == 'GET':
+        print(request.user)
+        user = User.objects.get(username=request.user)
+        file_path = Session.objects.get(
+            session_key=user.profile.invoice_token
+                ).get_decoded()['invoice_pdf']
+        print(file_path)
+
+        with open(file_path, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="application/force-download")  # noqa
+            response['Content-Disposition'] = 'attachment; filename=%s' % smart_str('BunqWebApp_invoice.pdf')  # noqa
+            try:
+                return response
+            # except Exception as e:
+            #     raise
+            finally:
+                os.remove(file_path)

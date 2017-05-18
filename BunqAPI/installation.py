@@ -1,14 +1,12 @@
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
-from apiwrapper.clients.api_client_non_persisting import ApiClientNonPersisting as API  # noqa
-from apiwrapper.endpoints.endpointcontroller import EndpointController as Endpoints  # noqa
-# from BunqAPI.pythonBunq.bunq import API
+from apiwrapper.clients.api_client import ApiClient as API  # noqa
+from apiwrapper.endpoints.controller import Controller as Endpoints  # noqa
 from BunqAPI.encryption import AESCipher
 import requests
 from django.contrib.auth.models import User
 import json
-# NOTE: generating private key and installation token
 
 
 class installation(object):
@@ -29,6 +27,7 @@ class installation(object):
     def __init__(self, username, password, API_KEY):
         self.username = username
         self.user = User.objects.get(username=self.username)
+        self.user_guid = self.user.profile.GUID
         self.password = password
         self.API_KEY = API_KEY
         self.GUID = self.get_GUID()
@@ -65,7 +64,10 @@ class installation(object):
             'ServerPublicKey': self.r['ServerPublicKey']
             # NOTE: need to add this
             }
-        self.user.profile.GUID = self.GUID
+        if len(self.user_guid) > 1:
+            del self.user_guid[0]
+
+        self.user_guid.append(self.GUID)
         self.user.save()
         k = AESCipher(self.password)
         secret = AESCipher.encrypt(k, json.dumps(d))
@@ -74,7 +76,6 @@ class installation(object):
             'secret': secret,
             'userID': self.GUID
         }
-        print ('\n\nFiles generated\n\n')
         return(json.dumps(d2, indent=4, sort_keys=True))
 
     def RSA(self):

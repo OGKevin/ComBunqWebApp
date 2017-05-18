@@ -14,10 +14,11 @@ class Validation(TestCase):
         self.username = user.username
 
     def test_check_username(self):
-        try:
-            validator.checkUsername(self.username)
-        except ValidationError as e:
-            print(e)
+        self.assertRaises(
+            ValidationError,
+            validator.checkUsername,
+            self.username
+        )
 
 
 class Views(TestCase):

@@ -2,9 +2,11 @@
   {%load static%}
   <script type='text/javascript' src="{%static "js-cookie/src/js.cookie.js"%}"></script>
   <script type='text/javascript' src="{%static "jquery/dist/jquery.min.js"%}"></script>
+  <script type='text/javascript' src="{%static "jquery-file-download/src/Scripts/jquery.fileDownload.js"%}"></script>
   <script type='text/javascript' src="{%static "mustache/mustache.min.js"%}"></script>
   <script type='text/javascript' src="{%static "vanilla-datatables/vanilla-dataTables.min.js"%}"></script>
   <link rel="stylesheet" href="{%static "vanilla-datatables/vanilla-dataTables.min.css"%}"/>
+  <link rel="stylesheet" href="{%static "font-awesome/css/font-awesome.min.css"%}"/>
 
   <!-- NOTE: load the templates used by Mustache -->
   <script>
@@ -13,53 +15,44 @@
     var accounts_template = '{%static 'BunqAPI/templates/mustache/accounts.html '%}'
     var payments_template = '{%static 'BunqAPI/templates/mustache/payments.html '%}'
     var card_template = '{%static 'BunqAPI/templates/mustache/card.html '%}'
+    var register_template = '{%static 'BunqAPI/templates/mustache/register.html '%}'
   </script>
 
   <script type='text/javascript' src="{%static "BunqAPI/JS/decrypt.js "%}"></script>
-  <style media="screen">
-    table,
-    th,
-    td {
-      border: 1px solid black;
-    }
-  </style>
+  <link rel='stylesheet' href="{%static "BunqAPI/CSS/decrypt.css "%}"/>
 </head>
-<p>
-  <a href="..">
-    <--Back</a>
-</p>
 
 <body id="body">
-
-  <form enctype="multipart/form-data" method="post" id="encryption_form">
-    {% csrf_token %} {{form}}
-  </form>
-  <div class="">
-    <input type="number" name="" value="" placeholder="user ID" id="userID">
-    <input type="number" name="" value="" placeholder="account/card ID" id="accountID">
-    <input type="number" name="" value="" placeholder=" page(s) 1,2,3,5...." id="pages">
-    
+   <div id="topBar">
+     <p>
+       <a href="..">
+         <--Back</a>
+       </p>
+    <form enctype="multipart/form-data" method="post" id="encryption_form">
+      {{form}}
+    </form>
   </div>
-  <div class="">
-    <button type="" name="" id="load_file">load file</button>
-    <button type="" name="" id="register">register</button>
-    <button id='start_session' type="" name="">start session</button>
-    <button id="users">users</button>
-    <button id="accounts">accounts</button>
-    <button id="lock_ids">lock user & account id</button>
-    <button id="payment">payment</button>
-    <button id="card">cards</button>
-    <button id='mastercard_action'>mastercard_action</button>
-    <button id='export'>export transactions</button>
+  <div class="" id="display">
+    <div class="" id="actions">
+      <input type="number" name="" value="" placeholder="user ID" id="userID">
+      <input type="number" name="" value="" placeholder="account/card ID" id="accountID">
+      <input type="number" name="" value="" placeholder=" page(s) 1,2,3,5...." id="pages">
+      <button type="" name="" id="load_file">load file</button>
+      <button type="" name="" id="register">register</button>
+      <button id='start_session' type="" name="">start session</button>
+      <button id="users">users</button>
+      <button id="accounts">accounts</button>
+      <button id="lock_ids">lock user & account id</button>
+      <button id="payment">payment</button>
+      <button id="card">cards</button>
+      <button id='mastercard_action'>mastercard_action</button>
+      <button id='export_transactoins'>export transactions</button>
+      <button id='export_invoice'>export invoice</button>
+    </div>
+    <div class="" id="info">
+      <div id="loading"></div>
+      <div class="" id="response"></div>
+      <table id="response2"></table>
+    </div>
   </div>
-  <div id="loading">
-
-  </div>
-  <div class="" id="response">
-
-  </div>
-
-    <table id="response2">
-
-    </table>
 </body>

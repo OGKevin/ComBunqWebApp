@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.contrib.postgres.fields import ArrayField
 # Create your models here.
 
 
@@ -12,8 +13,17 @@ class Profile(models.Model):
     Not sure how long the session_token actaully is.
     """
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    GUID = models.CharField(blank=True, max_length=68)
+    GUID = ArrayField(
+            models.CharField(
+                        max_length=68,
+                        blank=True,
+                    ),
+            default=['No GUI yet'],
+            blank=True,
+            null=True
+                )
     session_token = models.CharField(blank=True, max_length=150)
+    invoice_token = models.CharField(blank=True, max_length=150)
 
 
 @receiver(post_save, sender=User)

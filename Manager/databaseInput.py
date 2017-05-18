@@ -18,7 +18,6 @@ def addTegenrekening(transactions):
             ibanList = editCat.Rekening
             pattern = re.compile(y)
             if pattern.search(x['Naam']):
-                print ('match found -->', editCat)
                 if x['Tegenrekening'] is not "":
                     ibanList.append(x['Tegenrekening'])
                     editCat.save()

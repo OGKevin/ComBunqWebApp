@@ -1,6 +1,3 @@
-[submodule "BunqAPI/pythonBunq"]
-	path = BunqAPI/pythonBunq
-	url = https://github.com/madeddie/python-bunq.git
 [submodule "Wiki"]
 	path = Wiki
 	url = https://github.com/OGKevin/ComBunqWebApp.wiki.git

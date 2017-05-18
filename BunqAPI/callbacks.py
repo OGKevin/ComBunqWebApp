@@ -3,8 +3,12 @@ from BunqAPI.encryption import AESCipher
 from django.contrib.sessions.backends.db import SessionStore
 from django.contrib.sessions.models import Session
 from django.core.exceptions import ObjectDoesNotExist
-from apiwrapper.endpoints.endpointcontroller import EndpointController as Endpoints  # noqa
-from apiwrapper.clients.api_client_non_persisting import ApiClientNonPersisting as API2  # noqa
+from apiwrapper.endpoints.controller import Controller as Endpoints  # noqa
+from apiwrapper.clients.api_client import ApiClient as API2  # noqa
+import requests
+import json
+import base64
+import tempfile
 
 
 class callback(AESCipher):
@@ -14,7 +18,7 @@ class callback(AESCipher):
         f = the contents of the users ecnrypted json.
         api_token = the api token from the bunq app.
         user = is the currently logged in user.
-        init_api = is the pythonBunq.bunq.api instance before session token
+        init_api = is the API2 instance before session token
         userID = is the provided user id that can be used to retrieve data
                  of a specific user register to the API key.
         accountID = cardID = id's to retrieve a specific card or account
@@ -23,37 +27,36 @@ class callback(AESCipher):
         s = is the server session token stored in the django sessoin. The key
             for this session is sotred in the database, only logged in users
             can retreive their keys.
-        bunq_api = is the pythonBunq.bunq.api instace after the session token
+        bunq_api = is the API2 instace after the session token
                    is retrieved.
     """
     def __init__(self, f, user, password, userID=None, accountID=None):
         AESCipher.__init__(self, password)
         f = self.decrypt(f['secret'])
-        token = f['Token']['token']
-        server_key = f['ServerPublicKey']['server_public_key']
-        rsa_key = f['privateKey']
-        api_key = f['API']
         self.user = user
-        # self.init_api = API(rsa_key, token, server_key)
         self.init_api = API2(
-            privkey=rsa_key, api_key=api_key, installation_token=token,
-            server_pubkey=server_key)
+            privkey=f['privateKey'],
+            api_key=f['API'],
+            session_token=f['Token']['token'],
+            server_pubkey=f['ServerPublicKey']['server_public_key']
+            )
 
         if userID:
             self.userID = int(userID)
         if accountID:
             self.accountID = int(accountID)
 
-        # self.account_url = 'user/%s/monetary-account/%s' % (self.userID, self.accountID) # noqa
-
         try:
-            s = Session.objects.get(session_key=user.profile.session_token)  # noqa
-            session_token = s.get_decoded()['session_token']
-            bunq_api = API2(
-                privkey=rsa_key, api_key=api_key,
-                session_token=session_token, server_pubkey=server_key)
-            self.bunq_api = Endpoints(bunq_api)
-
+            self.bunq_api = Endpoints(
+                API2(
+                    privkey=f['privateKey'],
+                    api_key=f['API'],
+                    session_token=Session.objects.get(
+                        session_key=user.profile.session_token
+                            ).get_decoded()['session_token'],
+                    server_pubkey=f['ServerPublicKey']['server_public_key']
+                    )
+            )
         except ObjectDoesNotExist:
             print('Sessoin not created yet')
 
@@ -64,7 +67,8 @@ class callback(AESCipher):
         '''
 
         endpoint = Endpoints(self.init_api)
-        return endpoint.device_server.create_new_device_server('dev-server')
+        r = endpoint.device_server.create_new_device_server('dev-server')
+        return r
 
     def start_session(self):
         '''
@@ -84,13 +88,17 @@ class callback(AESCipher):
         endpoint = Endpoints(self.init_api)
         r = endpoint.session_server.create_new_session_server()
 
-        session_token = r['Response'][1]['Token']['token']
-        s = SessionStore()
-        s['session_token'] = session_token
-        s.create()
-        self.user.profile.session_token = s.session_key
-        self.user.save()
-        return r
+        try:
+            session_token = r['Response'][1]['Token']['token']
+            s = SessionStore()
+            s['session_token'] = session_token
+            s.create()
+            self.user.profile.session_token = s.session_key
+            self.user.save()
+        except KeyError:
+            return r
+        else:
+            return r
 
     def users(self):
         '''
@@ -100,9 +108,11 @@ class callback(AESCipher):
         '''
 
         try:
-            return self.bunq_api.user.get_user_by_id(self.userID)
+            r = self.bunq_api.user.get_user_by_id(self.userID)
         except AttributeError:
-            return self.bunq_api.user.get_all_users()
+            r = self.bunq_api.user.get_logged_in_user()
+        finally:
+            return r
 
     def accounts(self):
         '''
@@ -111,17 +121,21 @@ class callback(AESCipher):
         When usign a GET method a specific account can be returned.
         '''
         try:
-            return self.bunq_api.monetary_account.get_account_by_id(
+            r = self.bunq_api.monetary_account.get_account_by_id(
                 self.userID, self.accountID)
         except AttributeError:
             try:
-                return self.bunq_api.monetary_account.get_all_accounts_for_user(  # noqa
+                r =  self.bunq_api.monetary_account.get_all_accounts_for_user(  # noqa
                     self.userID
                     )
             except AttributeError as b:
-                return {
+                r = {
                     'Error': [{'error_description_translated': '%s' % b}]
                 }
+            finally:
+                return r
+        finally:
+            return r
 
     def payment(self, mode='normal', paymentID=''):
         '''
@@ -134,12 +148,14 @@ class callback(AESCipher):
         '''
         if mode == 'normal':
             try:
-                return self.bunq_api.payment.get_all_payments_for_account(
+                r = self.bunq_api.payment.get_all_payments_for_account(
                     self.userID, self.accountID)
             except AttributeError as e:
-                return {
+                r = {
                     'Error': [{'error_description_translated': '%s' % e}]
                 }
+            finally:
+                return r
 
     def card(self):
         '''
@@ -147,14 +163,75 @@ class callback(AESCipher):
         cardID is given
         '''
         try:
-            return self.bunq_api.card.get_card_for_user_by_id(
+            r = self.bunq_api.card.get_card_for_user_by_id(
                 self.userID, self.accountID)
         except AttributeError:
             try:
-                return self.bunq_api.card.get_all_cards_for_user(
+                r = self.bunq_api.card.get_all_cards_for_user(
                     self.userID
                 )
             except AttributeError as b:
-                return {
+                r = {
                     'Error': [{'error_description_translated': '%s' % b}]
                 }
+            finally:
+                return r
+        finally:
+            return r
+
+    def invoice(self):
+        '''
+        Returns the invoice of the user
+        '''
+        def get_pdf(invoice):
+            url = "https://api.sycade.com/btp-int/Invoice/Generate"
+            headers = {
+                'content-type':  "application/json",
+                'cache-control': "no-cache",
+            }
+            r = requests.request("POST", url, data=invoice, headers=headers)
+            if r.status_code == 200:
+                pdf = base64.b64decode(
+                    json.loads(r.text)['Invoice']
+                )
+                temp_file = tempfile.NamedTemporaryFile(
+                                        mode='wb',
+                                        dir='././tmp',
+                                        suffix='.pdf',
+                                        delete=False
+                                        )
+                temp_file.write(pdf)
+                temp_file.close()
+                print (temp_file.name)
+
+                s = SessionStore()
+                s['invoice_pdf'] = temp_file.name
+                s.create()
+                self.user.profile.invoice_token = s.session_key
+                self.user.save()
+
+                r = {
+                    'Response': [{
+                        'status': 'PDF Generated.....'
+                    }]
+                }
+                return r
+            else:
+                r = {
+                    'Error': [{
+                        'error_description_translated': 'PDF generator API returned an error'  # noqa
+                    }]
+                }
+                return r
+
+        try:
+            r = self.bunq_api.invoice.get_all_invoices_for_user(
+                self.userID
+            )
+        except AttributeError as e:
+            r = {
+                'Error': [{'error_description_translated:' '%s' % e}]
+            }
+            return r
+        else:
+            return get_pdf(json.dumps(r['Response'][0]['Invoice']))

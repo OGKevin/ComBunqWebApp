@@ -23,15 +23,13 @@ from apiwrapper.endpoints.share_invite_bank_inquiry import \
     ShareInviteBankInquiry
 from apiwrapper.endpoints.share_invite_bank_response import \
     ShareInviteBankResponse
-from apiwrapper.endpoints.tab import Tab
+from apiwrapper.endpoints.tab_attachment import TabAttachment
 from apiwrapper.endpoints.user import User
 
 
-
-class EndpointController:
+class Controller:
 
     def __init__(self, api_client):
-        self.api_client = api_client
         self.installation = Installation(api_client)
         self.device_server = DeviceServer(api_client)
         self.session_server = SessionServer(api_client)
@@ -56,4 +54,4 @@ class EndpointController:
         self.draft_invite = DraftShareInviteBank(api_client)
         self.share_inquiry = ShareInviteBankInquiry(api_client)
         self.share_response = ShareInviteBankResponse(api_client)
-        self.tab = Tab(api_client)
+        self.tab = TabAttachment(api_client)
