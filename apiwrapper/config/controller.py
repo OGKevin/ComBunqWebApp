@@ -3,31 +3,34 @@ import configparser
 import os
 
 
-class ConfigController:
+class Controller:
     """A controller class for getting and setting key/value pairs 
     in the config file
     """
 
-    section_default = 'BunqAPI'
+    __section_default = 'BunqAPI'
+    __dir_path = os.path.dirname(os.path.abspath(__file__))
+    __default_filepath = '%s/parameters.ini' % __dir_path
 
-    def __init__(self):
+    def __init__(self, filepath=None):
         """Create an instance of a config controller for getting 
         and setting information
         """
-
-        self.path = os.path.dirname(os.path.realpath(__file__)) \
-                    + '/parameters.ini'
+        self.path = self.__default_filepath if filepath is None else filepath
         self.parser = configparser.ConfigParser()
+        if self.__section_default not in self.parser.sections():
+            self.parser.add_section(self.__section_default)
+
         self.parser.read(self.path)
 
-    def get(self, name, section=section_default):
+    def get(self, name, section=__section_default):
         """Returns a value with a given name from the configuration file."""
         try:
             return self.parser[section][name]
         except KeyError:
             return None
 
-    def set(self, name, val, section=section_default):
+    def set(self, name, val, section=__section_default):
         """Sets an entry in the default section of the config file to a 
         specified value
         :param section: [Optional] The section in which an entry 
@@ -39,7 +42,7 @@ class ConfigController:
         if section not in self.parser.sections():
             self.parser.add_section(section)
 
-        self.parser.set(section, name, val)
+        self.parser.set(section, name, str(val))
         self.save()
 
     def save(self):

@@ -2,29 +2,37 @@ import base64
 import copy
 import json
 import uuid
-
 import requests
+
 from cryptography.exceptions import InvalidSignature
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import padding
 
-from apiwrapper.config.configcontroller import ConfigController
-
 
 class ApiClient:
+    """Connects and sends HTTP requests to the Bunq API
+    """
+
     __version_api = 1
-    __version = '0.1.0'
-    # __uri = "https://api.bunq.com/v%d" % __version_api
-    __uri = "https://sandbox.public.api.bunq.com/v%d" % __version_api
+    __agent_name = "complete-bunq-api-test"
+    __agent_version = '0.1.0'
+    _uri_production = "https://api.bunq.com/v%d" % __version_api
+    _uri_sandbox = "https://sandbox.public.api.bunq.com/v%d" % __version_api
+    _use_sandbox = True
 
-    def __init__(self, api_key=None):
-        self.config = ConfigController()
+    __installation_id = None
+    __installation_token = None
+    __server_token = None
 
-        if api_key is None:
-            self.api_key = self.config.get('api_key')
-        else:
-            self.api_key = api_key
+    def __init__(self, privkey, api_key,
+                 session_token=None, server_pubkey=None):
+        self.__privkey = privkey
+        self.__api_key = api_key
+        self._uri = self._uri_sandbox if self._use_sandbox else \
+            self._uri_production
+        self.__session_token = session_token
+        self.__server_pubkey = server_pubkey
 
     def get(self, endpoint):
         result = self.request('GET', endpoint)
@@ -40,7 +48,7 @@ class ApiClient:
     def request(self, method, endpoint, payload=None):
         headers = self.create_headers(method, endpoint, payload)
 
-        url = '%s%s' % (self.__uri, endpoint)
+        url = '%s%s' % (self._uri, endpoint)
 
         return requests.request(method, url, headers=headers, json=payload)
 
@@ -54,7 +62,8 @@ class ApiClient:
 
         return headers_all
 
-    def create_message(self, action, headers, payload):
+    @staticmethod
+    def create_message(action, headers, payload):
         headers_as_text = '\n'.join(['%s: %s' % (k, v) for k, v in sorted(
             headers.items())])
         msg = '%s\n%s\n\n' % (action, headers_as_text)
@@ -72,6 +81,7 @@ class ApiClient:
         :type msg: str
 
         """
+
         return base64.b64encode(
             self.privkey_pem.sign(
                 msg.encode(),
@@ -123,11 +133,35 @@ class ApiClient:
             return True
 
     @property
+    def api_key(self):
+        return self.__api_key
+
+    @api_key.setter
+    def api_key(self, value):
+        self.__api_key = value
+
+    @property
+    def installation_id(self):
+        return self.__installation_id
+
+    @installation_id.setter
+    def installation_id(self, value):
+        self.__installation_id = value
+
+    @property
+    def installation_token(self):
+        return self.__installation_token
+
+    @installation_token.setter
+    def installation_token(self, value):
+        self.__installation_token = value
+
+    @property
     def headers(self):
         request_id = str(uuid.uuid1())
         headers = {
             'Cache-Control': 'no-cache',
-            'User-Agent': 'universal-bunq-api-python/' + self.__version,
+            'User-Agent': '%s/%s' % (self.__agent_name, self.__agent_version),
             'X-Bunq-Client-Request-Id': request_id,
             'X-Bunq-Geolocation': '0 0 0 0 NL',
             'X-Bunq-Language': 'en_US',
@@ -141,68 +175,76 @@ class ApiClient:
         return headers
 
     @property
-    def installation_token(self):
-        return self.config.get('installation_token')
-
-    @installation_token.setter
-    def installation_token(self, value):
-        self.config.set('installation_token', value)
-
-    @property
-    def server_token(self):
-        return self.config.get('server_token')
-
-    @property
-    def session_token(self):
-        return self.config.get('session_token')
-
-    @session_token.setter
-    def session_token(self, value):
-        self.config.set('session_token', value)
-
-    @property
-    def pubkey(self):
-        return self.config.get('key_public')
-
-    @property
     def privkey(self):
-        return self.config.get('key_private')
+        return self.__privkey
 
     @property
     def privkey_pem(self):
-        private_key_bytes = self.privkey
-        if not isinstance(private_key_bytes, bytes):
-            private_key_bytes = private_key_bytes.encode()
+        return self.convert_privkey_to_pem(self.privkey)
+
+    @property
+    def pubkey(self):
+        return self.get_pubkey_from_privkey_pem(self.privkey_pem)
+
+    @property
+    def server_pubkey(self):
+        return self.__server_pubkey
+
+    @server_pubkey.setter
+    def server_pubkey(self, value):
+        self.__server_pubkey = value
+
+    @property
+    def server_pubkey_pem(self):
+        return self.convert_pubkey_to_pem(self.server_pubkey)
+
+    @property
+    def server_token(self):
+        return self.__server_token
+
+    @server_token.setter
+    def server_token(self, value):
+        self.__server_token = value
+
+    @property
+    def session_token(self):
+        return self.__session_token
+
+    @session_token.setter
+    def session_token(self, value):
+        self.__session_token = value
+
+    @staticmethod
+    def get_pubkey_from_privkey_pem(privkey_pem):
+        return privkey_pem.public_key().public_bytes(
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PublicFormat.SubjectPublicKeyInfo
+        ).decode()
+
+    @staticmethod
+    def convert_privkey_to_pem(key):
+        key_bytes = ApiClient.convert_to_bytes(key)
 
         return serialization.load_pem_private_key(
-            private_key_bytes,
+            key_bytes,
             password=None,
             backend=default_backend()
         )
 
-    @property
-    def api_key(self):
-        return self.config.get('api_key')
-
-    @api_key.setter
-    def api_key(self, value):
-        self.config.set('api_key', value)
-
-    @property
-    def server_pubkey(self):
-        return self.config.get('server_pubkey')
-
-    @server_pubkey.setter
-    def server_pubkey(self, value):
-        self.config.set('server_pubkey', value)
-
-    @property
-    def server_pubkey_pem(self):
-        server_pubkey_bytes = self.server_pubkey
-        if not isinstance(server_pubkey_bytes, bytes):
-            server_pubkey_bytes = server_pubkey_bytes.encode()
+    @staticmethod
+    def convert_pubkey_to_pem(key):
+        key_bytes = ApiClient.convert_to_bytes(key)
 
         return serialization.load_pem_public_key(
-            server_pubkey_bytes,
+            key_bytes,
             backend=default_backend()
         )
+
+    @staticmethod
+    def convert_to_bytes(key):
+        key_bytes = key
+        if not isinstance(key_bytes, bytes):
+            key_bytes = key_bytes.encode()
+
+        return key_bytes
+
