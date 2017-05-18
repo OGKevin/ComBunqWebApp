@@ -144,3 +144,15 @@ class TestViewCode(TestCase):
             views.generate(request).status_code,
             200
         )
+
+    def test_decrypt_post(self):
+        data = {
+            'Nothing': 'Nothing',
+            }
+        request = self.factory.post('/decrypt', data=data)
+        request.user = self.user
+
+        self.assertEqual(
+            views.decrypt(request).status_code,
+            200
+            )
