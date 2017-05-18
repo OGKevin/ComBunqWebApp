@@ -4,6 +4,9 @@ from django.contrib.auth.models import User
 from BunqAPI.encryption import AESCipher
 import json
 import base64
+from BunqAPI import views
+from django.http import HttpRequest
+from django.contrib.auth import authenticate
 
 # Create your tests here.
 
@@ -61,7 +64,6 @@ class testView(TestCase):
     Need to find a way to simulate logged in with 2FA
 
     """
-
     def test_generate(self):
         response = self.client.get('/generate', follow=True)
         self.assertEqual(response.status_code, 200)
@@ -79,3 +81,29 @@ class testView(TestCase):
     def test_api(self):
         response = self.client.post('/API/register', follow=True)
         self.assertEqual(response.status_code, 200)
+
+
+class TestViewCode(TestCase):
+    """docstring for TestViewCode."""
+
+    def setUp(self):
+        User.objects.create_user('test', '', 'password')
+        self.user = authenticate(username='test', password='password')
+        self.user.is_verified = lambda: True
+        self.request = HttpRequest
+        self.request.META = {}
+        self.request.user = self.user
+
+    def test_generate_get(self):
+        self.request.method = 'GET'
+        self.assertEqual(
+            views.generate(self.request).status_code,
+            200
+        )
+
+    def test_decrypt_get(self):
+        self.request.method = 'GET'
+        self.assertEqual(
+            views.decrypt(self.request).status_code,
+            200
+        )
