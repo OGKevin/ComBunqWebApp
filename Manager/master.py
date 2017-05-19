@@ -17,7 +17,6 @@ def sortInfo(transactions):
             x['Category'] = 'Other'
 
         else:
-            print (catName, 'found')
             if x['Tegenrekening'] is not "":
                 if catName in catOBJ:
                     catOBJ[catName] += ammount
