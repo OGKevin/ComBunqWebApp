@@ -127,16 +127,10 @@ function createTable(input) {
         }
     }
 
-    // Check to see if initialized
     if (dataTable) {
-        // Wipe the table
-        dataTable.clear();
-
-        // Destroy the containers
-        dataTable.wrapper.parentNode.replaceChild(dataTable.table, dataTable.wrapper);
+      dataTable.destroy()
     }
-
-    // Initialize with the data
+    
     dataTable = new DataTable("#transactionsInfo", options);
 
     $("#transactionsInfo").css('visibility', 'visible');
