@@ -15,6 +15,7 @@ from faker import Faker
 class testScript(TestCase):
     """docstring for testScript.
     This test is supposed to test the scipts."""
+
     def setUp(self):
         fake = Faker()
         self.username = fake.name()
@@ -43,7 +44,7 @@ class testScript(TestCase):
             UnicodeDecodeError,
             AESCipher.decrypt,
             decryt, encryt['secret']
-            )
+        )
 
     def installation_error2(self):
         decryt = AESCipher(self.password)
@@ -73,6 +74,7 @@ class testView(TestCase):
     Need to find a way to simulate logged in with 2FA
 
     """
+
     def test_generate(self):
         response = self.client.get('/generate', follow=True)
         self.assertEqual(response.status_code, 200)
@@ -91,6 +93,10 @@ class testView(TestCase):
         response = self.client.post('/API/register', follow=True)
         self.assertEqual(response.status_code, 200)
 
+    def test_invoice_downloader(self):
+        response = self.client.get('/decrypt/invoice', follow=True)
+        self.assertEqual(response.status_code, 200)
+
 
 class TestViewCode(TestCase):
     """docstring for TestViewCode."""
@@ -104,7 +110,7 @@ class TestViewCode(TestCase):
             digits=True,
             upper_case=True,
             lower_case=True
-            )
+        )
         User.objects.create_user(name, '', pas)
         self.user = authenticate(username=name, password=pas)
         self.user.is_verified = lambda: True
@@ -130,13 +136,13 @@ class TestViewCode(TestCase):
         data = {
             'API': Faker().sha256(raw_output=False),
             'encryption_password': Faker().password(
-                    length=10,
-                    special_chars=True,
-                    digits=True,
-                    upper_case=True,
-                    lower_case=True
-                ),
-            }
+                length=10,
+                special_chars=True,
+                digits=True,
+                upper_case=True,
+                lower_case=True
+            ),
+        }
         request = self.factory.post('/generate', data=data)
         request.user = self.user
 
@@ -148,11 +154,11 @@ class TestViewCode(TestCase):
     def test_decrypt_post(self):
         data = {
             'Nothing': 'Nothing',
-            }
+        }
         request = self.factory.post('/decrypt', data=data)
         request.user = self.user
 
         self.assertEqual(
             views.decrypt(request).status_code,
             200
-            )
+        )
