@@ -3,7 +3,7 @@ from .models import catagories
 
 def sortInfo(transactions):
     '''
-     Does the catagory soorting of the transactions.
+     Does the category soorting of the transactions.
     '''
     catOBJ = {'Other': 0}
     cat = catagories.objects
@@ -14,20 +14,19 @@ def sortInfo(transactions):
             catName = str(filt[0])
         except IndexError:
             catOBJ['Other'] += ammount
-            x['Catagory'] = 'Other'
+            x['Category'] = 'Other'
 
         else:
-            print (catName, 'found')
             if x['Tegenrekening'] is not "":
                 if catName in catOBJ:
                     catOBJ[catName] += ammount
-                    x['Catagory'] = catName
+                    x['Category'] = catName
                 else:
                     catOBJ[catName] = ammount
-                    x['Catagory'] = catName
+                    x['Category'] = catName
             else:
                 catOBJ['Other'] += ammount
-                x['Catagory'] = 'Other'
+                x['Category'] = 'Other'
     returnInfo = {
         'catagories': list(catOBJ.items()), 'transactions': transactions}
     return returnInfo

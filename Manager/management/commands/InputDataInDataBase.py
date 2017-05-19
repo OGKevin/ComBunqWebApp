@@ -75,7 +75,7 @@ def isInDatabase(catInfo):
         cat.get(Naam=catName)
 
     except ObjectDoesNotExist:
-        # NOTE: create catagory
+        # NOTE: create category
         cat.create(Naam=catName, Rekening=[iban], regex=[])
     else:
         editCat = cat.get(Naam=catName)

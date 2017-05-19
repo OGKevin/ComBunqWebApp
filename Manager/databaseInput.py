@@ -41,7 +41,7 @@ def store(data):
     # print (data)
     keyWord = data['keyWord']
     iban = data['iban']
-    p = catagories.objects.get(Naam=data['catagory'])
+    p = catagories.objects.get(Naam=data['category'])
     keyWordList = p.regex
     ibanList = p.Rekening
     if keyWord is not '':

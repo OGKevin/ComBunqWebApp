@@ -20,16 +20,17 @@ class GetNewData(forms.Form):
     JSONTransactions = forms.CharField(
         initial=initialText,
         widget=forms.Textarea, label=''
-        )
+    )
     JSONTransactionsFile = forms.FileField(label='')
 
 
-class catagoriesAdminForm(forms.ModelForm):  # pragma: no cover
+class CategoriesAdminForm(forms.ModelForm):  # pragma: no cover
     """docstring for catagoriesAdmin.
 
     Nothing special here just changing the appearance of the admin page."""
+
     def __init__(self, *args, **kwargs):
-        super(catagoriesAdminForm, self).__init__(*args, **kwargs)
+        super(CategoriesAdminForm, self).__init__(*args, **kwargs)
         self.fields['Rekening'].widget = admin.widgets.AdminTextareaWidget()
         self.fields['regex'].widget = admin.widgets.AdminTextareaWidget()
 
@@ -39,15 +40,15 @@ class inputDatabase(forms.Form):
 
     This is the form shown on /manager/form."""
     catNames = catagories.objects.all()
-    catagory = forms.ModelChoiceField(queryset=catNames, required=True)
+    category = forms.ModelChoiceField(queryset=catNames, required=True)
     iban = forms.CharField(
         max_length=34, strip=True, required=False, validators=[ibanValidator],
         widget=forms.TextInput(attrs={
-                                    'placeholder': 'Enter a valid IBAN number'
-                                    }))
+            'placeholder': 'Enter a valid IBAN number'
+        }))
     keyWord = forms.CharField(
         max_length=30, strip=True, required=False,
         widget=forms.TextInput(attrs={
-                                    'placeholder': 'Enter one or more Keywords'
-                                    }))
+            'placeholder': 'Enter one or more Keywords'
+        }))
     captcha = CaptchaField()
