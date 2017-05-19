@@ -9,8 +9,8 @@ from simple_history.models import HistoricalRecords
 class catagories(models.Model):
     """docstring for catagories.
 
-    This is the catagories model, which sotres the catagory informatoin of
-    each catagory. When this class is called it will return the catagory
+    This is the catagories model, which sotres the category informatoin of
+    each category. When this class is called it will return the category
     name."""
     Naam = models.CharField(max_length=20)
     Rekening = ArrayField(models.CharField(
