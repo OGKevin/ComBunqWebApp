@@ -58,7 +58,7 @@ class testScript(TestCase):
     def test_store(self):
         data = {
             'iban': 'GB82WEST12345698765432',
-            'catagory': 'Bunq Requests',
+            'category': 'Bunq Requests',
             'keyWord': 'test',
             'captcha': ['9e64410d52317ffc9744b11ef878386a4121c1d6', '']}
         store(data)
