@@ -58,7 +58,7 @@ class callback(AESCipher):
                     )
             )
         except ObjectDoesNotExist:
-            print('Sessoin not created yet')
+            pass
 
     def register(self):
         '''
@@ -202,7 +202,6 @@ class callback(AESCipher):
                                         )
                 temp_file.write(pdf)
                 temp_file.close()
-                print (temp_file.name)
 
                 s = SessionStore()
                 s['invoice_pdf'] = temp_file.name
