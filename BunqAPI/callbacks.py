@@ -57,7 +57,7 @@ class callback(AESCipher):
                     server_pubkey=f['ServerPublicKey']['server_public_key']
                     )
             )
-        except ObjectDoesNotExist:
+        except (ObjectDoesNotExist, KeyError):
             pass
 
     def register(self):
@@ -196,8 +196,9 @@ class callback(AESCipher):
                 )
                 temp_file = tempfile.NamedTemporaryFile(
                                         mode='wb',
-                                        dir='././tmp',
+                                        dir=None,
                                         suffix='.pdf',
+                                        prefix='ComBunqWebApp',
                                         delete=False
                                         )
                 temp_file.write(pdf)
