@@ -91,7 +91,6 @@ function sendPost(json, action, template) {
     })
     .done(function(response) {
       r = JSON.parse(response)
-      console.log('R', r)
       if (r.Error !== undefined) {
         show(r.Error[0], true)
       } else if (r.Response[0].Payment) {
@@ -166,8 +165,4 @@ function createTable(input) {
     dataTable.destroy();
   }
   dataTable = new DataTable("#response2", options);
-}
-
-function download_invoice() {
-  
 }
