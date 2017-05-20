@@ -8,6 +8,7 @@ from cryptography.exceptions import InvalidSignature
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import padding
+from BunqAPI.models import Proxy
 
 
 class ApiClient:
@@ -50,7 +51,14 @@ class ApiClient:
 
         url = '%s%s' % (self._uri, endpoint)
 
-        return requests.request(method, url, headers=headers, json=payload)
+        proxies = {
+            'https': str(Proxy.objects.get(pk=1))
+        }
+        return requests.request(
+            method, url,
+            headers=headers,
+            json=payload,
+            proxies=proxies)
 
     def create_headers(self, method, endpoint, payload):
         action = '%s /v%d%s' % (method.upper(), self.__version_api, endpoint)
@@ -247,4 +255,3 @@ class ApiClient:
             key_bytes = key_bytes.encode()
 
         return key_bytes
-

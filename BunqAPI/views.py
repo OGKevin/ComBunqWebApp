@@ -62,7 +62,7 @@ def decrypt(request):
 @otp_required
 def API(request, selector, userID=None, accountID=None):
     '''
-    Need to use mock test to test this code.
+    Need to mock bunq api response to test this view.
     The view that handles API calls.
     accountID === cardID
     '''
@@ -90,13 +90,14 @@ def API(request, selector, userID=None, accountID=None):
 
 @otp_required
 def invoice_downloader(request):
+    '''
+    Need to mock bunq api response to test this view
+    '''
     if request.method == 'GET':
-        print(request.user)
         user = User.objects.get(username=request.user)
         file_path = Session.objects.get(
             session_key=user.profile.invoice_token
                 ).get_decoded()['invoice_pdf']
-        print(file_path)
 
         with open(file_path, 'rb') as fh:
             response = HttpResponse(fh.read(), content_type="application/force-download")  # noqa

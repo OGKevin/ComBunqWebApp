@@ -7,7 +7,9 @@ import base64
 from BunqAPI import views
 from django.contrib.auth import authenticate
 from faker import Faker
-# from pprint import pprint
+from pprint import pprint
+from unittest.mock import patch
+# from BunqAPI.callbacks import callback
 
 # Create your tests here.
 
@@ -15,6 +17,7 @@ from faker import Faker
 class testScript(TestCase):
     """docstring for testScript.
     This test is supposed to test the scipts."""
+
     def setUp(self):
         fake = Faker()
         self.username = fake.name()
@@ -43,7 +46,7 @@ class testScript(TestCase):
             UnicodeDecodeError,
             AESCipher.decrypt,
             decryt, encryt['secret']
-            )
+        )
 
     def installation_error2(self):
         decryt = AESCipher(self.password)
@@ -73,6 +76,7 @@ class testView(TestCase):
     Need to find a way to simulate logged in with 2FA
 
     """
+
     def test_generate(self):
         response = self.client.get('/generate', follow=True)
         self.assertEqual(response.status_code, 200)
@@ -91,6 +95,10 @@ class testView(TestCase):
         response = self.client.post('/API/register', follow=True)
         self.assertEqual(response.status_code, 200)
 
+    def test_invoice_downloader(self):
+        response = self.client.get('/decrypt/invoice', follow=True)
+        self.assertEqual(response.status_code, 200)
+
 
 class TestViewCode(TestCase):
     """docstring for TestViewCode."""
@@ -104,7 +112,7 @@ class TestViewCode(TestCase):
             digits=True,
             upper_case=True,
             lower_case=True
-            )
+        )
         User.objects.create_user(name, '', pas)
         self.user = authenticate(username=name, password=pas)
         self.user.is_verified = lambda: True
@@ -130,13 +138,13 @@ class TestViewCode(TestCase):
         data = {
             'API': Faker().sha256(raw_output=False),
             'encryption_password': Faker().password(
-                    length=10,
-                    special_chars=True,
-                    digits=True,
-                    upper_case=True,
-                    lower_case=True
-                ),
-            }
+                length=10,
+                special_chars=True,
+                digits=True,
+                upper_case=True,
+                lower_case=True
+            ),
+        }
         request = self.factory.post('/generate', data=data)
         request.user = self.user
 
@@ -148,11 +156,57 @@ class TestViewCode(TestCase):
     def test_decrypt_post(self):
         data = {
             'Nothing': 'Nothing',
-            }
+        }
         request = self.factory.post('/decrypt', data=data)
         request.user = self.user
 
         self.assertEqual(
             views.decrypt(request).status_code,
             200
-            )
+        )
+
+
+class TestCallback(TestCase):
+    """docstring for TestCallback."""
+    c = 'apiwrapper.endpoints.'
+
+    def setUp(self):
+        fake = Faker()
+        username = fake.name()
+        password = fake.password()
+        User.objects.create_user(username, '', password)
+        encryption_password = fake.password()
+        data = installation(
+            username,
+            encryption_password,
+            fake.sha1()
+        ).encrypt()
+        self.factory = RequestFactory()
+        self.user = authenticate(username=username, password=password)
+        self.user.is_verified = lambda: True
+
+        self.post_data = {
+            'json': data,
+            'pass': encryption_password,
+        }
+
+        # pprint(self.callback.start_session())
+
+    def get_inoice():
+        f = open('BunqAPI/test_files/invoice.json', 'r')
+        return json.loads(f.read())
+
+    def get_start_session():
+        f = open('BunqAPI/test_files/start_session.json', 'r')
+        return json.loads(f.read())
+
+    @patch('%ssession_server.SessionServer.create_new_session_server' % c, side_effect=get_start_session)  # noqa
+    def test_start_session(self, mock):
+        request = self.factory.post('/API/start_session', data=self.post_data)
+        request.user = self.user
+        r = views.API(request, 'start_session')
+        self.assertEqual(r.status_code, 200)
+
+    # @patch('%sinvoice.Invoice.get_all_invoices_for_user' % c, side_effect=get_inoice)  # noqa
+    # def test_invoice(self, mock):
+    #     pprint(callback.invoice())
