@@ -7,7 +7,9 @@ import base64
 from BunqAPI import views
 from django.contrib.auth import authenticate
 from faker import Faker
-# from pprint import pprint
+from pprint import pprint
+from unittest.mock import patch
+from BunqAPI.callbacks import callback
 
 # Create your tests here.
 
@@ -162,3 +164,16 @@ class TestViewCode(TestCase):
             views.decrypt(request).status_code,
             200
         )
+
+
+class TestCallback(TestCase):
+    """docstring for TestCallback."""
+    c = 'BunqAPI.callbacks.callback.'
+
+    def get_start_session():
+        f = open('BunqAPI/test_files/start_session.json', 'r')
+        return json.loads(f.read())
+
+    @patch('%sstart_session' % c, side_effect=get_start_session)  # noqa
+    def test_start_session(self, mock):
+        pprint(callback.start_session())
