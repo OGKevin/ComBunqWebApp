@@ -57,7 +57,7 @@ class callback(AESCipher):
                     server_pubkey=f['ServerPublicKey']['server_public_key']
                     )
             )
-        except ObjectDoesNotExist:
+        except (ObjectDoesNotExist, KeyError):
             pass
 
     def register(self):
