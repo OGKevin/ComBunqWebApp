@@ -19,7 +19,8 @@ Community BunqWeb is going to be a web interface for bunqers using the [Bunq API
 
 
 
-***Disclaimer: Bunq itself has nothing to do with this project***
+***Disclaimer: Bunq itself has nothing to do with this project.  
+This app is still in development and is not ready to be used with real world API keys.***
 
 
 
