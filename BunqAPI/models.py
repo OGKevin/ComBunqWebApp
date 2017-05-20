@@ -41,5 +41,5 @@ class Proxy(models.Model):
     """docstring for Proxy."""
     proxy_uri = models.CharField(blank=True, max_length=50)
 
-    def __str__(self):
+    def __str__(self):  # pragma: no cover
         return self.proxy_uri

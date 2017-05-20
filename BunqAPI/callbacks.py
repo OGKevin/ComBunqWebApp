@@ -95,7 +95,7 @@ class callback(AESCipher):
             s.create()
             self.user.profile.session_token = s.session_key
             self.user.save()
-        except KeyError:
+        except KeyError:  # pragma: no cover
             return r
         else:
             return r
@@ -128,7 +128,7 @@ class callback(AESCipher):
                 r =  self.bunq_api.monetary_account.get_all_accounts_for_user(  # noqa
                     self.userID
                     )
-            except AttributeError as b:
+            except AttributeError as b:  # pragma: no cover
                 r = {
                     'Error': [{'error_description_translated': '%s' % b}]
                 }
@@ -150,7 +150,7 @@ class callback(AESCipher):
             try:
                 r = self.bunq_api.payment.get_all_payments_for_account(
                     self.userID, self.accountID)
-            except AttributeError as e:
+            except AttributeError as e:  # pragma: no cover
                 r = {
                     'Error': [{'error_description_translated': '%s' % e}]
                 }
@@ -170,7 +170,7 @@ class callback(AESCipher):
                 r = self.bunq_api.card.get_all_cards_for_user(
                     self.userID
                 )
-            except AttributeError as b:
+            except AttributeError as b:  # pragma: no cover
                 r = {
                     'Error': [{'error_description_translated': '%s' % b}]
                 }
@@ -216,7 +216,7 @@ class callback(AESCipher):
                     }]
                 }
                 return r
-            else:
+            else:  # pragma: no cover
                 r = {
                     'Error': [{
                         'error_description_translated': 'PDF generator API returned an error'  # noqa
@@ -228,7 +228,7 @@ class callback(AESCipher):
             r = self.bunq_api.invoice.get_all_invoices_for_user(
                 self.userID
             )
-        except AttributeError as e:
+        except AttributeError as e:  # pragma: no cover
             r = {
                 'Error': [{'error_description_translated:' '%s' % e}]
             }

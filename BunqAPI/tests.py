@@ -186,6 +186,7 @@ class TestCallback(TestCase):
             encryption_password,
             fake.sha1()
         ).encrypt()
+        self.id = fake.random_number()
         self.factory = RequestFactory()
         self.user = authenticate(username=username, password=password)
         self.user.is_verified = lambda: True
@@ -195,14 +196,28 @@ class TestCallback(TestCase):
             'pass': encryption_password,
         }
 
-        # pprint(self.callback.start_session())
-
-    def get_inoice():
+    def get_inoice(a):
         f = open('BunqAPI/test_files/invoice.json', 'r')
         return json.loads(f.read())
 
     def get_start_session():
         f = open('BunqAPI/test_files/start_session.json', 'r')
+        return json.loads(f.read())
+
+    def get_user():
+        f = open('BunqAPI/test_files/users.json', 'r')
+        return json.loads(f.read())
+
+    def get_accounts(a):
+        f = open('BunqAPI/test_files/accounts.json', 'r')
+        return json.loads(f.read())
+
+    def get_payment(a, b):
+        f = open('BunqAPI/test_files/payments.json')
+        return json.loads(f.read())
+
+    def get_card(a):
+        f = open('BunqAPI/test_files/card.json')
         return json.loads(f.read())
 
     @patch('%ssession_server.SessionServer.create_new_session_server' % c, side_effect=get_start_session)  # noqa
@@ -212,6 +227,102 @@ class TestCallback(TestCase):
         r = views.API(request, 'start_session')
         self.assertEqual(r.status_code, 200)
 
-    # @patch('%sinvoice.Invoice.get_all_invoices_for_user' % c, side_effect=get_inoice)  # noqa
-    # def test_invoice(self, mock):
-    #     pprint(callback.invoice())
+    @patch('%ssession_server.SessionServer.create_new_session_server' % c, side_effect=get_start_session)  # noqa
+    @patch('%suser.User.get_logged_in_user' % c, side_effect=get_user)
+    def test_users(self, mock, mock2):
+        user = self.user
+        data = self.post_data
+
+        request1 = self.factory.post('/API/start_session', data=data)
+        request1.user = user
+        views.API(request1, 'start_session')
+
+        request2 = self.factory.post('/API/users', data=data)
+        request2.user = user
+        r2 = views.API(request2, 'users')
+
+        self.assertEqual(r2.status_code, 200)
+
+    @patch('%ssession_server.SessionServer.create_new_session_server' % c, side_effect=get_start_session)  # noqa
+    @patch('%smonetary_account.MonetaryAccount.get_all_accounts_for_user' % c, side_effect=get_accounts)  # noqa
+    def test_accounts(self, mock, mock2):
+        user = self.user
+        data = self.post_data
+
+        request1 = self.factory.post('/API/start_session', data=data)
+        request1.user = user
+        views.API(request1, 'start_session')
+
+        request2 = self.factory.post('/API/accounts', data=data)
+        request2.user = user
+        r2 = views.API(request2, 'accounts', self.id)
+
+        self.assertEqual(r2.status_code, 200)
+
+    @patch('%ssession_server.SessionServer.create_new_session_server' % c, side_effect=get_start_session)  # noqa
+    @patch('%spayment.Payment.get_all_payments_for_account' % c, side_effect=get_payment)  # noqa
+    def test_payment(self, mock, mock2):
+        user = self.user
+        data = self.post_data
+
+        request1 = self.factory.post('/API/start_session', data=data)
+        request1.user = user
+        views.API(request1, 'start_session')
+
+        request2 = self.factory.post('/API/payment', data=data)
+        request2.user = user
+        r2 = views.API(request2, 'payment', self.id, self.id)
+
+        self.assertEqual(r2.status_code, 200)
+
+    @patch('%ssession_server.SessionServer.create_new_session_server' % c, side_effect=get_start_session)  # noqa
+    @patch('%sinvoice.Invoice.get_all_invoices_for_user' % c, side_effect=get_inoice)  # noqa
+    def test_invoice(self, mock, mock2):
+        user = self.user
+        data = self.post_data
+
+        request1 = self.factory.post('/API/start_session', data=data)
+        request1.user = user
+        views.API(request1, 'start_session')
+
+        request2 = self.factory.post('/API/invoice', data=data)
+        request2.user = user
+        r2 = views.API(request2, 'invoice', self.id)
+
+        self.assertEqual(r2.status_code, 200)
+
+    @patch('%ssession_server.SessionServer.create_new_session_server' % c, side_effect=get_start_session)  # noqa
+    @patch('%scard.Card.get_all_cards_for_user' % c, side_effect=get_card)  # noqa
+    def test_card(self, mock, mock2):
+        user = self.user
+        data = self.post_data
+
+        request1 = self.factory.post('/API/start_session', data=data)
+        request1.user = user
+        views.API(request1, 'start_session')
+
+        request2 = self.factory.post('/API/card', data=data)
+        request2.user = user
+        r2 = views.API(request2, 'card', self.id)
+
+        self.assertEqual(r2.status_code, 200)
+
+    @patch('%ssession_server.SessionServer.create_new_session_server' % c, side_effect=get_start_session)  # noqa
+    @patch('%sinvoice.Invoice.get_all_invoices_for_user' % c, side_effect=get_inoice)  # noqa  # noqa
+    def test_invoice_downloader(self, mock, mock2):
+        user = self.user
+        data = self.post_data
+
+        request1 = self.factory.post('/API/start_session', data=data)
+        request1.user = user
+        views.API(request1, 'start_session')
+
+        request2 = self.factory.post('/API/invoice', data=data)
+        request2.user = user
+        views.API(request2, 'invoice', self.id)
+
+        request3 = self.factory.get('/decryt/invoice')
+        request3.user = user
+
+        r = views.invoice_downloader(request3)
+        self.assertEqual(r.status_code, 200)

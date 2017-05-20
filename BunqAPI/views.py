@@ -73,7 +73,7 @@ def API(request, selector, userID=None, accountID=None):
         if f['userID'] in u.profile.GUID:  # noqa
             try:
                 API = callback(f, u, p, userID, accountID)
-            except UnicodeDecodeError:
+            except UnicodeDecodeError:  # pragma: no cover
                 e = {
                 "Error": [{"error_description_translated": "During decpyting something whent wrong, maybe you entreded a wrong password?"}]  # noqa
                 }
@@ -81,7 +81,7 @@ def API(request, selector, userID=None, accountID=None):
 
             r = getattr(API, selector.strip('/'))()
             return HttpResponse(json.dumps(r))
-        else:
+        else:  # pragma: no cover
             e = {
             'Error': [{'error_description_translated': 'This file is not yours to use.'}] # noqa
             }
