@@ -14,14 +14,14 @@ class Profile(models.Model):
     """
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     GUID = ArrayField(
-            models.CharField(
-                        max_length=68,
-                        blank=True,
-                    ),
-            default=['No GUI yet'],
+        models.CharField(
+            max_length=68,
             blank=True,
-            null=True
-                )
+        ),
+        default=['No GUI yet'],
+        blank=True,
+        null=True
+    )
     session_token = models.CharField(blank=True, max_length=150)
     invoice_token = models.CharField(blank=True, max_length=150)
 
@@ -35,3 +35,11 @@ def create_user_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
+
+
+class Proxy(models.Model):
+    """docstring for Proxy."""
+    proxy_uri = models.CharField(blank=True, max_length=50)
+
+    def __str__(self):
+        return self.proxy_uri
