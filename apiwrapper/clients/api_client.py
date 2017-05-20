@@ -52,7 +52,7 @@ class ApiClient:
         url = '%s%s' % (self._uri, endpoint)
 
         proxies = {
-            'https': str(Proxy.objects.get(pk=1))
+            'https': str(Proxy.objects.values_list('proxy_uri', flat=True)[0])
         }
         return requests.request(
             method, url,

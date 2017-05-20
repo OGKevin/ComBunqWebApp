@@ -7,10 +7,9 @@ import base64
 from BunqAPI import views
 from django.contrib.auth import authenticate
 from faker import Faker
-from pprint import pprint
+# from pprint import pprint
 from unittest.mock import patch
-# from BunqAPI.callbacks import callback
-
+from BunqAPI.models import Proxy
 # Create your tests here.
 
 
@@ -20,6 +19,7 @@ class testScript(TestCase):
 
     def setUp(self):
         fake = Faker()
+        Proxy.objects.create(proxy_uri='')
         self.username = fake.name()
         self.password = fake.password(
             length=10,
@@ -77,6 +77,9 @@ class testView(TestCase):
 
     """
 
+    def setUp(self):
+        Proxy.objects.create(proxy_uri='')
+
     def test_generate(self):
         response = self.client.get('/generate', follow=True)
         self.assertEqual(response.status_code, 200)
@@ -105,6 +108,7 @@ class TestViewCode(TestCase):
 
     def setUp(self):
         fake = Faker()
+        Proxy.objects.create(proxy_uri='')
         name = fake.name()
         pas = fake.password(
             length=10,
@@ -172,6 +176,7 @@ class TestCallback(TestCase):
 
     def setUp(self):
         fake = Faker()
+        Proxy.objects.create(proxy_uri='')
         username = fake.name()
         password = fake.password()
         User.objects.create_user(username, '', password)
