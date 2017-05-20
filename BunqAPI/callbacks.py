@@ -67,7 +67,7 @@ class callback(AESCipher):
         '''
 
         endpoint = Endpoints(self.init_api)
-        r = endpoint.device_server.create_new_device_server('dev-server')
+        r = endpoint.device_server.create_new_device_server('ComBunqWebApp')
         return r
 
     def start_session(self):

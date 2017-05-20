@@ -50,7 +50,15 @@ class ApiClient:
 
         url = '%s%s' % (self._uri, endpoint)
 
-        return requests.request(method, url, headers=headers, json=payload)
+        proxies = {
+            'https': '13.80.15.10:23128'
+        }
+
+        return requests.request(
+            method, url,
+            headers=headers,
+            json=payload,
+            proxies=proxies)
 
     def create_headers(self, method, endpoint, payload):
         action = '%s /v%d%s' % (method.upper(), self.__version_api, endpoint)
@@ -247,4 +255,3 @@ class ApiClient:
             key_bytes = key_bytes.encode()
 
         return key_bytes
-
