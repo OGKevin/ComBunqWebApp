@@ -1,15 +1,7 @@
 var dataTable;
 
 $(function() {
-  var jsonObj,
-    userID = '',
-    accountID = '';
-  $("#lock_ids").click(function(event) {
-    userID = $('#userID').val()
-    accountID = $("#accountID").val()
-  });
-
-
+  var jsonObj;
   function get_file() {
     data = $("#id_encrypted_file")[0].files[0]
     var reader = new FileReader()
@@ -30,19 +22,19 @@ $(function() {
     sendPost(jsonObj, $(this)[0].id, start_session_template)
   });
   $("#users").click(function(event) {
-    sendPost(jsonObj, $(this)[0].id + '/' + userID + '/', ussers_template)
+    sendPost(jsonObj, $(this)[0].id + '/' + get_user_id() + '/', ussers_template)
   });
   $("#accounts").click(function(event) {
-    sendPost(jsonObj, $(this)[0].id + '/' + userID + '/' + accountID, accounts_template)
+    sendPost(jsonObj, $(this)[0].id + '/' + get_user_id() + '/' + get_account_id(), accounts_template)
 
 
   });
   $("#payment").click(function(event) {
-    sendPost(jsonObj, $(this)[0].id + '/' + userID + '/' + accountID, payments_template)
+    sendPost(jsonObj, $(this)[0].id + '/' + get_user_id() + '/' + get_account_id(), payments_template)
 
   });
   $("#card").click(function(event) {
-    sendPost(jsonObj, $(this)[0].id + '/' + userID + '/' + accountID, card_template)
+    sendPost(jsonObj, $(this)[0].id + '/' + get_user_id() + '/' + get_account_id(), card_template)
 
   });
   $("#mastercard_action").click(function(event) {});
@@ -62,9 +54,16 @@ $(function() {
     }
   });
   $("#export_invoice").click(function(event) {
-    sendPost(jsonObj, 'invoice/' + userID)
+    sendPost(jsonObj, 'invoice/' + get_user_id())
   });
 });
+
+function get_user_id() {
+   return  $('#userID').val()
+}
+function get_account_id() {
+  return  $("#accountID").val()
+}
 
 function sendPost(json, action, template) {
   $('#loading').html('<i class="fa-5x fa fa-spinner fa-spin" aria-hidden="true"></i>')
