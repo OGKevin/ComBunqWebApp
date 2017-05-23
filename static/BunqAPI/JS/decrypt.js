@@ -14,7 +14,11 @@ $(function() {
     get_file()
     deactivateItems()
     $(this).addClass('active')
-    $("#loading").html('File is loaded')
+    $("#loading").html('File is loaded... Starting session')
+    setTimeout(function () {
+      
+      sendPost(jsonObj, "start_session", start_session_template)
+    }, 500)
 
   });
   $('#register').click(function(event) {

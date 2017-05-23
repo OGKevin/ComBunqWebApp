@@ -35,9 +35,24 @@ def generate(request):
             encryption_password = formKey.cleaned_data['encryption_password']
             data = installation(username, encryption_password, API)
             encryptedData = data.encrypt()
-            response = HttpResponse(
-                encryptedData, content_type='application/force-download')
-            response['Content-Disposition'] = 'attachment; filename=%s' % smart_str('BunqWebApp.json')  # noqa
+
+            registration = callback(
+                json.loads(encryptedData),
+                User.objects.get(username=request.user),
+                encryption_password,
+            ).register()
+
+            if registration.status_code is 200:
+                response = HttpResponse(
+                    encryptedData, content_type='application/force-download')
+                response['Content-Disposition'] = 'attachment; filename=%s' % smart_str('BunqWebApp.json')  # noqa
+            else:
+                error = {
+                    "Error": [{
+                        "error_description_translated": 'something whent wrong while registering your API key wiht the bunq servers'  # noqa
+                    }]
+                }
+                response = HttpResponse(json.dumps(error))
             return response
 
     else:
@@ -110,6 +125,7 @@ def invoice_downloader(request):
                 os.remove(file_path)
 
 
+@otp_required
 def avatar_downloader(request):
     if request.method == 'GET':
         user = User.objects.get(username=request.user)

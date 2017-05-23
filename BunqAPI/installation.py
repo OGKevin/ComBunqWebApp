@@ -6,7 +6,7 @@ from BunqAPI.encryption import AESCipher
 import requests
 from django.contrib.auth.models import User
 import json
-from pprint import pprint
+# from pprint import pprint
 
 
 class installation(object):

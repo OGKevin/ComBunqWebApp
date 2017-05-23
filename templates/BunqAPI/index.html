@@ -26,13 +26,13 @@ body{
   </div>
 </div>
 <h1>Generate private key and installation token</h1>
-<p> <a href=".."><--Back</a> </p>
 
-<form class="" action="" method="post">
+<form class="" action="" method="post" id="form">
   {% csrf_token %}
   {{form}}
-  <button type="sumbit" name="button">generate</button>
+  <button type="sumbit" name="button" id="button">generate</button>
 </form>
+
 <div class="ui grid">
   <div class="six wide column">
     
