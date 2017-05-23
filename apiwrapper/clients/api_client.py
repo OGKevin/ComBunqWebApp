@@ -11,6 +11,8 @@ from cryptography.hazmat.primitives.asymmetric import padding
 
 from apiwrapper.endpoints.controller import Controller as EndpointController
 
+from BunqAPI.models import Proxy
+
 
 class ApiClient:
     """Handles the communication with the Bunq API
@@ -55,7 +57,14 @@ class ApiClient:
 
         url = '%s%s' % (self._uri, endpoint)
 
-        return requests.request(method, url, headers=headers, json=payload)
+        proxies = {
+            'https': str(Proxy.objects.values_list('proxy_uri', flat=True)[0])
+        }
+        return requests.request(
+            method, url,
+            headers=headers,
+            json=payload,
+            proxies=proxies)
 
     def create_headers(self, method, endpoint, payload):
         action = '%s /v%d%s' % (method.upper(), self.__version_api, endpoint)
