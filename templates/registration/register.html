@@ -1,8 +1,43 @@
+<head>
+  {%load static%}
+  <link rel="stylesheet" href="{%static "semantic/dist/semantic.min.css"%}"/>
+  
+</head>
+<style media="screen">
+body{
+  background-image: url("{%static "images/bunq-Desktop.png"%}");
+  background-attachment: fixed;
+  background-size: auto;
+  background-repeat: no-repeat;
+}
+</style>
 
-<p> <a href="../../"><--Back</a> </p>
+<div class="ui inverted menu ">
+  <a class="item" href="../../">Home</a>
+  <a class="item" href="../../Manager">Manager</a>
+  <a class="item" href="../../decrypt">Decrypt</a>
+  <a class="item" href="../../generate">Generate</a>
+  <div class="right menu">
+    <a class="item" href="../register">Sign Up</a>
+    <a class="item" href="../login">Sign in</a>
+    <a class="item" href="../two_factor">Settings</a>
+    <a class="item" href="https://github.com/OGKevin/ComBunqWebApp/wiki">Help</a>
+  </div>
+</div>
+
 
 <form class="" action="" method="post">
 {% csrf_token %}
 {{form}}
 <button type="submit" name="submit">register</button>
 </form>
+<div class="ui grid">
+  <div class="six wide column">
+    
+  </div>
+  <div class="six wide column">
+    <p><a href="https://github.com/OGKevin/ComBunqWebApp"> <i class="github large icon"></i></a>
+    
+    made with <i class="fa fa-heart" aria-hidden="true"></i> by the bunq API contributors team</p>
+  </div>
+</div>
