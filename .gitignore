@@ -181,3 +181,5 @@ BunqAPI/token.json
 BunqAPI/tmp
 apiwrapper/config/parameters.ini
 tmp/
+static/semantic/tasks
+static/semantic/src

@@ -12,4 +12,4 @@ class Avatar(Endpoint):
     def get_avatar_by_id(self, avatar_id):
         endpoint = self._get_base_endpoint(avatar_id)
 
-        return self._make_get_request(endpoint)
+        return self._make_get_request(endpoint, verify=False)

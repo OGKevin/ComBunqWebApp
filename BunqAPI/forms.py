@@ -8,6 +8,15 @@ class GenerateKeyForm(forms.Form):
     Represents the form shown on /generate"""
     API = forms.CharField(label='API key', widget=forms.Textarea)
     encryption_password = forms.CharField(widget=forms.PasswordInput)
+    confirm_password = forms.CharField(widget=forms.PasswordInput)
+
+    def clean(self):
+        password = self.cleaned_data.get('encryption_password')
+        confirm_password = self.cleaned_data.get('confirm_password')
+
+        if password != confirm_password:
+            raise forms.ValidationError('Passwords do not match')
+        return self.cleaned_data
 
 
 class decrypt_form(forms.Form):

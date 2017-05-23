@@ -24,6 +24,7 @@ class Profile(models.Model):
     )
     session_token = models.CharField(blank=True, max_length=150)
     invoice_token = models.CharField(blank=True, max_length=150)
+    avatar_token = models.CharField(blank=True, max_length=150)
 
 
 @receiver(post_save, sender=User)
@@ -41,5 +42,5 @@ class Proxy(models.Model):
     """docstring for Proxy."""
     proxy_uri = models.CharField(blank=True, max_length=50)
 
-    def __str__(self):
+    def __str__(self):  # pragma: no cover
         return self.proxy_uri

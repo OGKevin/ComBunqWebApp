@@ -34,9 +34,10 @@ class Setup:
 
     def setup_w_existing_private_key(self, private_key, save_to_config=True):
         if save_to_config:
-            self.api_client = ApiClientPersisting(self.api_key)
+            self.api_client = ApiClientPersisting(private_key,
+                                                  api_key=self.api_key)
         else:
-            self.api_client = ApiClient(private_key, self.api_key)
+            self.api_client = ApiClient(private_key, api_key=self.api_key)
 
         self.endpoints = endpoints.Controller(self.api_client)
 
@@ -59,7 +60,7 @@ class Setup:
 
     def create_new_key_pair(self, save_to_config=True):
         """Creates a new public/private key pair and saves them to the config file
-        
+
         :return: Prints out a success message
         """
         private_key = rsa.generate_private_key(
@@ -93,16 +94,16 @@ class Setup:
     def register_key_pair(self):
         """Registers a public/private key pair with the Bunq API
         Ref: https://doc.bunq.com/api/1/call/installation/method/post
-        
+
         Saves the installation (user) token and server public key to config
-        
+
         KEY_PRIVATE needs to be set in the config for this method to run
-        
-        :return: Prints out either a success message or 
+
+        :return: Prints out either a success message or
         the Error message of the API
         """
 
-        r = self.endpoints.installation.create_installation()
+        r = self.endpoints.installation.create_installation().json()
         try:
             res = r['Response']
 
@@ -132,15 +133,15 @@ class Setup:
             return False
 
     def create_new_device_server(self):
-        """Creates a new device server at the Bunq API 
+        """Creates a new device server at the Bunq API
         Ref: https://doc.bunq.com/api/1/call/device-server/method/post
-        
+
         API_KEY needs to be set in the config for this method to run
-        
+
         :return: Prints out either a Success or the Error message of the API
         """
         r = self.endpoints.device_server.create_new_device_server(
-            description="New Device")
+            description="New Device").json()
 
         try:
             res = r['Response']
@@ -154,19 +155,19 @@ class Setup:
     def create_new_session(self):
         """Creates a new session at the Bunq API
         Ref: https://doc.bunq.com/api/1/call/session-server/method/post
-        
+
         Saves the session token to config
-        
+
         API_KEY needs to be set in the config for this method to run
-        
-        :return: Prints out either a success message or the Error 
+
+        :return: Prints out either a success message or the Error
         message of the API
         """
 
-        r = self.endpoints.session_server.create_new_session_server()
+        r = self.endpoints.session_server.create_new_session_server().json()
 
         try:
-            res = r["Response"]
+            res = r['Response']
 
             res = [x for x in res if list(x)[0] == 'Token'][0]
             session_token = res['Token']['token']

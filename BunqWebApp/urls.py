@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from Manager.views import Manager, managerForm
-from BunqAPI.views import generate, decrypt, API, invoice_downloader
+from BunqAPI.views import generate, decrypt, API, invoice_downloader, avatar_downloader  # noqa
 from BunqWebApp import views
 from django.contrib.auth import views as auth_views
 
@@ -36,6 +36,7 @@ urlpatterns = [
     url(r'^generate/$', generate, name='generate'),
     url(r'^decrypt/$', decrypt, name='decrypt'),
     url(r'^decrypt/invoice/$', invoice_downloader, name='invoice_downloader'),
+    url(r'^decrypt/avatar/$', avatar_downloader, name='avatar_downloader'),
     url(r'^API/(?P<selector>[\w-]+)$', API, name='API'),  # noqa,
     url(r'^API/(?P<selector>[\w-]+)/(?P<userID>\d*)$', API, name='API'),  # noqa,
     url(r'^API/(?P<selector>[\w-]+)/(?P<userID>\d*)/(?P<accountID>\d*)$', API, name='API'),  # noqa,

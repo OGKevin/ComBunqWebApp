@@ -5,7 +5,11 @@
     border: 1px solid black;
   }
 </style>
-<h1>Accounts</h1> {{#.}} {{#MonetaryAccountBank}}
+<h2 class="ui center aligned icon header">
+  <i class="credit card alternative icon"></i>
+  Accounts
+</h2>
+{{#.}} {{#MonetaryAccountBank}}
 Description: {{description}}<br> Id: {{id}}<br> Balance: {{balance.value}}<br>
 <table>
   <tr>

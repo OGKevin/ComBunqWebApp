@@ -1,27 +1,53 @@
-<h1>Users</h1> {{#.}} {{#UserCompany}}
-<p>
-  Company found
-</p>
-<ul>
-  <p>
-    Name: {{public_nick_name}}
-  </p>
-  <p>
-    UserID: {{id}}
-  </p>
-</ul>
+<h2 class="ui center aligned icon header">
+  <i class="users icon"></i>
+  Users
+</h2>
+
+{{#.}} {{#UserCompany}}
+<table class="ui very basic collapsing celled table">
+  <thead>
+    <tr><th>User</th>
+    <th>ID</th>
+  </tr></thead>
+  <tbody>
+    <tr>
+      <td>
+        <h4 class="ui image header">
+          <img src="./avatar" class="ui mini rounded image">
+          <div class="content">
+            {{public_nick_name}}
+            <div class="sub header">{{status}}
+          </div>
+        </div>
+      </h4></td>
+      <td>
+        {{id}}
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 {{/UserCompany}} {{#UserPerson}}
-<p>
-  Person found
-</p>
-<ul>
-  <p>
-    Name: {{public_nick_name}}
-  </p>
-  <p>
-    UserID: {{id}}
-  </p>
-</ul>
-
+<table class="ui very basic collapsing celled table">
+  <thead>
+    <tr><th>User</th>
+    <th>ID</th>
+  </tr></thead>
+  <tbody>
+    <tr>
+      <td>
+        <h4 class="ui image header">
+          <img src="./avatar" class="ui mini rounded image">
+          <div class="content">
+            {{public_nick_name}}
+            <div class="sub header">{{status}}
+          </div>
+        </div>
+      </h4></td>
+      <td>
+        {{id}}
+      </td>
+    </tr>
+  </tbody>
+</table>
 {{/UserPerson}} {{/.}}

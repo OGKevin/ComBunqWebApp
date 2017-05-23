@@ -3,7 +3,6 @@ source =
   BunqAPI
   BunqWebApp
   Manager
-  apiwrapper
   
 omit =
   */config/*

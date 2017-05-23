@@ -10,6 +10,8 @@ from faker import Faker
 # from pprint import pprint
 from unittest.mock import patch
 from BunqAPI.models import Proxy
+import requests
+import requests_mock
 # Create your tests here.
 
 
@@ -186,6 +188,7 @@ class TestCallback(TestCase):
             encryption_password,
             fake.sha1()
         ).encrypt()
+        self.id = fake.random_number()
         self.factory = RequestFactory()
         self.user = authenticate(username=username, password=password)
         self.user.is_verified = lambda: True
@@ -195,23 +198,183 @@ class TestCallback(TestCase):
             'pass': encryption_password,
         }
 
-        # pprint(self.callback.start_session())
-
-    def get_inoice():
+    @requests_mock.Mocker()
+    def get_inoice(a, m):
         f = open('BunqAPI/test_files/invoice.json', 'r')
-        return json.loads(f.read())
+        m.get('http://fake_url', json=json.loads(f.read()))
+        r = requests.get('http://fake_url')
+        return r
 
-    def get_start_session():
+    @requests_mock.Mocker()
+    def get_start_session(m):
         f = open('BunqAPI/test_files/start_session.json', 'r')
-        return json.loads(f.read())
+        m.get('http://fake_url', json=json.loads(f.read()))
+        r = requests.get('http://fake_url')
+        return r
+
+    @requests_mock.Mocker()
+    def get_user(m):
+        f = open('BunqAPI/test_files/users.json', 'r')
+        m.get('http://fake_url', json=json.loads(f.read()))
+        r = requests.get('http://fake_url')
+        return r
+
+    @requests_mock.Mocker()
+    def get_accounts(a, m):
+        f = open('BunqAPI/test_files/accounts.json', 'r')
+        m.get('http://fake_url', json=json.loads(f.read()))
+        r = requests.get('http://fake_url')
+        return r
+
+    @requests_mock.Mocker()
+    def get_payment(a, b, m):
+        f = open('BunqAPI/test_files/payments.json')
+        m.get('http://fake_url', json=json.loads(f.read()))
+        r = requests.get('http://fake_url')
+        return r
+
+    @requests_mock.Mocker()
+    def get_card(a, m):
+        f = open('BunqAPI/test_files/card.json')
+        m.get('http://fake_url', json=json.loads(f.read()))
+        r = requests.get('http://fake_url')
+        return r
+
+    @requests_mock.Mocker()
+    def get_avatar(a, m):
+        f = open('BunqAPI/test_files/avatar.txt')
+        m.get('http://fake_url', json=f.read())
+        r = requests.get('http://fake_url')
+        return r
 
     @patch('%ssession_server.SessionServer.create_new_session_server' % c, side_effect=get_start_session)  # noqa
-    def test_start_session(self, mock):
+    @patch('%sattachment_public.AttachmentPublic.get_content_of_public_attachment' % c, side_effect=get_avatar)  # noqa
+    def test_start_session(self, mock, mock3):
         request = self.factory.post('/API/start_session', data=self.post_data)
         request.user = self.user
         r = views.API(request, 'start_session')
         self.assertEqual(r.status_code, 200)
 
-    # @patch('%sinvoice.Invoice.get_all_invoices_for_user' % c, side_effect=get_inoice)  # noqa
-    # def test_invoice(self, mock):
-    #     pprint(callback.invoice())
+    @patch('%sattachment_public.AttachmentPublic.get_content_of_public_attachment' % c, side_effect=get_avatar)  # noqa
+    @patch('%ssession_server.SessionServer.create_new_session_server' % c, side_effect=get_start_session)  # noqa
+    @patch('%suser.User.get_logged_in_user' % c, side_effect=get_user)
+    def test_users(self, mock, mock2, mock3):
+        user = self.user
+        data = self.post_data
+
+        request1 = self.factory.post('/API/start_session', data=data)
+        request1.user = user
+        views.API(request1, 'start_session')
+
+        request2 = self.factory.post('/API/users', data=data)
+        request2.user = user
+        r2 = views.API(request2, 'users')
+
+        self.assertEqual(r2.status_code, 200)
+
+    @patch('%ssession_server.SessionServer.create_new_session_server' % c, side_effect=get_start_session)  # noqa
+    @patch('%sattachment_public.AttachmentPublic.get_content_of_public_attachment' % c, side_effect=get_avatar)  # noqa
+    @patch('%smonetary_account.MonetaryAccount.get_all_accounts_for_user' % c, side_effect=get_accounts)  # noqa
+    def test_accounts(self, mock, mock2, mock3):
+        user = self.user
+        data = self.post_data
+
+        request1 = self.factory.post('/API/start_session', data=data)
+        request1.user = user
+        views.API(request1, 'start_session')
+
+        request2 = self.factory.post('/API/accounts', data=data)
+        request2.user = user
+        r2 = views.API(request2, 'accounts', self.id)
+
+        self.assertEqual(r2.status_code, 200)
+
+    @patch('%ssession_server.SessionServer.create_new_session_server' % c, side_effect=get_start_session)  # noqa
+    @patch('%spayment.Payment.get_all_payments_for_account' % c, side_effect=get_payment)  # noqa
+    @patch('%sattachment_public.AttachmentPublic.get_content_of_public_attachment' % c, side_effect=get_avatar)  # noqa
+    def test_payment(self, mock, mock2, mock3):
+        user = self.user
+        data = self.post_data
+
+        request1 = self.factory.post('/API/start_session', data=data)
+        request1.user = user
+        views.API(request1, 'start_session')
+
+        request2 = self.factory.post('/API/payment', data=data)
+        request2.user = user
+        r2 = views.API(request2, 'payment', self.id, self.id)
+
+        self.assertEqual(r2.status_code, 200)
+
+    @patch('%ssession_server.SessionServer.create_new_session_server' % c, side_effect=get_start_session)  # noqa
+    @patch('%sinvoice.Invoice.get_all_invoices_for_user' % c, side_effect=get_inoice)  # noqa
+    @patch('%sattachment_public.AttachmentPublic.get_content_of_public_attachment' % c, side_effect=get_avatar)  # noqa
+    def test_invoice(self, mock, mock2, mock3):
+        user = self.user
+        data = self.post_data
+        userID = self.id
+
+        request1 = self.factory.post('/API/start_session', data=data)
+        request1.user = user
+        views.API(request1, 'start_session')
+
+        request2 = self.factory.post('/API/invoice', data=data)
+        request2.user = user
+        r2 = views.API(request2, 'invoice', userID)
+
+        self.assertEqual(r2.status_code, 200)
+
+    @patch('%ssession_server.SessionServer.create_new_session_server' % c, side_effect=get_start_session)  # noqa
+    @patch('%sattachment_public.AttachmentPublic.get_content_of_public_attachment' % c, side_effect=get_avatar)  # noqa
+    @patch('%scard.Card.get_all_cards_for_user' % c, side_effect=get_card)  # noqa
+    def test_card(self, mock, mock2, mock3):
+        user = self.user
+        data = self.post_data
+
+        request1 = self.factory.post('/API/start_session', data=data)
+        request1.user = user
+        views.API(request1, 'start_session')
+
+        request2 = self.factory.post('/API/card', data=data)
+        request2.user = user
+        r2 = views.API(request2, 'card', self.id)
+
+        self.assertEqual(r2.status_code, 200)
+
+    @patch('%ssession_server.SessionServer.create_new_session_server' % c, side_effect=get_start_session)  # noqa
+    @patch('%sinvoice.Invoice.get_all_invoices_for_user' % c, side_effect=get_inoice)  # noqa  # noqa
+    @patch('%sattachment_public.AttachmentPublic.get_content_of_public_attachment' % c, side_effect=get_avatar)  # noqa
+    def test_invoice_downloader(self, mock, mock2, mock3):
+        user = self.user
+        data = self.post_data
+
+        request1 = self.factory.post('/API/start_session', data=data)
+        request1.user = user
+        views.API(request1, 'start_session')
+
+        request2 = self.factory.post('/API/invoice', data=data)
+        request2.user = user
+        views.API(request2, 'invoice', self.id)
+
+        request3 = self.factory.get('/decryt/invoice')
+        request3.user = user
+
+        r = views.invoice_downloader(request3)
+        self.assertEqual(r.status_code, 200)
+
+    @patch('%ssession_server.SessionServer.create_new_session_server' % c, side_effect=get_start_session)  # noqa
+    @patch('%sinvoice.Invoice.get_all_invoices_for_user' % c, side_effect=get_inoice)  # noqa  # noqa
+    @patch('%sattachment_public.AttachmentPublic.get_content_of_public_attachment' % c, side_effect=get_avatar)  # noqa
+    def test_avatar_downloader(self, mock, mock2, mock3):
+        user = self.user
+        data = self.post_data
+
+        request1 = self.factory.post('/API/start_session', data=data)
+        request1.user = user
+        views.API(request1, 'start_session')
+
+        request3 = self.factory.get('/decryt/avatar')
+        request3.user = user
+
+        r = views.avatar_downloader(request3)
+        self.assertEqual(r.status_code, 200)
