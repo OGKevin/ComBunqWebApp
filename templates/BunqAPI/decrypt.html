@@ -5,8 +5,11 @@
   <script type='text/javascript' src="{%static "jquery-file-download/src/Scripts/jquery.fileDownload.js"%}"></script>
   <script type='text/javascript' src="{%static "mustache/mustache.min.js"%}"></script>
   <script type='text/javascript' src="{%static "vanilla-datatables/vanilla-dataTables.min.js"%}"></script>
+  <script type='text/javascript' src="{%static "vue/dist/vue.common.js"%}"></script>
+  <script type='text/javascript' src="{%static "semantic/dist/semantic.min.js"%}"></script>
   <link rel="stylesheet" href="{%static "vanilla-datatables/vanilla-dataTables.min.css"%}"/>
   <link rel="stylesheet" href="{%static "font-awesome/css/font-awesome.min.css"%}"/>
+  <link rel="stylesheet" href="{%static "semantic/dist/semantic.min.css"%}"/>
 
   <!-- NOTE: load the templates used by Mustache -->
   <script>
@@ -19,6 +22,7 @@
   </script>
 
   <script type='text/javascript' src="{%static "BunqAPI/JS/decrypt.js "%}"></script>
+  <script type='text/javascript' src="{%static "BunqAPI/JS/vue.js "%}"></script>
   <link rel='stylesheet' href="{%static "BunqAPI/CSS/decrypt.css "%}"/>
 </head>
 
@@ -34,24 +38,56 @@
   </div>
   <div class="" id="display">
     <div class="" id="actions">
-      <input type="number" name="" value="" placeholder="user ID" id="userID">
-      <input type="number" name="" value="" placeholder="account/card ID" id="accountID">
-      <input type="number" name="" value="" placeholder=" page(s) 1,2,3,5...." id="pages">
-      <button type="" name="" id="load_file">load file</button>
-      <button type="" name="" id="register">register</button>
-      <button id='start_session' type="" name="">start session</button>
-      <button id="users">users</button>
-      <button id="accounts">accounts</button>
-      <button id="payment">payment</button>
-      <button id="card">cards</button>
-      <!-- <button id='mastercard_action'>mastercard_action</button> -->
-      <button id='export_transactions'>export transactions</button>
-      <button id='export_invoice'>export invoice</button>
-    </div>
+      <div class="ui input">
+        <input type="text" placeholder="user ID" id="userID">
+      </div>
+      <div class="ui input">
+        <input type="text" placeholder="account/card ID" id="accountID">
+      </div>
+      <div class="ui input">
+        <input type="text" placeholder=" page(s) 1,2,3,5...." id="pages">
+      </div>
+    
+    <div class="ui secondary vertical pointing menu">
+    <a class="item" id="load_file">
+      Load file
+    </a>
+    <a class="item" id="register">
+      Register
+    </a>
+    <a class="item" id="start_session">
+      Start session
+    </a>
+    <a class="item" id="users">
+    Users
+    </a>
+    <a class="item" id="accounts">
+      Accounts
+    </a>
+    <a class="item" id="payment">
+      Payment
+    </a>
+    <a class="item" id="card">
+      Cards
+    </a>
+    <!-- <a class="item" id='mastercard_action'>
+      Mastercard_action
+    </a> -->
+    <a class="item" id='export_transactions'>
+      Export transactions
+    </a>
+    <a class="item" id='export_invoice'>
+      Export invoice
+    </a>
+  </div>
+</div>
+
+
     <div class="" id="info">
       <div id="loading"></div>
       <div class="" id="response"></div>
       <table id="response2"></table>
+      <div class="" id="response3"></div>
     </div>
   </div>
 </body>

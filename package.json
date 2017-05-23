@@ -30,6 +30,11 @@
     "js-cookie": "^2.1.4",
     "mustache": "^2.3.0",
     "papaparse": "^4.3.2",
-    "vanilla-datatables": "^1.1.8"
+    "vanilla-datatables": "^1.1.9",
+    "vue": "^2.3.3"
+  },
+  "devDependencies": {
+    "semantic-ui": "^2.2.10"
+    
   }
 }

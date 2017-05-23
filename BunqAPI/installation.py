@@ -2,11 +2,11 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 from apiwrapper.clients.api_client import ApiClient as API  # noqa
-from apiwrapper.endpoints.controller import Controller as Endpoints  # noqa
 from BunqAPI.encryption import AESCipher
 import requests
 from django.contrib.auth.models import User
 import json
+from pprint import pprint
 
 
 class installation(object):
@@ -42,9 +42,9 @@ class installation(object):
 
     def get_token(self):
         rsa_key = self.RSA_key
-        bunq_api = Endpoints(API(rsa_key, None))
+        bunq_api = API(rsa_key)
 
-        r = bunq_api.installation.create_installation()
+        r = bunq_api.endpoints.installation.create_installation().json()
 
         # NOTE: need to rewrite this to check status code...
         try:

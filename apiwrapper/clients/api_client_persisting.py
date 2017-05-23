@@ -11,11 +11,11 @@ class ApiClientPersisting(ApiClient):
     in config/configcontroller.
     """
 
-    def __init__(self, api_key=None):
+    def __init__(self, privkey=None, use_sandbox=True, **kwargs):
         self.config = Controller()
-        self.api_key = self.config.get('api_key') if api_key is None else api_key
-        self._uri = self._uri_sandbox if self._use_sandbox else \
-            self._uri_production
+        self.privkey = privkey if privkey is not None else self.config.get('key_private')
+
+        super().__init__(self.privkey, use_sandbox=use_sandbox, **kwargs)
 
     @property
     def api_key(self):
@@ -45,6 +45,10 @@ class ApiClientPersisting(ApiClient):
     def privkey(self):
         return self.config.get('key_private')
 
+    @privkey.setter
+    def privkey(self, value):
+        self.config.set('key_private', value)
+
     @property
     def server_pubkey(self):
         return self.config.get('server_pubkey')
@@ -68,5 +72,3 @@ class ApiClientPersisting(ApiClient):
     @session_token.setter
     def session_token(self, value):
         self.config.set('session_token', value)
-
-

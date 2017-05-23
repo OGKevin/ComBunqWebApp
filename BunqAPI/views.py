@@ -83,7 +83,7 @@ def API(request, selector, userID=None, accountID=None):
             return HttpResponse(json.dumps(r))
         else:  # pragma: no cover
             e = {
-            'Error': [{'error_description_translated': 'This file is not yours to use.'}] # noqa
+            'Error': [{'error_description_translated': 'This file is not yours to use.'}]  # noqa
             }
             return HttpResponse(json.dumps(e))
 
@@ -97,10 +97,10 @@ def invoice_downloader(request):
         user = User.objects.get(username=request.user)
         file_path = Session.objects.get(
             session_key=user.profile.invoice_token
-                ).get_decoded()['invoice_pdf']
+        ).get_decoded()['invoice_pdf']
 
-        with open(file_path, 'rb') as fh:
-            response = HttpResponse(fh.read(), content_type="application/force-download")  # noqa
+        with open(file_path, 'rb') as f:
+            response = HttpResponse(f.read(), content_type="application/force-download")  # noqa
             response['Content-Disposition'] = 'attachment; filename=%s' % smart_str('BunqWebApp_invoice.pdf')  # noqa
             try:
                 return response
@@ -108,3 +108,21 @@ def invoice_downloader(request):
             #     raise
             finally:
                 os.remove(file_path)
+
+
+def avatar_downloader(request):
+    if request.method == 'GET':
+        user = User.objects.get(username=request.user)
+        file_path = Session.objects.get(
+            session_key=user.profile.avatar_token
+        ).get_decoded()["avatar_png"]
+
+    with open(file_path, 'rb') as f:
+        response = HttpResponse(f.read(), content_type="application/force-download")  # noqa
+        response['Content-Disposition'] = 'attachment; filename=%s' % smart_str('BunqWebApp_avatar.png')  # noqa
+        try:
+            return response
+        # except Exception as e:
+        #     raise
+        finally:
+            os.remove(file_path)

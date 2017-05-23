@@ -13,7 +13,7 @@ install:
   - . $HOME/.nvm/nvm.sh
   - nvm install stable
   - nvm use stable
-  - npm install
+  - npm install --production
 before_script:
   - sudo /etc/init.d/postgresql stop
   - wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -

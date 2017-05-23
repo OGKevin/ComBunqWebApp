@@ -13,10 +13,10 @@ class AttachmentPublic(Endpoint):
     def get_public_attachment_by_id(self, attachment_id):
         endpoint = self._get_base_endpoint(attachment_id)
 
-        return self._make_get_request(endpoint)
+        return self._make_get_request(endpoint, verify=False)
 
     def get_content_of_public_attachment(self, attachment_id):
         endpoint = self._get_base_endpoint(attachment_id)
         endpoint += "/%s" % self.__endpoint_attachment_public_content
 
-        return self._make_get_request(endpoint)
+        return self._make_get_request(endpoint, verify=False)

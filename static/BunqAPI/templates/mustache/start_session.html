@@ -1,34 +1,70 @@
  {{#.}} {{#UserCompany}}
-<h1>Welcome {{public_nick_name}}</h1>
+ <h2 class="ui header">
+   <i class="user icon"></i>
+   <div class="content">
+    Welcome {{public_nick_name}}
+   </div>
+ </h2>
 <p>
   The sessions has started succesfully.
-  <br> For this sessions, {{Token.token}} is being used to sign the API calls.
+  <br> For this sessions, {{1.Token.token}} is being used to sign the API calls.
   <br> {{! NOTE: this needs to be in min}} This sessios will expire in {{session_timeout}} seconds. Unless an API call has been made during the last 30 seconds.
 </p>
-<h1>Users</h1>
-<ul>
-  <p>
-    Name: {{public_nick_name}}
-  </p>
-  <p>
-    UserID: {{id}}
-  </p>
-</ul>
+<table class="ui very basic collapsing celled table">
+  <thead>
+    <tr><th>User</th>
+    <th>ID</th>
+  </tr></thead>
+  <tbody>
+    <tr>
+      <td>
+        <h4 class="ui image header">
+          <img src="./avatar" class="ui mini rounded image">
+          <div class="content">
+            {{public_nick_name}}
+            <div class="sub header">{{status}}
+          </div>
+        </div>
+      </h4></td>
+      <td>
+        {{id}}
+      </td>
+    </tr>
+  </tbody>
+</table>
 {{/UserCompany}} {{#UserPerson}}
-<h1>Welcome {{public_nick_name}}</h1>
+<h2 class="ui header">
+  <i class="user icon"></i>
+  <div class="content">
+   Welcome {{public_nick_name}}
+  </div>
+</h2>
 <p>
   The sessions has started succesfully.
-  <br> For this sessions, {{Token.token}} is being used to sign the API calls.
+  <br> For this sessions, {{1.Token.token}} is being used to sign the API calls.
   <br> {{! NOTE: this needs to be in min}} This sessios will expire in {{session_timeout}} seconds. Unless an API call has been made during the last 30 seconds.
 </p>
-<h1>Users</h1>
 
-<ul>
-  <p>
-    Name: {{public_nick_name}}
-  </p>
-  <p>
-    UserID: {{id}}
-  </p>
-</ul>
+<table class="ui very basic collapsing celled table">
+  <thead>
+    <tr><th>User</th>
+    <th>ID</th>
+  </tr></thead>
+  <tbody>
+    <tr>
+      <td>
+        <h4 class="ui image header">
+          <img src="./avatar" class="ui mini rounded image">
+          <div class="content">
+            {{public_nick_name}}
+            <div class="sub header">{{status}}
+          </div>
+        </div>
+      </h4></td>
+      <td>
+        {{id}}
+      </td>
+    </tr>
+  </tbody>
+</table>
 {{/UserPerson}} {{/.}}

@@ -1,9 +1,8 @@
-# from pprint import pprint
 from BunqAPI.encryption import AESCipher
 from django.contrib.sessions.backends.db import SessionStore
 from django.contrib.sessions.models import Session
 from django.core.exceptions import ObjectDoesNotExist
-from apiwrapper.endpoints.controller import Controller as Endpoints  # noqa
+# from apiwrapper.endpoints.controller import Controller as Endpoints  # noqa
 from apiwrapper.clients.api_client import ApiClient as API2  # noqa
 import requests
 import json
@@ -30,6 +29,7 @@ class callback(AESCipher):
         bunq_api = is the API2 instace after the session token
                    is retrieved.
     """
+
     def __init__(self, f, user, password, userID=None, accountID=None):
         AESCipher.__init__(self, password)
         f = self.decrypt(f['secret'])
@@ -37,9 +37,9 @@ class callback(AESCipher):
         self.init_api = API2(
             privkey=f['privateKey'],
             api_key=f['API'],
-            session_token=f['Token']['token'],
+            installation_token=f['Token']['token'],
             server_pubkey=f['ServerPublicKey']['server_public_key']
-            )
+        )
 
         if userID:
             self.userID = int(userID)
@@ -47,16 +47,15 @@ class callback(AESCipher):
             self.accountID = int(accountID)
 
         try:
-            self.bunq_api = Endpoints(
-                API2(
-                    privkey=f['privateKey'],
-                    api_key=f['API'],
-                    session_token=Session.objects.get(
-                        session_key=user.profile.session_token
-                            ).get_decoded()['session_token'],
-                    server_pubkey=f['ServerPublicKey']['server_public_key']
-                    )
+            self.bunq_api = API2(
+                privkey=f['privateKey'],
+                api_key=f['API'],
+                session_token=Session.objects.get(
+                    session_key=user.profile.session_token
+                ).get_decoded()['session_token'],
+                server_pubkey=f['ServerPublicKey']['server_public_key']
             )
+
         except (ObjectDoesNotExist, KeyError):
             pass
 
@@ -66,8 +65,7 @@ class callback(AESCipher):
         https://doc.bunq.com/api/1/call/device-server/method/post
         '''
 
-        endpoint = Endpoints(self.init_api)
-        r = endpoint.device_server.create_new_device_server('ComBunqWebApp')
+        r = self.init_api.endpoints.device_server.create_new_device_server('ComBunqWebApp').json()  # noqa
         return r
 
     def start_session(self):
@@ -85,20 +83,30 @@ class callback(AESCipher):
 
         When the session expires the token will be unusbale.
         '''
-        endpoint = Endpoints(self.init_api)
-        r = endpoint.session_server.create_new_session_server()
+        r = self.init_api.endpoints.session_server.create_new_session_server()
 
         try:
-            session_token = r['Response'][1]['Token']['token']
+            session_token = r.json()['Response'][1]['Token']['token']
+        except KeyError:  # pragma: no cover
+            return r.json()
+        else:
             s = SessionStore()
             s['session_token'] = session_token
             s.create()
             self.user.profile.session_token = s.session_key
             self.user.save()
-        except KeyError:  # pragma: no cover
-            return r
-        else:
-            return r
+
+            try:
+                avatar_id = r.json()[
+                    'Response'][2]['UserCompany']['avatar']['image'][0]['attachment_public_uuid']  # noqa
+            except KeyError:
+                avatar_id = r.json()[
+                    'Response'][2]['UserPerson']['avatar']['image'][0]['attachment_public_uuid']  # noqa
+                self.get_avatar(avatar_id)
+            else:
+                self.get_avatar(avatar_id)
+
+            return r.json()
 
     def users(self):
         '''
@@ -108,11 +116,21 @@ class callback(AESCipher):
         '''
 
         try:
-            r = self.bunq_api.user.get_user_by_id(self.userID)
+            r = self.bunq_api.endpoints.user.get_user_by_id(self.userID)
         except AttributeError:
-            r = self.bunq_api.user.get_logged_in_user()
+            r = self.bunq_api.endpoints.user.get_logged_in_user()
         finally:
-            return r
+            if 'Response' in r.json():
+                try:
+                    avatar_id = r.json()[
+                        'Response'][0]['UserCompany']['avatar']['image'][0]['attachment_public_uuid']  # noqa
+                except KeyError:
+                    avatar_id = r.json()[
+                        'Response'][0]['UserPerson']['avatar']['image'][0]['attachment_public_uuid']  # noqa
+                    self.get_avatar(avatar_id)
+                else:
+                    self.get_avatar(avatar_id)
+            return r.json()
 
     def accounts(self):
         '''
@@ -121,13 +139,13 @@ class callback(AESCipher):
         When usign a GET method a specific account can be returned.
         '''
         try:
-            r = self.bunq_api.monetary_account.get_account_by_id(
-                self.userID, self.accountID)
+            r = self.bunq_api.endpoints.monetary_account.get_account_by_id(
+                self.userID, self.accountID).json()
         except AttributeError:
             try:
-                r =  self.bunq_api.monetary_account.get_all_accounts_for_user(  # noqa
+                r = self.bunq_api.endpoints.monetary_account.get_all_accounts_for_user(  # noqa
                     self.userID
-                    )
+                    ).json()
             except AttributeError as b:  # pragma: no cover
                 r = {
                     'Error': [{'error_description_translated': '%s' % b}]
@@ -148,8 +166,8 @@ class callback(AESCipher):
         '''
         if mode == 'normal':
             try:
-                r = self.bunq_api.payment.get_all_payments_for_account(
-                    self.userID, self.accountID)
+                r = self.bunq_api.endpoints.payment.get_all_payments_for_account(  # noqa
+                    self.userID, self.accountID).json()
             except AttributeError as e:  # pragma: no cover
                 r = {
                     'Error': [{'error_description_translated': '%s' % e}]
@@ -163,13 +181,13 @@ class callback(AESCipher):
         cardID is given
         '''
         try:
-            r = self.bunq_api.card.get_card_for_user_by_id(
-                self.userID, self.accountID)
+            r = self.bunq_api.card.endpoints.get_card_for_user_by_id(
+                self.userID, self.accountID).json()
         except AttributeError:
             try:
-                r = self.bunq_api.card.get_all_cards_for_user(
+                r = self.bunq_api.endpoints.card.get_all_cards_for_user(
                     self.userID
-                )
+                ).json()
             except AttributeError as b:  # pragma: no cover
                 r = {
                     'Error': [{'error_description_translated': '%s' % b}]
@@ -195,12 +213,12 @@ class callback(AESCipher):
                     json.loads(r.text)['Invoice']
                 )
                 temp_file = tempfile.NamedTemporaryFile(
-                                        mode='wb',
-                                        dir=None,
-                                        suffix='.pdf',
-                                        prefix='ComBunqWebApp',
-                                        delete=False
-                                        )
+                    mode='wb',
+                    dir=None,
+                    suffix='.pdf',
+                    prefix='ComBunqWebApp',
+                    delete=False
+                )
                 temp_file.write(pdf)
                 temp_file.close()
 
@@ -225,9 +243,9 @@ class callback(AESCipher):
                 return r
 
         try:
-            r = self.bunq_api.invoice.get_all_invoices_for_user(
+            r = self.bunq_api.endpoints.invoice.get_all_invoices_for_user(
                 self.userID
-            )
+            ).json()
         except AttributeError as e:  # pragma: no cover
             r = {
                 'Error': [{'error_description_translated:' '%s' % e}]
@@ -235,3 +253,24 @@ class callback(AESCipher):
             return r
         else:
             return get_pdf(json.dumps(r['Response'][0]['Invoice']))
+
+    def get_avatar(self, avatar_id):
+        r = self.init_api.endpoints.attachment_public.get_content_of_public_attachment(avatar_id)  # noqa
+
+        png = r.content
+
+        temp_file = tempfile.NamedTemporaryFile(
+            mode='wb',
+            dir=None,
+            suffix='.png',
+            prefix='ComBunqWebApp',
+            delete=False
+        )
+        temp_file.write(png)
+        temp_file.close()
+
+        s = SessionStore()
+        s['avatar_png'] = temp_file.name
+        s.create()
+        self.user.profile.avatar_token = s.session_key
+        self.user.save()

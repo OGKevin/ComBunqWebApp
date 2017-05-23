@@ -1,17 +1,30 @@
-<h3>Cards</h3>
-{{#.}}{{#CardDebit}}
-card ID = {{id}}
-<br>
-Status = {{status}}
-<br>
-Expire date = {{expiry_date}}
-<br>
-Name on card = {{name_on_card}}
-<br>
-bank account ID = {{label_monetary_account_current.id}}
-<br>
-bank account description  = {{label_monetary_account_current.description}}
-{{/CardDebit}}
+<h2 class="ui center aligned icon header">
+  <i class="credit card alternative icon"></i>
+  Cards
+</h2>
+{{#.}}
+<table class="ui basic table">
+  <thead>
+    <tr>
+      <th>Card ID</th>
+      <th>Status</th>
+      <th>Name on card</th>
+      <th>Current IBAN</th>
+      <th>Expire date</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#CardDebit}}
+    <tr>
+      <td>{{id}}</td>
+      <td>{{status}}</td>
+      <td>{{name_on_card}}</td>
+      <td>{{label_monetary_account_current.iban}}</td>
+      <td>{{expiry_date}}</td>
+    </tr>
+    {{/CardDebit}}
+  </tbody>
+</table>
 {{/.}}
 {{^.}}
 No cards found

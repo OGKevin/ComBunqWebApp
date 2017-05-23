@@ -7,9 +7,9 @@ h1 {
   flex-flow: column;
   align-items: left;
 }
-th,td {
+/*th,td {
   border: 1px solid black;
-}
+}*/
 #topBar {
   display: flex;
   flex-direction: row;

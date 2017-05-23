@@ -24,6 +24,7 @@ class Profile(models.Model):
     )
     session_token = models.CharField(blank=True, max_length=150)
     invoice_token = models.CharField(blank=True, max_length=150)
+    avatar_token = models.CharField(blank=True, max_length=150)
 
 
 @receiver(post_save, sender=User)

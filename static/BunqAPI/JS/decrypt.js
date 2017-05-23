@@ -12,33 +12,50 @@ $(function() {
   }
   $("#load_file").click(function(event) {
     get_file()
+    deactivateItems()
+    $(this).addClass('active')
     $("#loading").html('File is loaded')
+
   });
   $('#register').click(function(event) {
+    deactivateItems()
+    $(this).addClass('active')
     sendPost(jsonObj, $(this)[0].id, register_template)
   });
 
   $('#start_session').click(function(event) {
+    deactivateItems()
+    $(this).addClass('active')
     sendPost(jsonObj, $(this)[0].id, start_session_template)
   });
   $("#users").click(function(event) {
+    deactivateItems()
+    $(this).addClass('active')
     sendPost(jsonObj, $(this)[0].id + '/' + get_user_id() + '/', ussers_template)
   });
   $("#accounts").click(function(event) {
+    deactivateItems()
+    $(this).addClass('active')
     sendPost(jsonObj, $(this)[0].id + '/' + get_user_id() + '/' + get_account_id(), accounts_template)
 
 
   });
   $("#payment").click(function(event) {
+    deactivateItems()
+    $(this).addClass('active')
     sendPost(jsonObj, $(this)[0].id + '/' + get_user_id() + '/' + get_account_id(), payments_template)
 
   });
   $("#card").click(function(event) {
+    deactivateItems()
+    $(this).addClass('active')
     sendPost(jsonObj, $(this)[0].id + '/' + get_user_id() + '/' + get_account_id(), card_template)
 
   });
   $("#mastercard_action").click(function(event) {});
   $("#export_transactions").click(function(event) {
+    deactivateItems()
+    $(this).addClass('active')
     pages = $("#pages").val()
     if (dataTable) {
       curentPage = dataTable.currentPage
@@ -54,6 +71,8 @@ $(function() {
     }
   });
   $("#export_invoice").click(function(event) {
+    deactivateItems()
+    $(this).addClass('active')
     sendPost(jsonObj, 'invoice/' + get_user_id())
   });
 });
@@ -66,7 +85,7 @@ function get_account_id() {
 }
 
 function sendPost(json, action, template) {
-  $('#loading').html('<i class="fa-5x fa fa-spinner fa-spin" aria-hidden="true"></i>')
+  $('#loading').html('<div class="ui segment"><div class="ui active inverted dimmer"><div class="ui large text loader">Loading</div></div>')
   csrftoken = Cookies.get('csrftoken')
 
   function csrfSafeMethod(method) {
@@ -164,4 +183,8 @@ function createTable(input) {
     dataTable.destroy();
   }
   dataTable = new DataTable("#response2", options);
+}
+
+function deactivateItems() {
+  $("#load_file, #register, #start_session, #users, #accounts, #lock_ids, #payment, #card, #mastercard_action, #export_transactions, #export_invoice").removeClass('active')
 }
