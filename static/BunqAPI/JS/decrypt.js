@@ -14,7 +14,11 @@ $(function() {
     get_file()
     deactivateItems()
     $(this).addClass('active')
-    $("#loading").html('File is loaded')
+    $("#loading").html('File is loaded... Starting session')
+    setTimeout(function () {
+      
+      sendPost(jsonObj, "start_session", start_session_template)
+    }, 500)
 
   });
   $('#register').click(function(event) {
@@ -85,7 +89,7 @@ function get_account_id() {
 }
 
 function sendPost(json, action, template) {
-  $('#loading').html('<div class="ui segment"><div class="ui active inverted dimmer"><div class="ui large text loader">Loading</div></div>')
+  $('#loading').html('<div class="ui segment"><div class="ui active inverted dimmer"><div class="ui large text loader"></div></div>')
   csrftoken = Cookies.get('csrftoken')
 
   function csrfSafeMethod(method) {
@@ -115,7 +119,7 @@ function sendPost(json, action, template) {
         createTable(r.Response)
       } else if (r.Response[0].status) {
         $("#response").html(r.Response[0].status)
-        $.fileDownload('./invoice')
+        $.fileDownload('./download/invoice')
         .done(function () { alert('File download a success!'); })
         .fail(function () { alert('File download failed!'); });
       } else if (r.Response) {

@@ -7,7 +7,8 @@ class GenerateKeyForm(forms.Form):
     """docstring for GenerateKeyForm.
     Represents the form shown on /generate"""
     API = forms.CharField(label='API key', widget=forms.Textarea)
-    encryption_password = forms.CharField(widget=forms.PasswordInput)
+    encryption_password = forms.CharField(
+        widget=forms.PasswordInput, min_length=8)
     confirm_password = forms.CharField(widget=forms.PasswordInput)
 
     def clean(self):

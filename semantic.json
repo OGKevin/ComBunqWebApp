@@ -1,5 +1,5 @@
 {
-  "base": "static/semantic/",
+  "base": "static/semantic",
   "paths": {
     "source": {
       "config": "src/theme.config",
@@ -19,13 +19,24 @@
   "autoInstall": false,
   "rtl": false,
   "version": "2.2.10",
-  "components":[
+  "components": [
     "sidebar",
     "menu",
     "loader",
     "input",
     "icon",
     "header",
-    "table"
+    "table",
+    "grid",
+    "button",
+    "dropdown",
+    "list",
+    "segment",
+    "divider",
+    "image",
+    "head",
+    "reset",
+    "container",
+    "transition"
   ]
 }

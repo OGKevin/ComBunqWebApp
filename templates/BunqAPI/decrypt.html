@@ -26,7 +26,29 @@
   <link rel='stylesheet' href="{%static "BunqAPI/CSS/decrypt.css "%}"/>
 </head>
 
+<style media="screen">
+body{
+  background-image: url("{%static "images/bunq-Desktop.png"%}");
+  background-attachment: fixed;
+  background-size: auto;
+  background-repeat: no-repeat;
+}
+</style>
+
 <body id="body">
+  <div class="ui inverted menu ">
+    <a class="item" href="../">Home</a>
+    <a class="item" href="../Manager">Manager</a>
+    <a class="item" href="./">Decrypt</a>
+    <a class="item" href="../generate">Generate</a>
+    <div class="right menu">
+      <a class="item" href="../account/register">Sign Up</a>
+      <a class="item" href="../account/login">Sign in</a>
+      <a class="item" href="../account/two_factor">Settings</a>
+      <a class="item" href="https://github.com/OGKevin/ComBunqWebApp/wiki">Help</a>
+    </div>
+  </div>
+  </div>
    <div id="topBar">
      <p>
        <a href="..">
@@ -52,9 +74,9 @@
     <a class="item" id="load_file">
       Load file
     </a>
-    <a class="item" id="register">
+    <!-- <a class="item" id="register">
       Register
-    </a>
+    </a> -->
     <a class="item" id="start_session">
       Start session
     </a>
@@ -88,6 +110,16 @@
       <div class="" id="response"></div>
       <table id="response2"></table>
       <div class="" id="response3"></div>
+    </div>
+  </div>
+  <div class="ui grid">
+    <div class="six wide column">
+      
+    </div>
+    <div class="six wide column">
+      <p><a href="https://github.com/OGKevin/ComBunqWebApp"> <i class="github large icon"></i></a>
+      
+      made with <i class="fa fa-heart" aria-hidden="true"></i> by the bunq API contributors team</p>
     </div>
   </div>
 </body>

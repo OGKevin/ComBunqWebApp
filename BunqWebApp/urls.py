@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from Manager.views import Manager, managerForm
-from BunqAPI.views import generate, decrypt, API, invoice_downloader, avatar_downloader  # noqa
+from BunqAPI.views import GenerateView, DecryptView, APIView, FileDownloader
 from BunqWebApp import views
 from django.contrib.auth import views as auth_views
 
@@ -33,13 +33,12 @@ urlpatterns = [
     url(r'^account/logout/$', auth_views.logout, name='logout'),
     url(r'^Manager/(?i)$', Manager, name='Manager'),
     url(r'^Manager/form/(?i)$', managerForm, name='managerForm'),
-    url(r'^generate/$', generate, name='generate'),
-    url(r'^decrypt/$', decrypt, name='decrypt'),
-    url(r'^decrypt/invoice/$', invoice_downloader, name='invoice_downloader'),
-    url(r'^decrypt/avatar/$', avatar_downloader, name='avatar_downloader'),
-    url(r'^API/(?P<selector>[\w-]+)$', API, name='API'),  # noqa,
-    url(r'^API/(?P<selector>[\w-]+)/(?P<userID>\d*)$', API, name='API'),  # noqa,
-    url(r'^API/(?P<selector>[\w-]+)/(?P<userID>\d*)/(?P<accountID>\d*)$', API, name='API'),  # noqa,
+    url(r'^generate/$', GenerateView.as_view(), name='generate'),
+    url(r'^decrypt/$', DecryptView.as_view(), name='decrypt'),
+    url(r'^decrypt/download/(?P<action>[\w-]+)$', FileDownloader.as_view(), name='downloader'),  # noqa
+    url(r'^API/(?P<selector>[\w-]+)$', APIView.as_view(), name='API'),  # noqa,
+    url(r'^API/(?P<selector>[\w-]+)/(?P<userID>\d*)$', APIView.as_view(), name='API'),  # noqa,
+    url(r'^API/(?P<selector>[\w-]+)/(?P<userID>\d*)/(?P<accountID>\d*)$', APIView.as_view(), name='API'),  # noqa,
     url(r'^captcha/', include('captcha.urls')),
     url(r'', include('two_factor.urls', 'two_factor')),
 ] + static(settings.STATIC_URL)

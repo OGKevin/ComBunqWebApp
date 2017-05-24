@@ -65,7 +65,7 @@ class callback(AESCipher):
         https://doc.bunq.com/api/1/call/device-server/method/post
         '''
 
-        r = self.init_api.endpoints.device_server.create_new_device_server('ComBunqWebApp').json()  # noqa
+        r = self.init_api.endpoints.device_server.create_new_device_server('ComBunqWebApp')  # noqa
         return r
 
     def start_session(self):
