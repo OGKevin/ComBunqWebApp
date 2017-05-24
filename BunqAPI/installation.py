@@ -4,29 +4,29 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 from apiwrapper.clients.api_client import ApiClient as API  # noqa
 from BunqAPI.encryption import AESCipher
 import requests
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 import json
 # from pprint import pprint
 
 
 class installation(object):
     """docstring for installation.
-    
+
     Genereating information to store in the encrypted JSON.
     Each generation will create a new GUID and store this in the user's profile.  # noqa
-    
+
     'r': is the instalation token used https://doc.bunq.com/api/1/call/installation  # noqa
          and the publick server key.
-    
+
     'password': is the password used to encrypted the JSON file
-    
+
     'GUID': gets generated each time the user generates a new file. This is
             used to check if the file actually belogs to the logged in user
-            
+
     'RSA_key': the RSA key used to make API calls"""
-    def __init__(self, username, password, API_KEY):
-        self.username = username
-        self.user = User.objects.get(username=self.username)
+
+    def __init__(self, user, password, API_KEY):
+        self.user = user
         self.user_guid = self.user.profile.GUID
         self.password = password
         self.API_KEY = API_KEY
@@ -63,16 +63,16 @@ class installation(object):
             'API': self.API_KEY,
             'ServerPublicKey': self.r['ServerPublicKey']
             # NOTE: need to add this
-            }
+        }
         if len(self.user_guid) > 1:
             del self.user_guid[0]
 
         self.user_guid.append(self.GUID)
-        self.user.save()
+        # self.user.save()
         k = AESCipher(self.password)
         secret = AESCipher.encrypt(k, json.dumps(d))
         d2 = {
-            'username': self.username,
+            'username': self.user.username,
             'secret': secret,
             'userID': self.GUID
         }
@@ -88,9 +88,9 @@ class installation(object):
 
         # output PEM encoded version of private key
         privateKey = private_key.private_bytes(
-          encoding=serialization.Encoding.PEM,
-          format=serialization.PrivateFormat.PKCS8,
-          encryption_algorithm=serialization.NoEncryption()
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PrivateFormat.PKCS8,
+            encryption_algorithm=serialization.NoEncryption()
         )
 
         return privateKey.decode()

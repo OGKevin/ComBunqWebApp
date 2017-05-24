@@ -22,20 +22,20 @@ class testScript(TestCase):
     def setUp(self):
         fake = Faker()
         Proxy.objects.create(proxy_uri='')
-        self.username = fake.name()
+        username = fake.name()
         self.password = fake.password(
             length=10,
             special_chars=True,
             digits=True,
             upper_case=True,
             lower_case=True)
-        user = User.objects.create_user(self.username, '', self.password)
-        user.save()
+        self.user = User.objects.create_user(username, '', self.password)
+        self.user.save()
 
     def installation(self):
         decryt = AESCipher(self.password)
         encryt = json.loads(installation(
-            self.username, self.password, 'API_KEY').encrypt())
+            self.user, self.password, 'API_KEY').encrypt())
         d = AESCipher.decrypt(decryt, encryt['secret'])
         self.assertIs(len(d), 4)
         self.assertTrue(isinstance(d, dict))
@@ -43,7 +43,7 @@ class testScript(TestCase):
     def installation_error1(self):
         decryt = AESCipher('wrong password')
         encryt = json.loads(installation(
-            self.username, self.password, 'API_KEY').encrypt())
+            self.user, self.password, 'API_KEY').encrypt())
         self.assertRaises(
             UnicodeDecodeError,
             AESCipher.decrypt,
@@ -53,7 +53,7 @@ class testScript(TestCase):
     def installation_error2(self):
         decryt = AESCipher(self.password)
         encryt = json.loads(installation(
-            self.username, self.password, 'API_KEY').encrypt())
+            self.user, self.password, 'API_KEY').encrypt())
         secret = encryt['secret'] = 'destroyed'
         self.assertRaises(
             base64.binascii.Error,
@@ -62,7 +62,7 @@ class testScript(TestCase):
         )
 
     def GUIDs(self):
-        guid = User.objects.get(username=self.username).profile.GUID
+        guid = self.user.profile.GUID
         self.assertTrue(isinstance(guid, list))
 
     def test_run(self):
@@ -101,7 +101,11 @@ class testView(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_invoice_downloader(self):
-        response = self.client.get('/decrypt/invoice', follow=True)
+        response = self.client.get('/decrypt/download/invoice', follow=True)
+        self.assertEqual(response.status_code, 200)
+
+    def test_avatar_downloader(self):
+        response = self.client.get('/decrypt/download/avatar', follow=True)
         self.assertEqual(response.status_code, 200)
 
 
@@ -128,7 +132,7 @@ class TestViewCode(TestCase):
         request = self.factory.get('/generate')
         request.user = self.user
         self.assertEqual(
-            views.generate(request).status_code,
+            views.GenerateView().get(request).status_code,
             200
         )
 
@@ -136,7 +140,7 @@ class TestViewCode(TestCase):
         request = self.factory.get('/decrypt')
         request.user = self.user
         self.assertEqual(
-            views.decrypt(request).status_code,
+            views.DecryptView().get(request).status_code,
             200
         )
 
@@ -155,19 +159,7 @@ class TestViewCode(TestCase):
         request.user = self.user
 
         self.assertEqual(
-            views.generate(request).status_code,
-            200
-        )
-
-    def test_decrypt_post(self):
-        data = {
-            'Nothing': 'Nothing',
-        }
-        request = self.factory.post('/decrypt', data=data)
-        request.user = self.user
-
-        self.assertEqual(
-            views.decrypt(request).status_code,
+            views.GenerateView().post(request).status_code,
             200
         )
 
@@ -181,13 +173,14 @@ class TestCallback(TestCase):
         Proxy.objects.create(proxy_uri='')
         username = fake.name()
         password = fake.password()
-        User.objects.create_user(username, '', password)
+        user = User.objects.create_user(username, '', password)
         encryption_password = fake.password()
         data = installation(
-            username,
+            user,
             encryption_password,
             fake.sha1()
         ).encrypt()
+        user.save()
         self.id = fake.random_number()
         self.factory = RequestFactory()
         self.user = authenticate(username=username, password=password)
@@ -252,7 +245,7 @@ class TestCallback(TestCase):
     def test_start_session(self, mock, mock3):
         request = self.factory.post('/API/start_session', data=self.post_data)
         request.user = self.user
-        r = views.API(request, 'start_session')
+        r = views.APIView().post(request, 'start_session')
         self.assertEqual(r.status_code, 200)
 
     @patch('%sattachment_public.AttachmentPublic.get_content_of_public_attachment' % c, side_effect=get_avatar)  # noqa
@@ -264,11 +257,11 @@ class TestCallback(TestCase):
 
         request1 = self.factory.post('/API/start_session', data=data)
         request1.user = user
-        views.API(request1, 'start_session')
+        views.APIView().post(request1, 'start_session')
 
         request2 = self.factory.post('/API/users', data=data)
         request2.user = user
-        r2 = views.API(request2, 'users')
+        r2 = views.APIView().post(request2, 'users')
 
         self.assertEqual(r2.status_code, 200)
 
@@ -281,11 +274,11 @@ class TestCallback(TestCase):
 
         request1 = self.factory.post('/API/start_session', data=data)
         request1.user = user
-        views.API(request1, 'start_session')
+        views.APIView().post(request1, 'start_session')
 
         request2 = self.factory.post('/API/accounts', data=data)
         request2.user = user
-        r2 = views.API(request2, 'accounts', self.id)
+        r2 = views.APIView().post(request2, 'accounts', self.id)
 
         self.assertEqual(r2.status_code, 200)
 
@@ -298,11 +291,11 @@ class TestCallback(TestCase):
 
         request1 = self.factory.post('/API/start_session', data=data)
         request1.user = user
-        views.API(request1, 'start_session')
+        views.APIView().post(request1, 'start_session')
 
         request2 = self.factory.post('/API/payment', data=data)
         request2.user = user
-        r2 = views.API(request2, 'payment', self.id, self.id)
+        r2 = views.APIView().post(request2, 'payment', self.id, self.id)
 
         self.assertEqual(r2.status_code, 200)
 
@@ -316,11 +309,11 @@ class TestCallback(TestCase):
 
         request1 = self.factory.post('/API/start_session', data=data)
         request1.user = user
-        views.API(request1, 'start_session')
+        views.APIView().post(request1, 'start_session')
 
         request2 = self.factory.post('/API/invoice', data=data)
         request2.user = user
-        r2 = views.API(request2, 'invoice', userID)
+        r2 = views.APIView().post(request2, 'invoice', userID)
 
         self.assertEqual(r2.status_code, 200)
 
@@ -333,11 +326,11 @@ class TestCallback(TestCase):
 
         request1 = self.factory.post('/API/start_session', data=data)
         request1.user = user
-        views.API(request1, 'start_session')
+        views.APIView().post(request1, 'start_session')
 
         request2 = self.factory.post('/API/card', data=data)
         request2.user = user
-        r2 = views.API(request2, 'card', self.id)
+        r2 = views.APIView().post(request2, 'card', self.id)
 
         self.assertEqual(r2.status_code, 200)
 
@@ -350,16 +343,16 @@ class TestCallback(TestCase):
 
         request1 = self.factory.post('/API/start_session', data=data)
         request1.user = user
-        views.API(request1, 'start_session')
+        views.APIView().post(request1, 'start_session')
 
         request2 = self.factory.post('/API/invoice', data=data)
         request2.user = user
-        views.API(request2, 'invoice', self.id)
+        views.APIView().post(request2, 'invoice', self.id)
 
-        request3 = self.factory.get('/decryt/invoice')
+        request3 = self.factory.get('/decryt/downlaod/invoice')
         request3.user = user
 
-        r = views.invoice_downloader(request3)
+        r = views.FileDownloader().get(request3, 'invoice')
         self.assertEqual(r.status_code, 200)
 
     @patch('%ssession_server.SessionServer.create_new_session_server' % c, side_effect=get_start_session)  # noqa
@@ -371,10 +364,10 @@ class TestCallback(TestCase):
 
         request1 = self.factory.post('/API/start_session', data=data)
         request1.user = user
-        views.API(request1, 'start_session')
+        views.APIView().post(request1, 'start_session')
 
-        request3 = self.factory.get('/decryt/avatar')
+        request3 = self.factory.get('/decrypt/download/avatar')
         request3.user = user
 
-        r = views.avatar_downloader(request3)
+        r = views.FileDownloader().get(request3, 'avatar')
         self.assertEqual(r.status_code, 200)
