@@ -17,7 +17,7 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
-from Manager.views import Manager, managerForm
+from Manager.views import ManagerView, ManagerFormView
 from BunqAPI.views import GenerateView, DecryptView, APIView, FileDownloader
 from BunqWebApp import views
 from django.contrib.auth import views as auth_views
@@ -31,8 +31,8 @@ urlpatterns = [
     url(r'^$', views.home, name='home'),
     url(r'^account/register/$', views.register, name='register'),
     url(r'^account/logout/$', auth_views.logout, name='logout'),
-    url(r'^Manager/(?i)$', Manager, name='Manager'),
-    url(r'^Manager/form/(?i)$', managerForm, name='managerForm'),
+    url(r'^Manager/(?i)$', ManagerView.as_view(), name='Manager'),
+    url(r'^Manager/form/(?i)$', ManagerFormView.as_view(), name='managerForm'),
     url(r'^generate/$', GenerateView.as_view(), name='generate'),
     url(r'^decrypt/$', DecryptView.as_view(), name='decrypt'),
     url(r'^decrypt/download/(?P<action>[\w-]+)$', FileDownloader.as_view(), name='downloader'),  # noqa
