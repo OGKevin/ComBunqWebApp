@@ -156,7 +156,7 @@ function createTable(input) {
       'Payment ID',
       'Account ID',
       'Date',
-      'Ammount',
+      'Amount',
       'Account IBAN',
       'Payee IBAN',
       'Name',
