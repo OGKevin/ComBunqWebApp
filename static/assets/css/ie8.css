@@ -11,7 +11,7 @@
 	form select,
 	form textarea {
 		position: relative;
-		-ms-behavior: url("assets/js/ie/PIE.htc");
+		-ms-behavior: url("../js/ie/PIE.htc");
 	}
 
 	input[type="button"],
@@ -24,14 +24,14 @@
 	#copyright .links,
 	#nav > ul > li > a {
 		position: relative;
-		-ms-behavior: url("assets/js/ie/PIE.htc");
+		-ms-behavior: url("../js/ie/PIE.htc");
 	}
 
 /* Nav */
 
 	.dropotron {
 		position: relative;
-		-ms-behavior: url("assets/js/ie/PIE.htc");
+		-ms-behavior: url("../js/ie/PIE.htc");
 	}
 
 		.dropotron.level-0 {
@@ -43,5 +43,5 @@
 	#banner {
 		background-position: auto;
 		background-size: contain;
-		-ms-behavior: url("assets/js/ie/backgroundsize.min.htc");
+		-ms-behavior: url("../js/ie/backgroundsize.min.htc");
 	}

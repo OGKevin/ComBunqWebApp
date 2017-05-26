@@ -68,24 +68,3 @@ class RegisterView(View):
                 return redirect('../two_factor/setup')
         else:
             return render(request, 'registration/register.html', {'form': form})  # noqa
-
-
-def register(request):
-    '''
-    View that handles the registration page.
-    '''
-    if request.method == 'POST':
-        form = registration(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-            user = User.objects.create_user(username, '', password)
-            user.save()
-            auth = authenticate(username=username, password=password)
-            if auth is not None:
-                login(request, auth)
-
-                return redirect('../two_factor/setup')
-    else:
-        form = registration()
-    return render(request, 'registration/register.html', {'form': form})
