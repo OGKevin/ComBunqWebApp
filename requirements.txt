@@ -1,7 +1,9 @@
 appdirs==1.4.3
+arrow==0.10.0
 asn1crypto==0.22.0
 Babel==2.4.0
 cffi==1.10.0
+contextlib2==0.5.5
 coverage==4.4.1
 cryptography==1.8.1
 dj-database-url==0.4.2
@@ -15,6 +17,7 @@ django-two-factor-auth==1.6.1
 Faker==0.7.12
 gunicorn==19.7.1
 idna==2.5
+markdown2==2.3.4
 Naked==0.1.31
 olefile==0.44
 packaging==16.8

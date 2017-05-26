@@ -1,3 +1,4 @@
+# from pprint import pprint
 
 
 class Endpoint:
@@ -9,7 +10,11 @@ class Endpoint:
         self._api_client = api_client
 
     def _make_get_request(self, endpoint, verify=True):
-        return self._api_client.get(endpoint, verify)
+        res = self._api_client.get(endpoint, verify)
+        # pprint(res.json())
+        return res
 
     def _make_post_request(self, endpoint, payload):
-        return self._api_client.post(endpoint, payload)
+        res = self._api_client.post(endpoint, payload)
+        # pprint(res.json())
+        return res

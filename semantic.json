@@ -20,23 +20,12 @@
   "rtl": false,
   "version": "2.2.10",
   "components": [
-    "sidebar",
     "menu",
     "loader",
     "input",
     "icon",
-    "header",
     "table",
-    "grid",
-    "button",
-    "dropdown",
-    "list",
-    "segment",
-    "divider",
-    "image",
-    "head",
-    "reset",
-    "container",
-    "transition"
+	 "button",
+   "list"
   ]
 }

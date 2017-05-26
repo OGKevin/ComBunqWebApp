@@ -1,70 +1,40 @@
  {{#.}} {{#UserCompany}}
- <h2 class="ui header">
-   <i class="user icon"></i>
-   <div class="content">
-    Welcome {{public_nick_name}}
-   </div>
- </h2>
-<p>
-  The sessions has started succesfully.
-  <br> For this sessions, {{1.Token.token}} is being used to sign the API calls.
-  <br> {{! NOTE: this needs to be in min}} This sessios will expire in {{session_timeout}} seconds. Unless an API call has been made during the last 30 seconds.
-</p>
-<table class="ui very basic collapsing celled table">
-  <thead>
-    <tr><th>User</th>
-    <th>ID</th>
-  </tr></thead>
-  <tbody>
-    <tr>
-      <td>
-        <h4 class="ui image header">
-          <img src="./download/avatar" class="ui mini rounded image">
-          <div class="content">
-            {{public_nick_name}}
-            <div class="sub header">{{status}}
-          </div>
-        </div>
-      </h4></td>
-      <td>
-        {{id}}
-      </td>
-    </tr>
-  </tbody>
-</table>
-{{/UserCompany}} {{#UserPerson}}
-<h2 class="ui header">
-  <i class="user icon"></i>
-  <div class="content">
-   Welcome {{public_nick_name}}
-  </div>
-</h2>
-<p>
-  The sessions has started succesfully.
-  <br> For this sessions, {{1.Token.token}} is being used to sign the API calls.
-  <br> {{! NOTE: this needs to be in min}} This sessios will expire in {{session_timeout}} seconds. Unless an API call has been made during the last 30 seconds.
-</p>
+ 
+ <section class="box">
+   <a class="image featured"><img src="./download/avatar" alt="user avatar" /></a>
+   <header>
+     <h3 class="ui header">
+       <i class="user icon"></i>
+       <div class="content">
+        {{public_nick_name}}
+       </div>
+     </h3>
+   </header>
+   <p>The sessions has started succesfully.
+   <br> For this session, {{1.Token.token}} is being used to sign the API calls.
+   <br> {{! NOTE: this needs to be in min}} This sessios will expire in {{session_timeout}} seconds, unless an API call has been made during the last 30 seconds.
+   <br>
+   User ID: {{id}}
+ </p>
+ </section>
 
-<table class="ui very basic collapsing celled table">
-  <thead>
-    <tr><th>User</th>
-    <th>ID</th>
-  </tr></thead>
-  <tbody>
-    <tr>
-      <td>
-        <h4 class="ui image header">
-          <img src="./download/avatar" class="ui mini rounded image">
-          <div class="content">
-            {{public_nick_name}}
-            <div class="sub header">{{status}}
-          </div>
-        </div>
-      </h4></td>
-      <td>
-        {{id}}
-      </td>
-    </tr>
-  </tbody>
-</table>
+{{/UserCompany}} {{#UserPerson}}
+<section class="box">
+  <a class="image featured"><img src="./download/avatar" alt="user avatar" /></a>
+  <header>
+    <h3 class="ui header">
+      <i class="user icon"></i>
+      <div class="content">
+       {{public_nick_name}}
+      </div>
+    </h3>
+  </header>
+  <p>The sessions has started succesfully.
+  <br> For this session, {{1.Token.token}} is being used to sign the API calls.
+  <br> {{! NOTE: this needs to be in min}} This sessios will expire in {{session_timeout}} seconds, unless an API call has been made during the last 30 seconds.
+<br>
+User ID: {{id}}
+
+</p>
+</section>
 {{/UserPerson}} {{/.}}

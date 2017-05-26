@@ -1,4 +1,4 @@
-<style media="screen">
+<!-- /*<style media="screen">
   table,
   th,
   td {
@@ -26,5 +26,30 @@ Description: {{description}}<br> Id: {{id}}<br> Balance: {{balance.value}}<br>
   </tr>
   {{/alias}}
 </table>
-<br>
-{{/MonetaryAccountBank}} {{/.}}
+<br>*/ -->
+<!-- {{/MonetaryAccountBank}} {{/.}} -->
+
+<header>
+  <h2>Accounts</h2>
+  <p>These accounts belong to the logged in user </p>
+</header>
+<table class="ui celled table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>ID</th>
+      <th>First alias</th>
+      <th>Balance</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#.}} {{#MonetaryAccountBank}}
+    <tr>
+      <td>{{description}}</td>
+      <td>{{id}}</td>
+      <td>{{alias.0.value}}</td>
+      <td>{{balance.currency}} {{balance.value}}</td>
+    </tr>
+    {{/MonetaryAccountBank}} {{/.}}
+  </tbody>
+</table>

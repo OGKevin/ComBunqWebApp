@@ -1,35 +1,26 @@
-h1 {
-  text-align: center;
+table{
+    /*border: 1px solid black;*/
+    table-layout: fixed;
+    width: 200px;
 }
 
-#response {
-  display: flex;
-  flex-flow: column;
-  align-items: left;
+th, td {
+    /*border: 1px solid black;*/
+    overflow-x: auto;
+    width: 100px;
 }
 /*th,td {
   border: 1px solid black;
 }*/
-#topBar {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
+
+#side_bar {
+  visibility: hidden;
 }
 
-#actions {
-  display: flex;
-  flex-flow: column;
-  justify-content: flex-start;
-  /*position: fixed;*/
+#user_accounts{
+  visibility: hidden;
 }
 
-#display {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-}
-#info {
-  margin-left: 10%;
-  display: flex;
-  flex-direction: column;
+#user_payments{
+  visibility: hidden;
 }
