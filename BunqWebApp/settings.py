@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 
 import os
 import dj_database_url
-import raven
+# import raven
 # from django.core.urlresolvers import reverse_lazy
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -36,7 +36,7 @@ except NameError:
             import random
             SECRET_KEY = ''.join([random.SystemRandom().choice(
                 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)')
-                 for i in range(50)])
+                for i in range(50)])
             secret = open(SECRET_FILE, 'w')
             secret.write(SECRET_KEY)
             secret.close()
@@ -96,7 +96,10 @@ RAVEN_CONFIG = {
     'dsn': 'https://5b07f222cd424164b8335e9123d6b691:5a59117e1d1547caac3a05d6f18080e6@sentry.io/172713',  # noqa
     # If you are using git, you can also automatically configure the
     # release based on the git info.
-    'release': raven.fetch_git_sha(os.path.dirname(os.pardir)),
+
+    # NOTE: This relases via GIT wont work on heroku. Using heroku delpoy hooks
+    # instead.
+    # 'release': raven.fetch_git_sha(os.path.dirname(os.pardir)),
 }
 
 LOGGING = {  # NOTE: need to write logg msges. This can be done later :)
