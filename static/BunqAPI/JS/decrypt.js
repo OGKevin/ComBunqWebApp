@@ -18,29 +18,36 @@ $(function() {
   });
   $("#load_file").click(function(event) {
     firstCall()
+    deactivateItems()
+    $(this).addClass('active')
 
   });
 
   function firstCall() {
     $("#user_accounts").css('visibility', 'hidden');
     get_file()
-    deactivateItems()
-    $(this).addClass('active')
-    $("#loading").html('File is loaded... Starting session')
-
     setTimeout(function() {
-      sendPost(jsonObj, "start_session", start_session_template)
+
+      if (jsonObj) {
+        
+        $("#loading").html('File is loaded... Starting session')
+
+          sendPost(jsonObj, "start_session", start_session_template)
+
+        setTimeout(function() {
+          sendPost(jsonObj, "accounts" + '/' + get_user_id(), accounts_template)
+
+        }, 3000)
+
+        setTimeout(function() {
+          sendPost(jsonObj, "payment" + '/' + get_user_id() + '/' + get_account_id(), payments_template)
+
+        }, 5000)
+      } else {
+        alert('You must load a file fist')
+      }
     }, 500)
 
-    setTimeout(function() {
-      sendPost(jsonObj, "accounts" + '/' + get_user_id(), accounts_template)
-
-    }, 3000)
-
-    setTimeout(function() {
-      sendPost(jsonObj, "payment" + '/' + get_user_id() + '/' + get_account_id(), payments_template)
-
-    }, 5000)
   }
 
 
@@ -169,7 +176,7 @@ function sendPost(json, action, template) {
       } else {
         show(r.Error[0], true)
       }
-  
+
     })
     .fail(function() {
       e = {

@@ -1,6 +1,7 @@
 <head>
   {%load static%}
   {% load raven %}
+  <script type='text/javascript' src="{%static "raven-js/dist/raven.min.js"%}"></script>
   <script>Raven.config('{% sentry_public_dsn 'https' %}').install()</script>
   <link rel="stylesheet" href="{%static "Manager/CSS/form.css"%}"/>
 </head>
