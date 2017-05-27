@@ -1,6 +1,6 @@
 {
   "name": "communitybunqweb",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Bunq web interface made by bunqers",
   "main": "./manage.py",
   "scripts": {
@@ -28,8 +28,11 @@
     "jquery": "^3.2.1",
     "jquery-file-download": "^1.4.6",
     "js-cookie": "^2.1.4",
+    "moment": "^2.18.1",
     "mustache": "^2.3.0",
+    "numeral": "^2.0.6",
     "papaparse": "^4.3.2",
+    "raven-js": "^3.15.0",
     "showdown": "^1.6.4",
     "vanilla-datatables": "^1.1.9",
     "vue": "^2.3.3"

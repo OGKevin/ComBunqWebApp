@@ -17,8 +17,8 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
-from Manager.views import Manager, managerForm
-from BunqAPI.views import GenerateView, DecryptView, APIView, FileDownloader
+from Manager.views import ManagerView, ManagerFormView
+from BunqAPI.views import GenerateView, DecryptView, APIView, FileDownloader, RedirectView  # noqa
 from BunqWebApp import views
 from django.contrib.auth import views as auth_views
 
@@ -28,11 +28,12 @@ ideal.
 '''
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^$', views.home, name='home'),
-    url(r'^account/register/$', views.register, name='register'),
+    url(r'^$', views.HomeView.as_view(), name='home'),
+    url(r'^account/register/$', views.RegisterView.as_view(), name='register'),
     url(r'^account/logout/$', auth_views.logout, name='logout'),
-    url(r'^Manager/(?i)$', Manager, name='Manager'),
-    url(r'^Manager/form/(?i)$', managerForm, name='managerForm'),
+    url(r'^accounts/profile/$', RedirectView.as_view(), name='decrypt'),
+    url(r'^Manager/(?i)$', ManagerView.as_view(), name='Manager'),
+    url(r'^Manager/form/(?i)$', ManagerFormView.as_view(), name='managerForm'),
     url(r'^generate/$', GenerateView.as_view(), name='generate'),
     url(r'^decrypt/$', DecryptView.as_view(), name='decrypt'),
     url(r'^decrypt/download/(?P<action>[\w-]+)$', FileDownloader.as_view(), name='downloader'),  # noqa
@@ -41,4 +42,6 @@ urlpatterns = [
     url(r'^API/(?P<selector>[\w-]+)/(?P<userID>\d*)/(?P<accountID>\d*)$', APIView.as_view(), name='API'),  # noqa,
     url(r'^captcha/', include('captcha.urls')),
     url(r'', include('two_factor.urls', 'two_factor')),
+    # url(r'^.*$', views.RedirectView.as_view(), name='home'),
+    # NOTE: this redirect is not working properly
 ] + static(settings.STATIC_URL)

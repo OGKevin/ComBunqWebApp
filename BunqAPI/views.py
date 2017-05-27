@@ -11,6 +11,7 @@ from django.contrib.auth.models import User
 from django_otp.decorators import otp_required
 from django.contrib.sessions.models import Session
 from django.views import View
+from django.views.generic.base import RedirectView
 import json
 import os
 # from pprint import pprint
@@ -18,6 +19,17 @@ import os
 # from django.http.response import FileResponse
 
 # Create your views here.
+
+
+class RedirectView(RedirectView):
+    """docstring for RedirectView.
+    Redirects /accounts/porfile to /decrypt
+    """
+    permanent = False
+    pattern_name = 'decrypt'
+
+    def get_redirct_url(self):
+        return super().get_redirct_url()
 
 
 @method_decorator(otp_required, name='dispatch')

@@ -2,6 +2,7 @@ var dataTable;
 
 $(function() {
   var jsonObj;
+
   function get_file() {
     data = $("#id_encrypted_file")[0].files[0]
     var reader = new FileReader()
@@ -10,17 +11,47 @@ $(function() {
       jsonObj = JSON.parse(event.target.result);
     }
   }
+  $("#encryption_form").submit(function(event) {
+    /* Act on the event */
+    event.preventDefault()
+    firstCall()
+  });
   $("#load_file").click(function(event) {
-    get_file()
+    firstCall()
     deactivateItems()
     $(this).addClass('active')
-    $("#loading").html('File is loaded... Starting session')
-    setTimeout(function () {
-      
-      sendPost(jsonObj, "start_session", start_session_template)
-    }, 500)
 
   });
+
+  function firstCall() {
+    $("#user_accounts").css('visibility', 'hidden');
+    get_file()
+    setTimeout(function() {
+
+      if (jsonObj) {
+        
+        $("#loading").html('File is loaded... Starting session')
+
+          sendPost(jsonObj, "start_session", start_session_template)
+
+        setTimeout(function() {
+          sendPost(jsonObj, "accounts" + '/' + get_user_id(), accounts_template)
+
+        }, 3000)
+
+        setTimeout(function() {
+          sendPost(jsonObj, "payment" + '/' + get_user_id() + '/' + get_account_id(), payments_template)
+
+        }, 5000)
+      } else {
+        alert('You must load a file fist')
+      }
+    }, 500)
+
+  }
+
+
+
   $('#register').click(function(event) {
     deactivateItems()
     $(this).addClass('active')
@@ -82,10 +113,11 @@ $(function() {
 });
 
 function get_user_id() {
-   return  $('#userID').val()
+  return $('#userID').val()
 }
+
 function get_account_id() {
-  return  $("#accountID").val()
+  return $("#accountID").val()
 }
 
 function sendPost(json, action, template) {
@@ -99,7 +131,7 @@ function sendPost(json, action, template) {
   frm = $("#encryption_form");
   $.ajax({
       url: '/API/' + action,
-      type: frm.attr('method'),
+      type: 'POST',
       dataType: '',
       data: {
         'json': JSON.stringify(json),
@@ -113,22 +145,42 @@ function sendPost(json, action, template) {
     })
     .done(function(response) {
       r = JSON.parse(response)
-      if (r.Error !== undefined) {
+      if (r.Error === undefined) {
+
+        if (action.match(/start_session/)) {
+          show(r.Response, false, template, "start_session")
+
+        } else if (action.match(/accounts/)) {
+          show(r.Response, false, template, "accounts")
+        } else if (action.match(/payment/)) {
+          createTable(r.Response)
+        } else if (action.match(/invoice/)) {
+          $.fileDownload('./download/invoice')
+            .done(function() {
+              alert('File download a success!');
+            })
+            .fail(function() {
+              alert('File download failed!');
+            });
+
+        } else if (action.match(/users/)) {
+          show(r.Response, false, template, "users")
+        } else if (action.match(/card/)) {
+          show(r.Response, false, template, "card")
+        } else {
+          error = {
+            "error_description_translated": "Not sure what to do with this response, it might be empty ?"
+          }
+          show(error, true)
+        }
+      } else {
         show(r.Error[0], true)
-      } else if (r.Response[0].Payment) {
-        createTable(r.Response)
-      } else if (r.Response[0].status) {
-        $("#response").html(r.Response[0].status)
-        $.fileDownload('./download/invoice')
-        .done(function () { alert('File download a success!'); })
-        .fail(function () { alert('File download failed!'); });
-      } else if (r.Response) {
-        show(r.Response, false, template)
       }
+
     })
     .fail(function() {
       e = {
-        'error_description_translated': 'Something went wrong server-side. Did you input you encrypted JSON file?'
+        'error_description_translated': 'Something went wrong server-side. Not usre what exaclty :('
       }
       show(e, true)
     })
@@ -137,15 +189,48 @@ function sendPost(json, action, template) {
     });
 }
 
-function show(j, error, template) {
+function show(j, error, template, location) {
   if (error) {
-    $("#response").html(j.error_description_translated)
+    $("#user_accounts").html(j.error_description_translated)
+    $("#user_accounts").css('visibility', 'visible');
+
 
   } else {
+
     $.get(template, function(template) {
-      var rendered = Mustache.render(template, j)
-      $('#response').html(rendered)
+      rendered = Mustache.render(template, j)
+
+      switch (location) {
+        case "start_session":
+          $("#user_profile").html(rendered)
+          try {
+            $("#userID").val(j[2].UserCompany.id)
+
+          } catch (e) {
+            $("#userID").val(j[2].UserPerson.id)
+
+          } finally {
+            $("#side_bar").css('visibility', 'visible');
+
+          }
+          break;
+        case "accounts":
+          $("#user_accounts").html(rendered)
+          $("#user_accounts").css('visibility', 'visible');
+          $("#accountID").val(j[0].MonetaryAccountBank.id)
+          break;
+        case "users":
+          $("#user_accounts").html(rendered)
+          break;
+        case "card":
+          $("#user_accounts").html(rendered)
+        default:
+
+      }
+      // $("#" + location).html(rendered)
+      // locatoin(rendered)
     })
+
   }
 }
 
@@ -156,25 +241,25 @@ function createTable(input) {
       'Payment ID',
       'Account ID',
       'Date',
-      'Ammount',
-      'Account IBAN',
+      'Amount',
+      // 'Account IBAN',
       'Payee IBAN',
       'Name',
       'Description',
-      'Type'
+      // 'Type'
     ]
-
+  numeral.locale("nl-nl")
   for (var i = 0; i < input.length; i++) {
     rows.push([
       input[i].Payment.id,
       input[i].Payment.monetary_account_id,
-      input[i].Payment.updated,
-      input[i].Payment.amount.value,
-      input[i].Payment.alias.iban,
+      moment(input[i].Payment.updated.slice(0, 10)).format("MMM Do YYYY"),
+      numeral(input[i].Payment.amount.value.replace(".", ",")).format('$0,0[.]00'),
+      // input[i].Payment.alias.iban,
       input[i].Payment.counterparty_alias.iban,
       input[i].Payment.counterparty_alias.label_user.public_nick_name,
       input[i].Payment.description,
-      input[i].Payment.type
+      // input[i].Payment.type
     ])
   }
   options = {
@@ -186,7 +271,8 @@ function createTable(input) {
   if (dataTable) {
     dataTable.destroy();
   }
-  dataTable = new DataTable("#response2", options);
+  dataTable = new DataTable("#transaction_table", options);
+  $("#transaction_table").css('visibility', 'visible');
 }
 
 function deactivateItems() {

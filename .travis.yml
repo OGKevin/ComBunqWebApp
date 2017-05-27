@@ -1,40 +1,44 @@
 language: python
-dist : trusty
+dist: trusty
 python:
-- '3.5.1'
+- 3.5.1
 addons:
-  postgresql: "9.6"
+  postgresql: '9.6'
 before_install:
-  - export DJANGO_SETTINGS_MODULE=BunqWebApp.settings
-  - export PYTHONPATH=$HOME/builds/OGKevin/ComBunqWebApp
+- export DJANGO_SETTINGS_MODULE=BunqWebApp.settings
+- export PYTHONPATH=$HOME/builds/OGKevin/ComBunqWebApp
 install:
-  - pip install -r requirements.txt
-  - pip install coveralls
-  - . $HOME/.nvm/nvm.sh
-  - nvm install stable
-  - nvm use stable
-  - npm install --production
+- pip install -r requirements.txt
+- pip install coveralls
+- . $HOME/.nvm/nvm.sh
+- nvm install stable
+- nvm use stable
+- npm install --production
 before_script:
-  - sudo /etc/init.d/postgresql stop
-  - wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-  - sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main 9.5" >> /etc/apt/sources.list.d/postgresql.list'
-  - sudo apt-get update
-  - sudo apt-get install postgresql-9.5
-  - psql -c "CREATE DATABASE travisci;" -U postgres
-  - ./manage.py migrate
-  - ./manage.py collectstatic --noinput -v 0
+- sudo /etc/init.d/postgresql stop
+- wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key
+  add -
+- sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main
+  9.5" >> /etc/apt/sources.list.d/postgresql.list'
+- sudo apt-get update
+- sudo apt-get install postgresql-9.5
+- psql -c "CREATE DATABASE travisci;" -U postgres
+- ./manage.py migrate
+- ./manage.py collectstatic --noinput -v 0
 script:
-  - coverage run ./manage.py test
+- coverage run ./manage.py test
 deploy:
   provider: heroku
   api_key:
     secure: r2as3e8N198Pz7Th3kpxC/d1JMigwd5wtVvb7t8focibhkf4l+QxqpmS9LU/gI5CXn3eI3NIog1R7bXlORGuevr3+2uY2D7pv/DwagvSuUi8kJsbKtUHRqw+NBIhLoiQbYX1ER9CQ6EIiVtRjbTqgWFy0zYPKnhloVNmKtqpZgv35LMi1oaCntXea1EgOSoNnxtTE/2vc7bQGr5bZf2m8upe0d3gb1booRO/frBGU1nNwzcN6p1G1B73P3rNHyfB0WFT1Edeu+MYVOnrgX4yBjCg92qNXW2R+VAqeT+MgdWwGQO33HQCK/+V3LDMVsp9xYIlxGyO9T7ij8cJBlekK53ITTzjS3GZbP+GnOaUlpD53Yb+s0RQhA3mAo+wc0zw112+5QCPFlKAtTMZE5Bw5cXUPS2bI5YG+5q8otS9DiwPgNeN9CbrooP2mrBLkwyOI2yWe5pwE/Y7xfsNcnEzK0rNR117XZTHC6z/MSF/XVYNE16xiuAZ6G3w2K1loQl2pMSr32eAKDYPaEiQ68XTSVOKQUCgq9D3N29E472PJIgXP+CurVrMpHkizD8RYhplKftkIAktgZHhN3AxetrTxn/6N3J3KS6j89Q+7n5U5Q/lLAuvRtXPGJR5fKin56Cu5LIZmFOeOAMupBJHXWvbEY0oLaELBZUumlVerv3F9Zs=
-  run :
-    - ./manage.py migrate
-    - restart
-  app : combunqweb
+  run:
+  - ./manage.py migrate
+  - restart
+  app: combunqweb
   on:
     tags: true
-  
 after_success:
-  - coveralls
+- coveralls
+notifications:
+  slack:
+    secure: TxpFI23MqaypF9G5ttDKi8Kgjp3qjjtigEVJfZu1k/1/agY1Uxl/8Tiox/OGQKYeXwqnQOimuf8/8M8ihmgRE3VMJyhDnwYsZ0acLbdukQch+bn6nX6uzCJ7/xTWRSq3EEONEaJtcZPuOnU3GVXpXPK5Op0YQZ7N7uXB2/FIETTrIMWMmBDf/esKEDarZ8Z49RTp1qt0F9ENOfZBsvjzdcjLlPXfoYtgPjK8I8PhvUYZPnC77VyAwOHhQiARsOsLEoaTH/JZKtD4iALdClEs4sIrl6vV7wakzuSe3X16mGt4tFIjyzsQD2u9mHatyV+KKsFRt5nqZFfLY8Bo200dkbyzvaM8Zpd+6hj6ci1KIcMc9p9jFOZmfHsRYnk5ObDALHrkPMZilRkkDGW+ZuexDAcsjuXhHZ5hD5Nplhr2CjaG89g8mKqyw0iipSnIledmkeOZT7Bctse5ql4qbRYPMu5VyxJZeqwIYuoYyjZnVx7gKyuMv8xvqF6jwfxZm5kFHPTjkISntY38Vd68pCKI3r99KZnXI15tjHbvIoM8GHNpCVgzcrCB6slr/S2l+gdPXlFJ1VXD1XGaaGknr139CEEp7IxHcb5Xc4q0n7wz9zL1WYpzPqleftOE8HhtxCpSFoxV8ggQqapHJ8gW9MORqI0uSSbQl1hO7YWNx3P6fGA=

@@ -4,3 +4,4 @@
 update: all
 schedule: "every day"
 label_prs: update dependencies
+branch: develop
