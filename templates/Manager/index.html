@@ -1,5 +1,7 @@
  <!-- <meta http-equiv="refresh" content="15" /> -->
 <head> {%load static%}
+	{% load raven %}
+	<script>Raven.config('{% sentry_public_dsn 'https' %}').install()</script>
 	<link rel="stylesheet" href="{%static "Manager/CSS/index.css"%}"/>
 	<link rel="stylesheet" href="{%static "vanilla-datatables/vanilla-dataTables.min.css"%}"/>
 	<script src="{%static "amcharts/dist/amcharts/amcharts.js"%}"></script>

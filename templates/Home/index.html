@@ -10,6 +10,8 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
     {%load static%}
+		{% load raven %}
+		<script>Raven.config('{% sentry_public_dsn 'https' %}').install()</script>
 		<!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
       <link rel="stylesheet" href="{%static "font-awesome/css/font-awesome.min.css"%}"/>
 		<link rel="stylesheet" href="{%static "assets/css/main.css"%}" />
