@@ -2,6 +2,7 @@ language: python
 dist: trusty
 python:
 - 3.5.1
+- 3.6.1
 addons:
   postgresql: '9.6'
 before_install:
