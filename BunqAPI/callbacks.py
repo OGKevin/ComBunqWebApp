@@ -2,12 +2,13 @@ from BunqAPI.encryption import AESCipher
 from django.contrib.sessions.backends.db import SessionStore
 from django.contrib.sessions.models import Session
 from django.core.exceptions import ObjectDoesNotExist
-# from apiwrapper.endpoints.controller import Controller as Endpoints  # noqa
 from apiwrapper.clients.api_client import ApiClient as API2  # noqa
 import requests
 import json
 import base64
 import tempfile
+import time
+# from pprint import pprint
 
 
 class callback(AESCipher):
@@ -68,6 +69,39 @@ class callback(AESCipher):
         r = self.init_api.endpoints.device_server.create_new_device_server('ComBunqWebApp')  # noqa
         return r
 
+    def load_file(self):
+        start_session = self.start_session()
+
+        try:
+            start_session['Response']
+        except KeyError:
+            return start_session
+        else:
+            try:
+                userID = start_session['Response'][2]['UserCompany']['id']
+            except KeyError:
+                userID = start_session['Response'][2]['UserPerson']['id']
+
+            self.userID = userID
+
+            time.sleep(1.5)
+
+            accounts = self.accounts()
+
+            self.accountID = accounts['Response'][0]['MonetaryAccountBank']['id']  # noqa
+
+            time.sleep(1.5)
+
+            payments = self.payment()
+
+            response = {
+                'start_session': start_session['Response'],
+                'accounts': accounts['Response'],
+                'payments': payments['Response']
+            }
+
+            return response
+
     def start_session(self):
         '''
         Starts a server-session according to
@@ -85,28 +119,36 @@ class callback(AESCipher):
         '''
         r = self.init_api.endpoints.session_server.create_new_session_server()
 
-        try:
-            session_token = r.json()['Response'][1]['Token']['token']
-        except KeyError:  # pragma: no cover
-            return r.json()
-        else:
-            s = SessionStore()
-            s['session_token'] = session_token
-            s.create()
-            self.user.profile.session_token = s.session_key
-            self.user.save()
-
+        if r.status_code == 200:
             try:
-                avatar_id = r.json()[
-                    'Response'][2]['UserCompany']['avatar']['image'][0]['attachment_public_uuid']  # noqa
-            except KeyError:
-                avatar_id = r.json()[
-                    'Response'][2]['UserPerson']['avatar']['image'][0]['attachment_public_uuid']  # noqa
-                self.get_avatar(avatar_id)
+                session_token = r.json()['Response'][1]['Token']['token']
+            except KeyError:  # pragma: no cover
+                return r.json()
             else:
-                self.get_avatar(avatar_id)
+                s = SessionStore()
+                s['session_token'] = session_token
+                s.create()
+                self.user.profile.session_token = s.session_key
+                self.user.save()
 
-            return r.json()
+                try:
+                    avatar_id = r.json()[
+                        'Response'][2]['UserCompany']['avatar']['image'][0]['attachment_public_uuid']  # noqa
+                except KeyError:
+                    avatar_id = r.json()[
+                        'Response'][2]['UserPerson']['avatar']['image'][0]['attachment_public_uuid']  # noqa
+                    self.get_avatar(avatar_id)
+                else:
+                    self.get_avatar(avatar_id)
+
+                return r.json()
+        else:
+            error = {
+                'Error': [{
+                    'error_description_translated': 'Something went wrong starting the session'  # noqa
+                }]
+            }
+            return error
 
     def users(self):
         '''
@@ -252,7 +294,16 @@ class callback(AESCipher):
             }
             return r
         else:
-            return get_pdf(json.dumps(r['Response'][0]['Invoice']))
+            try:
+                invoice = r['Response'][0]['Invoice']
+            except IndexError:
+                error = {
+                    'Error': [{
+                        'error_description_translated': 'the response seems to have no invoice in it.'}]  # noqa
+                }
+                return error
+            else:
+                return get_pdf(json.dumps(invoice))
 
     def get_avatar(self, avatar_id):
         r = self.init_api.endpoints.attachment_public.get_content_of_public_attachment(avatar_id)  # noqa
