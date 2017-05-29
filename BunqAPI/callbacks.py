@@ -252,7 +252,16 @@ class callback(AESCipher):
             }
             return r
         else:
-            return get_pdf(json.dumps(r['Response'][0]['Invoice']))
+            try:
+                invoice = r['Response'][0]['Invoice']
+            except IndexError:
+                error = {
+                    'Error': [{
+                        'error_description_translated': 'the response seems to have no invoice in it.'}]  # noqa
+                }
+                return error
+            else:
+                return get_pdf(json.dumps(invoice))
 
     def get_avatar(self, avatar_id):
         r = self.init_api.endpoints.attachment_public.get_content_of_public_attachment(avatar_id)  # noqa
