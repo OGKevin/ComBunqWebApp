@@ -19,8 +19,7 @@ Community BunqWeb is going to be a web interface for bunqers using the [Bunq API
 
 
 
-***Disclaimer: Bunq itself has nothing to do with this project.  
-This app is still in development and is not ready to be used with real world API keys.***
+***Disclaimer: Bunq itself has nothing to do with this project.***
 
 
 
@@ -48,6 +47,9 @@ View the [wiki] for more information.
 
 
   - Use Bunq CSV file and see a Pie Charts of Income, Expanses, Transcation Names and Percentages
+  - User the bunq API to view your transactions
+  - Export your latest invoice
+  - Export the shown transactions in CSV format
  
 
 # Why Community ?
