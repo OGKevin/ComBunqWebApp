@@ -3,9 +3,8 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 from apiwrapper.clients.api_client import ApiClient as API  # noqa
 from BunqAPI.encryption import AESCipher
-import requests
-# from django.contrib.auth.models import User
 import json
+import uuid
 # from pprint import pprint
 
 
@@ -35,10 +34,8 @@ class installation(object):
         self.r = self.get_token()
 
     def get_GUID(self):
-        url = 'https://www.uuidgenerator.net/api/guid'
-        GUID = requests.get(url).content.decode()
-        return GUID
-        # using UUIDGenerator.net for GUID
+        GUID = uuid.uuid4()
+        return str(GUID)
 
     def get_token(self):
         rsa_key = self.RSA_key
@@ -62,13 +59,11 @@ class installation(object):
             'privateKey': self.RSA_key,
             'API': self.API_KEY,
             'ServerPublicKey': self.r['ServerPublicKey']
-            # NOTE: need to add this
         }
         if len(self.user_guid) > 1:
             del self.user_guid[0]
 
         self.user_guid.append(self.GUID)
-        # self.user.save()
         k = AESCipher(self.password)
         secret = AESCipher.encrypt(k, json.dumps(d))
         d2 = {
