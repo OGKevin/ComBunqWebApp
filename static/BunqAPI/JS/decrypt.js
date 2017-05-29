@@ -14,43 +14,30 @@ $(function() {
   $("#encryption_form").submit(function(event) {
     /* Act on the event */
     event.preventDefault()
-    firstCall()
-  });
-  $("#load_file").click(function(event) {
-    firstCall()
+    get_file()
     deactivateItems()
     $(this).addClass('active')
 
+
+    setTimeout(function () {
+      sendPost(jsonObj, "load_file", false)
+      
+    }, 500)
   });
-
-  function firstCall() {
-    $("#user_accounts").css('visibility', 'hidden');
+  
+  $("#load_file").click(function(event) {
+    // firstCall()
     get_file()
-    setTimeout(function() {
-
-      if (jsonObj) {
-        
-        $("#loading").html('File is loaded... Starting session')
-
-          sendPost(jsonObj, "start_session", start_session_template)
-
-        setTimeout(function() {
-          sendPost(jsonObj, "accounts" + '/' + get_user_id(), accounts_template)
-
-        }, 3000)
-
-        setTimeout(function() {
-          sendPost(jsonObj, "payment" + '/' + get_user_id() + '/' + get_account_id(), payments_template)
-
-        }, 5000)
-      } else {
-        alert('You must load a file fist')
-      }
+    deactivateItems()
+    $(this).addClass('active')
+    
+    
+    setTimeout(function () {
+      sendPost(jsonObj, "load_file", false)
+      
     }, 500)
 
-  }
-
-
+  });
 
   $('#register').click(function(event) {
     deactivateItems()
@@ -149,7 +136,13 @@ function sendPost(json, action, template) {
 
         if (action.match(/start_session/)) {
           show(r.Response, false, template, "start_session")
-
+        
+        } else if (action.match(/load_file/)) {
+            show(r.start_session, false, start_session_template, 'start_session')
+            show(r.accounts, false, accounts_template, 'accounts')
+            createTable(r.payments)
+            
+        
         } else if (action.match(/accounts/)) {
           show(r.Response, false, template, "accounts")
         } else if (action.match(/payment/)) {
