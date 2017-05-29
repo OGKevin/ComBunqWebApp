@@ -1,6 +1,6 @@
 {
   "name": "communitybunqweb",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "Bunq web interface made by bunqers",
   "main": "./manage.py",
   "scripts": {
