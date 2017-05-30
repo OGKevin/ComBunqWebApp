@@ -8,7 +8,7 @@
 
 [![Build Status](https://travis-ci.org/OGKevin/ComBunqWebApp.svg?branch=develop)](https://travis-ci.org/OGKevin/ComBunqWebApp)
 [![Coverage Status](https://coveralls.io/repos/github/OGKevin/ComBunqWebApp/badge.svg?branch=master)](https://coveralls.io/github/OGKevin/ComBunqWebApp?branch=develop)
-[![BCH compliance](https://bettercodehub.com/edge/badge/OGKevin/ComBunqWebApp?branch=master)](https://bettercodehub.com/)
+[![codebeat badge](https://codebeat.co/badges/d0c7043c-791d-43ce-8e5f-b93facf6b60a)](https://codebeat.co/projects/github-com-ogkevin-combunqwebapp-develop)
 [![Updates](https://pyup.io/repos/github/OGKevin/ComBunqWebApp/shield.svg)](https://pyup.io/repos/github/OGKevin/ComBunqWebApp/)
 [![Greenkeeper badge](https://badges.greenkeeper.io/OGKevin/ComBunqWebApp.svg)](https://greenkeeper.io/)
 [![Python 3](https://pyup.io/repos/github/OGKevin/ComBunqWebApp/python-3-shield.svg)](https://pyup.io/repos/github/OGKevin/ComBunqWebApp/)
