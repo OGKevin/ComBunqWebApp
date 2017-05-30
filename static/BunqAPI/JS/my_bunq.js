@@ -266,6 +266,7 @@ function createTable(input) {
   }
   dataTable = new DataTable("#transaction_table", options);
   $("#transaction_table").css('visibility', 'visible');
+  $("#user_payments").css('visibility', 'visible');
 }
 
 function deactivateItems() {
