@@ -20,9 +20,9 @@ class GenerateKeyForm(forms.Form):
         return self.cleaned_data
 
 
-class decrypt_form(forms.Form):
-    """docstring for decrypt_form.
-    Represents the form shown on /decrypt
+class MyBunqForm(forms.Form):
+    """docstring for my_bunq_form.
+    Represents the form shown on /my_bunq
     This form can be replaced with a form directly on HTML
     """
     encrypted_file = forms.FileField()

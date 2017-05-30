@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from BunqAPI.forms import GenerateKeyForm, decrypt_form
+from BunqAPI.forms import GenerateKeyForm, MyBunqForm
 from BunqAPI.installation import installation
 from BunqAPI.callbacks import callback
 from django.utils.decorators import method_decorator
@@ -23,10 +23,10 @@ import os
 
 class RedirectView(RedirectView):
     """docstring for RedirectView.
-    Redirects /accounts/porfile to /decrypt
+    Redirects /accounts/porfile to /my_bunq
     """
     permanent = False
-    pattern_name = 'decrypt'
+    pattern_name = 'my_bunq'
 
     def get_redirct_url(self):
         return super().get_redirct_url()
@@ -84,12 +84,12 @@ class GenerateView(View):
 
 
 @method_decorator(otp_required, name='dispatch')
-class DecryptView(View):
-    """docstring for DecryptView.
-        Shows the template on the decrypt page.
+class MyBunqView(View):
+    """docstring for MyBunqView.
+        Shows the template on the my_bunq page.
     """
-    form = decrypt_form
-    template = 'BunqAPI/decrypt.html'
+    form = MyBunqForm
+    template = 'BunqAPI/my_bunq.html'
 
     def get(self, request):
         form = self.form()

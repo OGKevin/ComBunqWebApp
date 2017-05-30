@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from Manager.views import ManagerView, ManagerFormView
-from BunqAPI.views import GenerateView, DecryptView, APIView, FileDownloader, RedirectView  # noqa
+from BunqAPI.views import GenerateView, MyBunqView, APIView, FileDownloader, RedirectView  # noqa
 from BunqWebApp import views
 from django.contrib.auth import views as auth_views
 
@@ -31,12 +31,12 @@ urlpatterns = [
     url(r'^$', views.HomeView.as_view(), name='home'),
     url(r'^account/register/$', views.RegisterView.as_view(), name='register'),
     url(r'^account/logout/$', auth_views.logout, name='logout'),
-    url(r'^accounts/profile/$', RedirectView.as_view(), name='decrypt'),
+    url(r'^accounts/profile/$', RedirectView.as_view(), name='my_bunq'),
     url(r'^Manager/(?i)$', ManagerView.as_view(), name='Manager'),
     url(r'^Manager/form/(?i)$', ManagerFormView.as_view(), name='managerForm'),
     url(r'^generate/$', GenerateView.as_view(), name='generate'),
-    url(r'^decrypt/$', DecryptView.as_view(), name='decrypt'),
-    url(r'^decrypt/download/(?P<action>[\w-]+)$', FileDownloader.as_view(), name='downloader'),  # noqa
+    url(r'^my_bunq/$', MyBunqView.as_view(), name='my_bunq'),
+    url(r'^my_bunq/download/(?P<action>[\w-]+)$', FileDownloader.as_view(), name='downloader'),  # noqa
     url(r'^API/(?P<selector>[\w-]+)$', APIView.as_view(), name='API'),  # noqa,
     url(r'^API/(?P<selector>[\w-]+)/(?P<userID>\d*)$', APIView.as_view(), name='API'),  # noqa,
     url(r'^API/(?P<selector>[\w-]+)/(?P<userID>\d*)/(?P<accountID>\d*)$', APIView.as_view(), name='API'),  # noqa,
