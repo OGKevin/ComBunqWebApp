@@ -313,7 +313,7 @@ class callback(AESCipher):
             session_token = Session.objects.get(
                 session_key=self.user.profile.session_token
             ).get_decoded()['session_token']
-        except ObjectDoesNotExist:
+        except (ObjectDoesNotExist, KeyError):
             return None
         else:
             API = API2(
