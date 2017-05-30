@@ -112,6 +112,8 @@ class callback(AESCipher):
 
                 self.get_avatar(avatar_uuid)
 
+                self.bunq_api = self.user_file
+
                 return r.json()
         else:
             error = {

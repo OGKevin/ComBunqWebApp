@@ -173,7 +173,7 @@ function sendPost(json, action, template) {
     })
     .fail(function() {
       e = {
-        'error_description_translated': 'Something went wrong server-side. Not usre what exaclty :('
+        'error_description_translated': 'Something went wrong server-side. Not sure what exaclty :('
       }
       show(e, true)
     })
