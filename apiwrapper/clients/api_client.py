@@ -29,7 +29,7 @@ class ApiClient:
     __variables = ['installation_id', 'installation_token', 'api_key',
                    'server_token', 'server_pubkey', 'session_token']
 
-    def __init__(self, privkey, use_sandbox=False, **kwargs):
+    def __init__(self, privkey, use_sandbox=True, **kwargs):
         self.privkey = privkey
         self._uri = self._uri_sandbox if use_sandbox else self._uri_production
         self._handle_kwargs(kwargs)
