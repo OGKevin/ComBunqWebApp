@@ -89,11 +89,11 @@ class testView(TestCase):
         response2 = self.client.post('/generate', follow=True)
         self.assertEqual(response2.status_code, 200)
 
-    def test_decrypt(self):
-        response = self.client.get('/decrypt', follow=True)
+    def test_my_bunq(self):
+        response = self.client.get('/my_bunq', follow=True)
         self.assertEqual(response.status_code, 200)
 
-        response2 = self.client.post('/decrypt', follow=True)
+        response2 = self.client.post('/my_bunq', follow=True)
         self.assertEqual(response2.status_code, 200)
 
     def test_api(self):
@@ -101,11 +101,11 @@ class testView(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_invoice_downloader(self):
-        response = self.client.get('/decrypt/download/invoice', follow=True)
+        response = self.client.get('/my_bunq/download/invoice', follow=True)
         self.assertEqual(response.status_code, 200)
 
     def test_avatar_downloader(self):
-        response = self.client.get('/decrypt/download/avatar', follow=True)
+        response = self.client.get('/my_bunq/download/avatar', follow=True)
         self.assertEqual(response.status_code, 200)
 
 
@@ -136,11 +136,11 @@ class TestViewCode(TestCase):
             200
         )
 
-    def test_decrypt_get(self):
-        request = self.factory.get('/decrypt')
+    def test_my_bunq_get(self):
+        request = self.factory.get('/my_bunq')
         request.user = self.user
         self.assertEqual(
-            views.DecryptView().get(request).status_code,
+            views.MyBunqView().get(request).status_code,
             200
         )
 
@@ -366,7 +366,7 @@ class TestCallback(TestCase):
         request1.user = user
         views.APIView().post(request1, 'start_session')
 
-        request3 = self.factory.get('/decrypt/download/avatar')
+        request3 = self.factory.get('/my_bunq/download/avatar')
         request3.user = user
 
         r = views.FileDownloader().get(request3, 'avatar')

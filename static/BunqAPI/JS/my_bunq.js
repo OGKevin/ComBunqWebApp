@@ -173,7 +173,7 @@ function sendPost(json, action, template) {
     })
     .fail(function() {
       e = {
-        'error_description_translated': 'Something went wrong server-side. Not usre what exaclty :('
+        'error_description_translated': 'Something went wrong server-side. Not sure what exaclty :('
       }
       show(e, true)
     })
@@ -266,6 +266,7 @@ function createTable(input) {
   }
   dataTable = new DataTable("#transaction_table", options);
   $("#transaction_table").css('visibility', 'visible');
+  $("#user_payments").css('visibility', 'visible');
 }
 
 function deactivateItems() {

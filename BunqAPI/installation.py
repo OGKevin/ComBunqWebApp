@@ -49,7 +49,7 @@ class installation(object):
                 'token': r['Response'][1]['Token'],
                 'ServerPublicKey': r['Response'][2]['ServerPublicKey']}
         except KeyError:  # pragma: no cover
-            print (json.dumps(r, indent=4))
+            print(json.dumps(r, indent=4))
             raise KeyError
         #     # IDEA: need to return error html page
 

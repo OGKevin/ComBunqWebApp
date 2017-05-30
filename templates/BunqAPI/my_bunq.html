@@ -42,7 +42,7 @@
 							<ul>
 								<li class=""><a href="../../">Home</a></li>
 								<li><a href="../Manager">Manager</a></li>
-								<li class="current"><a href="../decrypt">Decrypt</a></li>
+								<li class="current"><a href="../my_bunq">My bunq</a></li>
 								<li><a href="../generate">Generate</a></li>
 								<li><a href="../account/register">Sing Up</a></li>
 								<li>
@@ -108,6 +108,7 @@ Restart session </button>
 										  <input id="accountID" type="text" placeholder="accountID/cardID">
 										</div>
 										<div class="ui secondary vertical pointing menu">
+											<a id="start_session" class="item">Restart sessoin</a>
 											<a id="users" class="item">Users</a>
 											<a id="accounts" class="item">Accounts</a>
 											<a id="payment" class="item">Payment</a>
@@ -127,15 +128,15 @@ Restart session </button>
 										</div>
 										<div id="user_accounts" class=""></div>
 										</section>
+										<section>
 										<div id="user_payments" class="">
-											
 											<header>
 												<h3>Transactions</h3>
 											</header>
-											<table id="transaction_table" class="ui celled table">
-												
-											</table>
+												<table id="transaction_table" class="ui celled table">
+												</table>
 										</div>
+									</section>
 										<!-- <section>
 											<header>
 												<h3>So in conclusion ...</h3>
@@ -302,17 +303,17 @@ Restart session </button>
 	  <script type='text/javascript' src="{%static "jquery/dist/jquery.min.js"%}"></script>
 	  <script type='text/javascript' src="{%static "jquery-file-download/src/Scripts/jquery.fileDownload.js"%}"></script>
 	  <script type='text/javascript' src="{%static "mustache/mustache.min.js"%}"></script>
-	  <script type='text/javascript' src="{%static "vanilla-datatables/vanilla-dataTables.min.js"%}"></script>
 	  <script type='text/javascript' src="{%static "moment/min/moment.min.js"%}"></script>
 	  <script type='text/javascript' src="{%static "numeral/min/numeral.min.js"%}"></script>
 	  <script type='text/javascript' src="{%static "numeral/min/locales/nl-nl.min.js"%}"></script>
 	  <!-- <script type='text/javascript' src="{%static "vue/dist/vue.common.js"%}"></script> -->
-	  <!-- <link rel="stylesheet" href="{%static "vanilla-datatables/vanilla-dataTables.min.css"%}"/> -->
 	  <link rel="stylesheet" href="{%static "font-awesome/css/font-awesome.min.css"%}"/>
 	  <link rel="stylesheet" href="{%static "semantic/dist/semantic.min.css"%}"/>
-		<script type='text/javascript' src="{%static "BunqAPI/JS/decrypt.js "%}"></script>
+		<script type='text/javascript' src="{%static "vanilla-datatables/vanilla-dataTables.min.js"%}"></script>
+		<link rel="stylesheet" href="{%static "vanilla-datatables/vanilla-dataTables.min.css"%}"/>
+		<script type='text/javascript' src="{%static "BunqAPI/JS/my_bunq.js "%}"></script>
 	  <!-- <script type='text/javascript' src="{%static "BunqAPI/JS/vue.js "%}"></script> -->
-	  <link rel='stylesheet' href="{%static "BunqAPI/CSS/decrypt.css "%}"/>
+	  <link rel='stylesheet' href="{%static "BunqAPI/CSS/my_bunq.css "%}"/>
 		<script src="{%static "assets/js/main.js"%}"></script>
 
 	</body>
