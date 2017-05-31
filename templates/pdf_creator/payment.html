@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<!-- <meta name="pdfkit-page-size" content="Letter" /> -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/components/table.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/components/image.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/components/icon.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/components/grid.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/components/header.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/components/divider.min.css">
+	<title></title>
+	<style media="screen">
+		body {
+			width: 95%;
+			/*height: 420px;*/
+			/*background-color: lightgrey*/
+		}
+		#counterparty_alias{
+			background-color: inherit;
+			border: inherit;
+		}
+		
+	
+	</style>
+</head>
+
+<body>
+	<img src="http://i.imgur.com/rb03BMy.png" class="ui centered large image">
+	<h2 class="ui center aligned icon header">
+		<div class="content">
+			Details transaction
+		</div>
+	</h2>
+	<div class="ui divider"></div>
+	<table>
+		<tr>
+			<td>Account holder:</td>
+			<td>{{Payment.alias.display_name}}</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td>{{Payment.alias.iban}}</td>
+		</tr>
+	</table>
+	<div class="ui divider"></div>
+		<table id='counterparty_alias' class="ui table">
+			<tr>
+				<td>{{Payment.counterparty_alias.display_name}}</td>
+				<td class="right aligned">{% if Payment.amount.out %}
+					{{Payment.amount.currency}}&emsp;{{Payment.amount.value}} <strong>OUT</strong>
+				{% else %}
+				{{Payment.amount.currency}}&emsp;{{Payment.amount.value}} <strong>IN</strong>
+				{% endif %}</td>
+			</tr>
+		</table>
+		<div class="ui divider"></div>
+		<table class="ui table">
+			<tbody>
+				<tr>
+					<td>Payee IBAN</td>
+					<td>{{Payment.counterparty_alias.iban}}</td>
+				</tr>
+				<tr class="active">
+					<td>Description</td>
+					<td>{{Payment.description}}</td>
+				</tr>
+				<tr>
+					<td>Type</td>
+					<td>{{Payment.type}}</td>
+				</tr>
+				<tr class="active">
+					<td>Date</td>
+					<td>{{Payment.created}}</td>
+				</tr>
+				<tr>
+					<td>Transaction ID</td>
+					<td>{{Payment.id}}</td>
+				</tr>
+			</tbody>
+		</table>
+</body>
+
+</html>
