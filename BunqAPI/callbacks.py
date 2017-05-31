@@ -8,6 +8,7 @@ import json
 import base64
 import tempfile
 import time
+from pdf_creator import creator
 # from pprint import pprint
 
 
@@ -31,12 +32,20 @@ class callback(AESCipher):
                    is retrieved.
     """
 
-    def __init__(self, user_file, user, password, userID=None, accountID=None):
+    def __init__(self,
+                 user_file,
+                 user,
+                 password,
+                 user_id=None,
+                 account_id=None,
+                 payment_id=None):
+
         AESCipher.__init__(self, password)
         self.user_file = self.decrypt(user_file['secret'])
         self.user = user
-        self._user_id = userID
-        self._account_id = accountID
+        self._user_id = user_id
+        self._account_id = account_id
+        self._payment_id = payment_id
         self.init_api = self.user_file
         self.bunq_api = self.user_file
 
@@ -156,7 +165,7 @@ class callback(AESCipher):
                 ).json()
         return r
 
-    def payment(self, mode='normal', paymentID=''):
+    def payment(self, mode='normal'):
         '''
         Returns a list of all transactions from an account. If an payment id is
         given then a specific transaction will be returned.
@@ -167,8 +176,13 @@ class callback(AESCipher):
         '''
         if mode == 'normal':
             if self.account_id and self.user_id is not None:
-                r = self.bunq_api.endpoints.payment.get_all_payments_for_account(  # noqa
-                    self.user_id, self.account_id).json()
+                if self.payment_id is None:
+                    r = self.bunq_api.endpoints.payment.get_all_payments_for_account(  # noqa
+                        self.user_id, self.account_id).json()
+                else:
+                    r = self.bunq_api.endpoints.payment.get_payment_by_id(
+                        self.user_id, self.account_id, self.payment_id
+                    ).json()
             else:
                 r = {
                     'Error': [{
@@ -220,7 +234,7 @@ class callback(AESCipher):
                 }
                 return error
             else:
-                return self.get_pdf(json.dumps(invoice))
+                return self.get_invoice_pdf(json.dumps(invoice))
 
         else:
             error = {
@@ -228,8 +242,60 @@ class callback(AESCipher):
                     'error_description_translated': 'There is no user id specified'  # noqa
                 }]
             }
+            return error
 
-    def get_pdf(self, invoice):
+    def get_payment_pdf(self):
+        if self.payment_id is not None:
+            payment = self.payment()
+
+            try:
+                pdf = creator.payment(payment['Response'][0])
+            except KeyError:
+                error_msg = payment['Error'][0]['error_description_translated']
+                error = {
+                    'Error': [{
+                        'error_description_translated': ('There seems to be'
+                                                         ' an error with the'
+                                                         ' response.'
+                                                         '\n'
+                                                         '%s' % error_msg
+                                                         )
+                    }]}
+
+                return error
+
+            temp_file = tempfile.NamedTemporaryFile(
+                mode='wb',
+                dir=None,
+                suffix='.pdf',
+                prefix='ComBunqWebApp',
+                delete=False
+            )
+            temp_file.write(pdf)
+            temp_file.close()
+
+            s = SessionStore()
+            s['payment_pdf'] = temp_file.name
+            s.create()
+            self.user.profile.payment_token = s.session_key
+            self.user.save()
+
+            r = {
+                'Response': [{
+                    'status': 'PDF Generated.....'
+                }]
+            }
+            return r
+        else:
+            error = {
+                'Error': [{
+                    'error_description_translated': 'Payment id is not set'
+                }]
+            }
+
+            return error
+
+    def get_invoice_pdf(self, invoice):
         url = "https://api.sycade.com/btp-int/Invoice/Generate"
         headers = {
             'content-type':  "application/json",
@@ -347,6 +413,13 @@ class callback(AESCipher):
     @account_id.setter
     def account_id(self, value):
         self._account_id = value
+
+    @property
+    def payment_id(self):
+        if self._payment_id is None or self._payment_id is '':
+            return None
+        else:
+            return self.to_int(self._payment_id)
 
     @staticmethod
     def to_int(string):

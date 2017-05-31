@@ -102,7 +102,13 @@ class APIView(View):
     API that handles post requests to make calls to the bunq api.
     """
 
-    def post(self, request, selector, userID=None, accountID=None):
+    def post(self,
+             request,
+             selector,
+             user_id=None,
+             account_id=None,
+             payment_id=None):
+
         file_contents = json.loads(request.POST['json'])
         encryption_password = request.POST['pass']
         user = User.objects.get(username=request.user)
@@ -113,8 +119,9 @@ class APIView(View):
                     file_contents,
                     user,
                     encryption_password,
-                    userID,
-                    accountID,
+                    user_id,
+                    account_id,
+                    payment_id
                 )
             except UnicodeDecodeError:
                 error = {
@@ -167,6 +174,21 @@ class FileDownloader(View):
         with open(file_path, 'rb') as f:
             response = HttpResponse(f.read(), content_type="application/force-download")  # noqa
             response['Content-Disposition'] = 'attachment; filename=%s' % smart_str('BunqWebApp_avatar.png')  # noqa
+            try:
+                return response
+            # except Exception as e:
+            #     raise
+            finally:
+                os.remove(file_path)
+
+    def payment(self, user):
+        file_path = Session.objects.get(
+            session_key=user.profile.payment_token
+        ).get_decoded()["payment_pdf"]
+
+        with open(file_path, 'rb') as f:
+            response = HttpResponse(f.read(), content_type="application/force-download")  # noqa
+            response['Content-Disposition'] = 'attachment; filename=%s' % smart_str('BunqWebApp_payment.pdf')  # noqa
             try:
                 return response
             # except Exception as e:

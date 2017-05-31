@@ -97,6 +97,14 @@ $(function() {
     $(this).addClass('active')
     sendPost(jsonObj, 'invoice/' + get_user_id())
   });
+  
+  $("#export_payment").click(function(event) {
+    /* Act on the event */
+    console.log('click');
+    deactivateItems()
+    $(this).addClass('active')
+    sendPost(jsonObj, 'get_payment_pdf/' + get_user_id() + '/' + get_account_id() + '/' + get_payment_id())
+  });
 });
 
 function get_user_id() {
@@ -105,6 +113,10 @@ function get_user_id() {
 
 function get_account_id() {
   return $("#accountID").val()
+}
+
+function get_payment_id() {
+  return $('#paymentID').val()
 }
 
 function sendPost(json, action, template) {
@@ -145,6 +157,14 @@ function sendPost(json, action, template) {
         
         } else if (action.match(/accounts/)) {
           show(r.Response, false, template, "accounts")
+        } else if (action.match(/get_payment_pdf/)) {
+          $.fileDownload('./download/payment')
+            .done(function() {
+              alert('File download a success!');
+            })
+            .fail(function() {
+              alert('File download failed!');
+            });
         } else if (action.match(/payment/)) {
           createTable(r.Response)
         } else if (action.match(/invoice/)) {
@@ -160,7 +180,8 @@ function sendPost(json, action, template) {
           show(r.Response, false, template, "users")
         } else if (action.match(/card/)) {
           show(r.Response, false, template, "card")
-        } else {
+        }
+        else {
           error = {
             "error_description_translated": "Not sure what to do with this response, it might be empty ?"
           }
@@ -179,6 +200,7 @@ function sendPost(json, action, template) {
     })
     .always(function() {
       $("#loading").html('')
+      console.log(action);
     });
 }
 

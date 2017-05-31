@@ -38,8 +38,9 @@ urlpatterns = [
     url(r'^my_bunq/$', MyBunqView.as_view(), name='my_bunq'),
     url(r'^my_bunq/download/(?P<action>[\w-]+)$', FileDownloader.as_view(), name='downloader'),  # noqa
     url(r'^API/(?P<selector>[\w-]+)$', APIView.as_view(), name='API'),  # noqa,
-    url(r'^API/(?P<selector>[\w-]+)/(?P<userID>\d*)$', APIView.as_view(), name='API'),  # noqa,
-    url(r'^API/(?P<selector>[\w-]+)/(?P<userID>\d*)/(?P<accountID>\d*)$', APIView.as_view(), name='API'),  # noqa,
+    url(r'^API/(?P<selector>[\w-]+)/(?P<user_id>\d*)$', APIView.as_view(), name='API'),  # noqa,
+    url(r'^API/(?P<selector>[\w-]+)/(?P<user_id>\d*)/(?P<account_id>\d*)$', APIView.as_view(), name='API'),  # noqa,
+    url(r'^API/(?P<selector>[\w-]+)/(?P<user_id>\d*)/(?P<account_id>\d*)/(?P<payment_id>\d*)$', APIView.as_view(), name='API'),  # noqa,
     url(r'^captcha/', include('captcha.urls')),
     url(r'', include('two_factor.urls', 'two_factor')),
     # url(r'^.*$', views.RedirectView.as_view(), name='home'),
