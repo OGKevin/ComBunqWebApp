@@ -9,7 +9,7 @@ import base64
 import tempfile
 import time
 from filecreator.creator import Creator
-# from pprint import pprint
+from pprint import pprint
 
 
 class callback(AESCipher):
@@ -32,22 +32,30 @@ class callback(AESCipher):
                    is retrieved.
     """
 
-    def __init__(self,
-                 user_file,
-                 user,
-                 password,
-                 user_id=None,
-                 account_id=None,
-                 payment_id=None):
+    __variables = ['user_id', 'account_id', 'payment_id', 'date_start',
+                   'date_end', 'statement_format', 'regional_format'
+                   ]
 
+    def __init__(self, user_file, user, password, **kwargs):
+        pprint(kwargs)
+        # pprint(args)
         AESCipher.__init__(self, password)
         self.user_file = self.decrypt(user_file['secret'])
         self.user = user
-        self._user_id = user_id
-        self._account_id = account_id
-        self._payment_id = payment_id
+        # self._user_id = user_id
+        # self._account_id = account_id
+        # self._payment_id = payment_id
+        self._kwargs_setter(kwargs)
         self.init_api = self.user_file
         self.bunq_api = self.user_file
+
+    def _kwargs_setter(self, kwargs):
+        for k in self.__variables:
+            if kwargs.get(k) is not None:
+                setattr(self, k, kwargs.get(k))
+            else:
+                print(k)
+                setattr(self, k, None)
 
     def register(self):
         '''
@@ -319,6 +327,22 @@ class callback(AESCipher):
         png = Creator(self.user).avatar(r.content)
         return png
 
+    def customer_statement(self,
+                           date_start,
+                           statement_format,
+                           date_end,
+                           regional_format):
+        r = self.bunq_api.endpoints.customer_statement.create_customer_statement(
+                                                                self.user_id,
+                                                                self.account_id,
+                                                                statement_format,
+                                                                date_start,
+                                                                date_end,
+                                                                regional_format
+        )
+
+        pprint(r.json)
+
     @property
     def init_api(self):
         return self._init_api
@@ -382,6 +406,14 @@ class callback(AESCipher):
             return None
         else:
             return self.to_int(self._payment_id)
+
+    @property
+    def date_start(self):
+        return self._date_start
+
+    @date_start.setter
+    def date_start(self, value):
+        self._date_start = value
 
     @staticmethod
     def to_int(string):

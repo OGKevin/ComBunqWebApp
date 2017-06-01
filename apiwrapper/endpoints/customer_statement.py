@@ -31,3 +31,20 @@ class CustomerStatement(Endpoint):
         endpoint += "/%s" % self.__endpoint_customer_statement_content
 
         return self._make_get_request(endpoint)
+
+    def create_customer_statement(self,
+                                  user_id,
+                                  account_id,
+                                  statement_format,
+                                  date_start,
+                                  date_end,
+                                  regional_format):
+        endpoint = self._get_base_endpoint(user_id, account_id)
+        payload = {
+            'statement_format': statement_format,
+            'date_start': date_start,
+            'date_end': date_end,
+            'regional_format': regional_format
+        }
+
+        self._make_post_request(endpoint, payload)

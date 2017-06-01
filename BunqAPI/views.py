@@ -14,7 +14,7 @@ from django.views import View
 from django.views.generic.base import RedirectView
 import json
 import os
-# from pprint import pprint
+from pprint import pprint
 
 # from django.http.response import FileResponse
 
@@ -102,16 +102,17 @@ class APIView(View):
     API that handles post requests to make calls to the bunq api.
     """
 
-    def post(self,
-             request,
-             selector,
-             user_id=None,
-             account_id=None,
-             payment_id=None):
+    __variables = ['user_id', 'account_id', 'payment_id',
+                   'date_start', 'date_end', 'statement_format',
+                   'regional_format', 'selector'
+                   ]
 
+    def post(self, request, **kwargs):
         file_contents = json.loads(request.POST['json'])
         encryption_password = request.POST['pass']
         user = User.objects.get(username=request.user)
+
+        # self._kwargs_setter(kwargs)
 
         if file_contents['userID'] in user.profile.GUID:
             try:
@@ -119,9 +120,14 @@ class APIView(View):
                     file_contents,
                     user,
                     encryption_password,
-                    user_id,
-                    account_id,
-                    payment_id
+                    **kwargs
+                    # self.user_id,
+                    # self.account_id,
+                    # self.payment_id,
+                    # self.date_start,
+                    # self.date_end,
+                    # self.statement_format,
+                    # self.regional_format
                 )
             except UnicodeDecodeError:
                 error = {
@@ -132,13 +138,20 @@ class APIView(View):
                      }
                 return HttpResponse(json.dumps(error))
             else:
-                response = getattr(API, selector.strip('/'))()
+                response = getattr(API, kwargs.get('selector').strip('/'))()
                 return HttpResponse(json.dumps(response))
         else:  # pragma: no cover
             error = {
                 'Error': [{'error_description_translated': 'This file is not yours to use.'}]  # noqa
                 }
             return HttpResponse(json.dumps(error))
+
+    def _kwargs_setter(self, kwargs):
+        for k in self.__variables:
+            if kwargs.get(k) is not None:
+                setattr(self, k, kwargs.get(k))
+            else:
+                setattr(self, k, None)
 
 
 @method_decorator(otp_required, name='dispatch')
