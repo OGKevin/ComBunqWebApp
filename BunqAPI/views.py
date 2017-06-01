@@ -165,33 +165,3 @@ class FileDownloader(View):
             #     raise
             finally:
                 os.remove(file_path)
-
-    def avatar(self, user):
-        file_path = Session.objects.get(
-            session_key=user.profile.avatar_token
-        ).get_decoded()["avatar_png"]
-
-        with open(file_path, 'rb') as f:
-            response = HttpResponse(f.read(), content_type="application/force-download")  # noqa
-            response['Content-Disposition'] = 'attachment; filename=%s' % smart_str('BunqWebApp_avatar.png')  # noqa
-            try:
-                return response
-            # except Exception as e:
-            #     raise
-            finally:
-                os.remove(file_path)
-
-    def payment(self, user):
-        file_path = Session.objects.get(
-            session_key=user.profile.payment_token
-        ).get_decoded()["payment_pdf"]
-
-        with open(file_path, 'rb') as f:
-            response = HttpResponse(f.read(), content_type="application/force-download")  # noqa
-            response['Content-Disposition'] = 'attachment; filename=%s' % smart_str('BunqWebApp_payment.pdf')  # noqa
-            try:
-                return response
-            # except Exception as e:
-            #     raise
-            finally:
-                os.remove(file_path)

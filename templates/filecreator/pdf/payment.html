@@ -37,21 +37,21 @@
 	<table>
 		<tr>
 			<td>Account holder:</td>
-			<td>{{Payment.alias.display_name}}</td>
+			<td>{{data.alias.display_name}}</td>
 		</tr>
 		<tr>
 			<td></td>
-			<td>{{Payment.alias.iban}}</td>
+			<td>{{data.alias.iban}}</td>
 		</tr>
 	</table>
 	<div class="ui divider"></div>
 		<table id='counterparty_alias' class="ui table">
 			<tr>
-				<td>{{Payment.counterparty_alias.display_name}}</td>
-				<td class="right aligned">{% if Payment.amount.out %}
-					{{Payment.amount.currency}}&emsp;{{Payment.amount.value}} <strong>OUT</strong>
+				<td>{{data.counterparty_alias.display_name}}</td>
+				<td class="right aligned">{% if data.amount.out %}
+					{{data.amount.currency}}&emsp;{{data.amount.value}} <strong>OUT</strong>
 				{% else %}
-				{{Payment.amount.currency}}&emsp;{{Payment.amount.value}} <strong>IN</strong>
+				{{data.amount.currency}}&emsp;{{data.amount.value}} <strong>IN</strong>
 				{% endif %}</td>
 			</tr>
 		</table>
@@ -60,23 +60,23 @@
 			<tbody>
 				<tr>
 					<td>Payee IBAN</td>
-					<td>{{Payment.counterparty_alias.iban}}</td>
+					<td>{{data.counterparty_alias.iban}}</td>
 				</tr>
 				<tr class="active">
 					<td>Description</td>
-					<td>{{Payment.description}}</td>
+					<td>{{data.description}}</td>
 				</tr>
 				<tr>
 					<td>Type</td>
-					<td>{{Payment.type}}</td>
+					<td>{{data.type}}</td>
 				</tr>
 				<tr class="active">
 					<td>Date</td>
-					<td>{{Payment.created}}</td>
+					<td>{{data.created}}</td>
 				</tr>
 				<tr>
 					<td>Transaction ID</td>
-					<td>{{Payment.id}}</td>
+					<td>{{data.id}}</td>
 				</tr>
 			</tbody>
 		</table>

@@ -80,14 +80,17 @@ $(function() {
     $(this).addClass('active')
     pages = $("#pages").val()
     if (dataTable) {
-      curentPage = dataTable.currentPage
-      if (pages) {
-
-        dataTable.export('csv', 'Bunq-transactions', ';', '\r\n', [pages])
-      } else {
-        dataTable.export('csv', 'Bunq-transactions', ';', '\r\n', curentPage)
-
-      }
+      // getTableData()
+      json = $("#transaction_table").tableToJSON()
+      sendPost(json, 'filecreator/transactions/csv')
+      // curentPage = dataTable.currentPage
+      // if (pages) {
+      //
+      //   dataTable.export('csv', 'Bunq-transactions', ';', '\r\n', [pages])
+      // } else {
+      //   dataTable.export('csv', 'Bunq-transactions', ';', '\r\n', curentPage)
+      //
+      // }
     } else {
       $("#loading").html('Table is not created yet?')
     }
@@ -100,7 +103,6 @@ $(function() {
   
   $("#export_payment").click(function(event) {
     /* Act on the event */
-    console.log('click');
     deactivateItems()
     $(this).addClass('active')
     sendPost(jsonObj, 'get_payment_pdf/' + get_user_id() + '/' + get_account_id() + '/' + get_payment_id())
@@ -158,7 +160,7 @@ function sendPost(json, action, template) {
         } else if (action.match(/accounts/)) {
           show(r.Response, false, template, "accounts")
         } else if (action.match(/get_payment_pdf/)) {
-          $.fileDownload('./download/payment')
+          $.fileDownload('/filecreator/download')
             .done(function() {
               alert('File download a success!');
             })
@@ -167,7 +169,8 @@ function sendPost(json, action, template) {
             });
         } else if (action.match(/payment/)) {
           createTable(r.Response)
-        } else if (action.match(/invoice/)) {
+        }
+        else if (action.match(/invoice/)) {
           $.fileDownload('./download/invoice')
             .done(function() {
               alert('File download a success!');
@@ -176,7 +179,18 @@ function sendPost(json, action, template) {
               alert('File download failed!');
             });
 
-        } else if (action.match(/users/)) {
+        }
+        else if (action.match(/filecreator/)) {
+          $.fileDownload('/filecreator/download')
+            .done(function() {
+              alert('File download a success!');
+            })
+            .fail(function() {
+              alert('File download failed!');
+            });
+
+        }
+        else if (action.match(/users/)) {
           show(r.Response, false, template, "users")
         } else if (action.match(/card/)) {
           show(r.Response, false, template, "card")
@@ -200,7 +214,6 @@ function sendPost(json, action, template) {
     })
     .always(function() {
       $("#loading").html('')
-      console.log(action);
     });
 }
 
@@ -293,4 +306,11 @@ function createTable(input) {
 
 function deactivateItems() {
   $("#load_file, #register, #start_session, #users, #accounts, #lock_ids, #payment, #card, #mastercard_action, #export_transactions, #export_invoice").removeClass('active')
+}
+function getTableData() {
+  table = dataTable
+  json = $("#transaction_table").tableToJSON()
+  // for (var i = 0; i < table.rows.length; i++) {
+  //   data.push(table.rows[i].innerHTML)
+  // }
 }

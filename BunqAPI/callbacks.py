@@ -8,7 +8,7 @@ import json
 import base64
 import tempfile
 import time
-from pdf_creator import creator
+from filecreator.creator import Creator
 # from pprint import pprint
 
 
@@ -249,7 +249,7 @@ class callback(AESCipher):
             payment = self.payment()
 
             try:
-                pdf = creator.payment(payment['Response'][0])
+                pdf = Creator(self.user, 'pdf').payment(payment['Response'][0])
             except KeyError:
                 error_msg = payment['Error'][0]['error_description_translated']
                 error = {
@@ -261,31 +261,8 @@ class callback(AESCipher):
                                                          '%s' % error_msg
                                                          )
                     }]}
-
                 return error
-
-            temp_file = tempfile.NamedTemporaryFile(
-                mode='wb',
-                dir=None,
-                suffix='.pdf',
-                prefix='ComBunqWebApp',
-                delete=False
-            )
-            temp_file.write(pdf)
-            temp_file.close()
-
-            s = SessionStore()
-            s['payment_pdf'] = temp_file.name
-            s.create()
-            self.user.profile.payment_token = s.session_key
-            self.user.save()
-
-            r = {
-                'Response': [{
-                    'status': 'PDF Generated.....'
-                }]
-            }
-            return r
+            return pdf
         else:
             error = {
                 'Error': [{
@@ -339,23 +316,8 @@ class callback(AESCipher):
     def get_avatar(self, avatar_id):
         r = self.init_api.endpoints.attachment_public.get_content_of_public_attachment(avatar_id)  # noqa
 
-        png = r.content
-
-        temp_file = tempfile.NamedTemporaryFile(
-            mode='wb',
-            dir=None,
-            suffix='.png',
-            prefix='ComBunqWebApp',
-            delete=False
-        )
-        temp_file.write(png)
-        temp_file.close()
-
-        s = SessionStore()
-        s['avatar_png'] = temp_file.name
-        s.create()
-        self.user.profile.avatar_token = s.session_key
-        self.user.save()
+        png = Creator(self.user).avatar(r.content)
+        return png
 
     @property
     def init_api(self):

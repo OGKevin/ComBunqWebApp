@@ -74,6 +74,7 @@ INSTALLED_APPS = [
     'django_otp.plugins.otp_totp',
     'two_factor',
     'raven.contrib.django.raven_compat',
+    'filecreator'
 ]
 
 MIDDLEWARE = [

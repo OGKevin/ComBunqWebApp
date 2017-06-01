@@ -20,6 +20,8 @@ from django.conf.urls.static import static
 from Manager.views import ManagerView, ManagerFormView
 from BunqAPI.views import GenerateView, MyBunqView, APIView, FileDownloader, RedirectView  # noqa
 from BunqWebApp import views
+from filecreator.views import APIView as filecreator
+from filecreator.views import FileDownloaderView as file_downlaoder
 from django.contrib.auth import views as auth_views
 
 '''
@@ -37,10 +39,13 @@ urlpatterns = [
     url(r'^generate/$', GenerateView.as_view(), name='generate'),
     url(r'^my_bunq/$', MyBunqView.as_view(), name='my_bunq'),
     url(r'^my_bunq/download/(?P<action>[\w-]+)$', FileDownloader.as_view(), name='downloader'),  # noqa
+    # NOTE: after invoice has moved to filecreator this url can be removed
     url(r'^API/(?P<selector>[\w-]+)$', APIView.as_view(), name='API'),  # noqa,
     url(r'^API/(?P<selector>[\w-]+)/(?P<user_id>\d*)$', APIView.as_view(), name='API'),  # noqa,
     url(r'^API/(?P<selector>[\w-]+)/(?P<user_id>\d*)/(?P<account_id>\d*)$', APIView.as_view(), name='API'),  # noqa,
     url(r'^API/(?P<selector>[\w-]+)/(?P<user_id>\d*)/(?P<account_id>\d*)/(?P<payment_id>\d*)$', APIView.as_view(), name='API'),  # noqa,
+    url(r'^API/filecreator/(?P<selector>[\w-]+)/(?P<extension>[\w-]+)$', filecreator.as_view(), name='API'),  # noqa,
+    url(r'^filecreator/download$', file_downlaoder.as_view(), name='API'),  # noqa,
     url(r'^captcha/', include('captcha.urls')),
     url(r'', include('two_factor.urls', 'two_factor')),
     # url(r'^.*$', views.RedirectView.as_view(), name='home'),

@@ -3,14 +3,13 @@ source =
   BunqAPI
   BunqWebApp
   Manager
+  filecreator
   
 omit =
   */config/*
   BunqWebApp/wsgi.py
-  Manager/apps.py
-  Manager/migrations/*
-  BunqAPI/migrations/*
-  BunqAPI/apps.py
+  */migrations/*
+  *apps.py*
   *__init__.py*
   *setup.py*
   

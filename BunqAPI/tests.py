@@ -7,7 +7,6 @@ import base64
 from BunqAPI import views
 from django.contrib.auth import authenticate
 from faker import Faker
-# from pprint import pprint
 from unittest.mock import patch
 from BunqAPI.models import Proxy
 import requests
@@ -353,21 +352,4 @@ class TestCallback(TestCase):
         request3.user = user
 
         r = views.FileDownloader().get(request3, 'invoice')
-        self.assertEqual(r.status_code, 200)
-
-    @patch('%ssession_server.SessionServer.create_new_session_server' % c, side_effect=get_start_session)  # noqa
-    @patch('%sinvoice.Invoice.get_all_invoices_for_user' % c, side_effect=get_inoice)  # noqa  # noqa
-    @patch('%sattachment_public.AttachmentPublic.get_content_of_public_attachment' % c, side_effect=get_avatar)  # noqa
-    def test_avatar_downloader(self, mock, mock2, mock3):
-        user = self.user
-        data = self.post_data
-
-        request1 = self.factory.post('/API/start_session', data=data)
-        request1.user = user
-        views.APIView().post(request1, 'start_session')
-
-        request3 = self.factory.get('/my_bunq/download/avatar')
-        request3.user = user
-
-        r = views.FileDownloader().get(request3, 'avatar')
         self.assertEqual(r.status_code, 200)
