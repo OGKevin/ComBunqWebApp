@@ -102,17 +102,10 @@ class APIView(View):
     API that handles post requests to make calls to the bunq api.
     """
 
-    __variables = ['user_id', 'account_id', 'payment_id',
-                   'date_start', 'date_end', 'statement_format',
-                   'regional_format', 'selector'
-                   ]
-
     def post(self, request, **kwargs):
         file_contents = json.loads(request.POST['json'])
         encryption_password = request.POST['pass']
         user = User.objects.get(username=request.user)
-
-        # self._kwargs_setter(kwargs)
 
         if file_contents['userID'] in user.profile.GUID:
             try:
@@ -121,13 +114,6 @@ class APIView(View):
                     user,
                     encryption_password,
                     **kwargs
-                    # self.user_id,
-                    # self.account_id,
-                    # self.payment_id,
-                    # self.date_start,
-                    # self.date_end,
-                    # self.statement_format,
-                    # self.regional_format
                 )
             except UnicodeDecodeError:
                 error = {
@@ -145,13 +131,6 @@ class APIView(View):
                 'Error': [{'error_description_translated': 'This file is not yours to use.'}]  # noqa
                 }
             return HttpResponse(json.dumps(error))
-
-    def _kwargs_setter(self, kwargs):
-        for k in self.__variables:
-            if kwargs.get(k) is not None:
-                setattr(self, k, kwargs.get(k))
-            else:
-                setattr(self, k, None)
 
 
 @method_decorator(otp_required, name='dispatch')

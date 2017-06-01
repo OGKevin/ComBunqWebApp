@@ -37,6 +37,7 @@ class callback(AESCipher):
                    ]
 
     def __init__(self, user_file, user, password, **kwargs):
+        pprint(kwargs)
         AESCipher.__init__(self, password)
         self.user_file = self.decrypt(user_file['secret'])
         self.user = user
@@ -47,9 +48,9 @@ class callback(AESCipher):
     def _kwargs_setter(self, kwargs):
         for k in self.__variables:
             if kwargs.get(k) is not None:
+                print(k, kwargs.get(k))
                 setattr(self, k, kwargs.get(k))
             else:
-                print(k)
                 setattr(self, k, None)
 
     def register(self):
@@ -322,21 +323,31 @@ class callback(AESCipher):
         png = Creator(self.user).avatar(r.content)
         return png
 
-    def customer_statement(self,
-                           date_start,
-                           statement_format,
-                           date_end,
-                           regional_format):
-        r = self.bunq_api.endpoints.customer_statement.create_customer_statement(
-                                                            self.user_id,
-                                                            self.account_id,
-                                                            statement_format,
-                                                            date_start,
-                                                            date_end,
-                                                            regional_format
+    def customer_statement(self):
+        print('this is date start', self.date_start)
+        r = self.bunq_api.endpoints.customer_statement.create_customer_statement(  # noqa
+                                                        self.user_id,
+                                                        self.account_id,
+                                                        self.statement_format,
+                                                        self.date_start,
+                                                        self.date_end,
+                                                        self.regional_format
         )
 
-        pprint(r.json)
+        if r.status_code == 200:
+            if self.statement_format == 'PDF':
+                statement_id = r.json()['Response'][0]['Id']['id']
+                file_contents = self.bunq_api.endpoints.customer_statement.get_content_of_customer_statement(self.user_id,
+                                                                                                             self.account_id,
+                                                                                                             statement_id)
+                creator = Creator(self.user)
+                temp_file = creator.temp_file(extension='.pdf')
+                temp_file.write(file_contents.content)
+                temp_file.close()
+                creator.store_in_session(file_path=temp_file.name)
+                pprint(temp_file.name)
+                
+        # pprint(r.json())
 
     @property
     def init_api(self):
@@ -408,7 +419,7 @@ class callback(AESCipher):
 
     @property
     def date_start(self):
-        if self._payment_id is None:
+        if self._date_start is None:
             return None
         else:
             return self._date_start

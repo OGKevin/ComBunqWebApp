@@ -30,7 +30,7 @@ class CustomerStatement(Endpoint):
         endpoint = self._get_base_endpoint(user_id, account_id, statement_id)
         endpoint += "/%s" % self.__endpoint_customer_statement_content
 
-        return self._make_get_request(endpoint)
+        return self._make_get_request(endpoint, verify=False)
 
     def create_customer_statement(self,
                                   user_id,
@@ -47,4 +47,4 @@ class CustomerStatement(Endpoint):
             'regional_format': regional_format
         }
 
-        self._make_post_request(endpoint, payload)
+        return self._make_post_request(endpoint, payload)

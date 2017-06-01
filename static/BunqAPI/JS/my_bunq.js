@@ -107,6 +107,12 @@ $(function() {
     $(this).addClass('active')
     sendPost(jsonObj, 'get_payment_pdf/' + get_user_id() + '/' + get_account_id() + '/' + get_payment_id())
   });
+  $("#export_payment2").click(function(event) {
+    /* Act on the event */
+    deactivateItems()
+    $(this).addClass('active')
+    sendPost(jsonObj, 'customer_statement/' + get_user_id() + '/' + get_account_id() + '/' + 'PDF' + '/' + get_begin_date() + '/' + get_end_date() + '/' + 'european')
+  });
 });
 
 function get_user_id() {
@@ -119,6 +125,12 @@ function get_account_id() {
 
 function get_payment_id() {
   return $('#paymentID').val()
+}
+function get_begin_date() {
+  return $('#begin_date').val()
+}
+function get_end_date() {
+  return $('#end_date').val()
 }
 
 function sendPost(json, action, template) {
