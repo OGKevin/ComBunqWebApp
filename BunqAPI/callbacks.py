@@ -37,14 +37,9 @@ class callback(AESCipher):
                    ]
 
     def __init__(self, user_file, user, password, **kwargs):
-        pprint(kwargs)
-        # pprint(args)
         AESCipher.__init__(self, password)
         self.user_file = self.decrypt(user_file['secret'])
         self.user = user
-        # self._user_id = user_id
-        # self._account_id = account_id
-        # self._payment_id = payment_id
         self._kwargs_setter(kwargs)
         self.init_api = self.user_file
         self.bunq_api = self.user_file
@@ -333,12 +328,12 @@ class callback(AESCipher):
                            date_end,
                            regional_format):
         r = self.bunq_api.endpoints.customer_statement.create_customer_statement(
-                                                                self.user_id,
-                                                                self.account_id,
-                                                                statement_format,
-                                                                date_start,
-                                                                date_end,
-                                                                regional_format
+                                                            self.user_id,
+                                                            self.account_id,
+                                                            statement_format,
+                                                            date_start,
+                                                            date_end,
+                                                            regional_format
         )
 
         pprint(r.json)
@@ -407,13 +402,53 @@ class callback(AESCipher):
         else:
             return self.to_int(self._payment_id)
 
+    @payment_id.setter
+    def payment_id(self, value):
+        self._payment_id = value
+
     @property
     def date_start(self):
-        return self._date_start
+        if self._payment_id is None:
+            return None
+        else:
+            return self._date_start
 
     @date_start.setter
     def date_start(self, value):
         self._date_start = value
+
+    @property
+    def date_end(self):
+        if self._date_end is None:
+            return None
+        else:
+            return self._date_end
+
+    @date_end.setter
+    def date_end(self, value):
+        self._date_end = value
+
+    @property
+    def statement_format(self):
+        if self._statement_format is None:
+            return None
+        else:
+            return self._statement_format
+
+    @statement_format.setter
+    def statement_format(self, value):
+        self._statement_format = value
+
+    @property
+    def regional_format(self):
+        if self._regional_format is None:
+            return None
+        else:
+            return self._regional_format
+
+    @regional_format.setter
+    def regional_format(self, value):
+        self._regional_format = value
 
     @staticmethod
     def to_int(string):
