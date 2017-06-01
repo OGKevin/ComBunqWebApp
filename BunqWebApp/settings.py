@@ -46,14 +46,31 @@ except NameError:
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-SECURE_SSL_REDIRECT = True
+if 'HEROKU' in os.environ:
+    DEBUG = False
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+
+    RAVEN_CONFIG = {
+        'dsn': os.environ['DSN'],
+    }
+
+    DESABLE_LOGGERS = True
+
+    API_URI = os.environ['API_URI']
+
+else:
+    DEBUG = True
+    SECURE_SSL_REDIRECT = False
+    SESSION_COOKIE_SECURE = False
+    DESABLE_LOGGERS = False
+    API_URI = True
+
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 ALLOWED_HOSTS = ['.beta-combunqweb.herokuapp.com',
                  '.combunqweb.herokuapp.com', '.127.0.0.1']
 LOGIN_URL = 'two_factor:login'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-SESSION_COOKIE_SECURE = True
 
 # Application definition
 
@@ -94,19 +111,10 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'BunqWebApp.urls'
 
-RAVEN_CONFIG = {
-    'dsn': 'https://5b07f222cd424164b8335e9123d6b691:5a59117e1d1547caac3a05d6f18080e6@sentry.io/172713',  # noqa
-    # If you are using git, you can also automatically configure the
-    # release based on the git info.
-
-    # NOTE: This relases via GIT wont work on heroku. Using heroku delpoy hooks
-    # instead.
-    # 'release': raven.fetch_git_sha(os.path.dirname(os.pardir)),
-}
 
 LOGGING = {  # NOTE: need to write logg msges. This can be done later :)
     'version': 1,
-    'disable_existing_loggers': True,
+    'disable_existing_loggers': DESABLE_LOGGERS,
     'root': {
         'level': 'WARNING',
         'handlers': ['sentry'],
@@ -222,7 +230,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Amsterdam'
 
 USE_I18N = True
 
