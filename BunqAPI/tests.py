@@ -244,7 +244,7 @@ class TestCallback(TestCase):
     def test_start_session(self, mock, mock3):
         request = self.factory.post('/API/start_session', data=self.post_data)
         request.user = self.user
-        r = views.APIView().post(request, 'start_session')
+        r = views.APIView().post(request, selector='start_session')
         self.assertEqual(r.status_code, 200)
 
     @patch('%sattachment_public.AttachmentPublic.get_content_of_public_attachment' % c, side_effect=get_avatar)  # noqa
@@ -256,11 +256,11 @@ class TestCallback(TestCase):
 
         request1 = self.factory.post('/API/start_session', data=data)
         request1.user = user
-        views.APIView().post(request1, 'start_session')
+        views.APIView().post(request1, selector='start_session')
 
         request2 = self.factory.post('/API/users', data=data)
         request2.user = user
-        r2 = views.APIView().post(request2, 'users')
+        r2 = views.APIView().post(request2, selector='users')
 
         self.assertEqual(r2.status_code, 200)
 
@@ -273,11 +273,12 @@ class TestCallback(TestCase):
 
         request1 = self.factory.post('/API/start_session', data=data)
         request1.user = user
-        views.APIView().post(request1, 'start_session')
+        views.APIView().post(request1, selector='start_session')
 
         request2 = self.factory.post('/API/accounts', data=data)
         request2.user = user
-        r2 = views.APIView().post(request2, 'accounts', self.id)
+        r2 = views.APIView().post(request2, selector='accounts',
+                                  user_id=self.id)
 
         self.assertEqual(r2.status_code, 200)
 
@@ -290,11 +291,13 @@ class TestCallback(TestCase):
 
         request1 = self.factory.post('/API/start_session', data=data)
         request1.user = user
-        views.APIView().post(request1, 'start_session')
+        views.APIView().post(request1, selector='start_session')
 
         request2 = self.factory.post('/API/payment', data=data)
         request2.user = user
-        r2 = views.APIView().post(request2, 'payment', self.id, self.id)
+        r2 = views.APIView().post(request2, selector='payment',
+                                  user_id=self.id,
+                                  account_id=self.id)
 
         self.assertEqual(r2.status_code, 200)
 
@@ -308,11 +311,11 @@ class TestCallback(TestCase):
 
         request1 = self.factory.post('/API/start_session', data=data)
         request1.user = user
-        views.APIView().post(request1, 'start_session')
+        views.APIView().post(request1, selector='start_session')
 
         request2 = self.factory.post('/API/invoice', data=data)
         request2.user = user
-        r2 = views.APIView().post(request2, 'invoice', userID)
+        r2 = views.APIView().post(request2, selector='invoice', user_id=userID)
 
         self.assertEqual(r2.status_code, 200)
 
@@ -325,11 +328,12 @@ class TestCallback(TestCase):
 
         request1 = self.factory.post('/API/start_session', data=data)
         request1.user = user
-        views.APIView().post(request1, 'start_session')
+        views.APIView().post(request1, selector='start_session')
 
         request2 = self.factory.post('/API/card', data=data)
         request2.user = user
-        r2 = views.APIView().post(request2, 'card', self.id)
+        r2 = views.APIView().post(request2, selector='card',
+                                  account_id=self.id)
 
         self.assertEqual(r2.status_code, 200)
 
@@ -342,11 +346,11 @@ class TestCallback(TestCase):
 
         request1 = self.factory.post('/API/start_session', data=data)
         request1.user = user
-        views.APIView().post(request1, 'start_session')
+        views.APIView().post(request1, selector='start_session')
 
         request2 = self.factory.post('/API/invoice', data=data)
         request2.user = user
-        views.APIView().post(request2, 'invoice', self.id)
+        views.APIView().post(request2, selector='invoice', user_id=self.id)
 
         request3 = self.factory.get('/decryt/downlaod/invoice')
         request3.user = user

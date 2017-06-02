@@ -14,7 +14,7 @@ from django.views import View
 from django.views.generic.base import RedirectView
 import json
 import os
-from pprint import pprint
+# from pprint import pprint
 
 # from django.http.response import FileResponse
 
