@@ -1,0 +1,30 @@
+{
+  "name": "ComBunqWebApp",
+  "scripts": {
+    "postdeploy": "./manage.py migrate"
+  },
+  "env": {
+    "DEBUG_COLLECTSTATIC": {
+      "required": true
+    },
+    "TZ": {
+      "required": true
+    }
+  },
+  "formation": {
+  },
+  "addons": [
+    "heroku-postgresql"
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    },
+    {
+      "url": "heroku/python"
+    },
+    {
+      "url": "https://github.com/dscout/wkhtmltopdf-buildpack.git"
+    }
+  ]
+}
