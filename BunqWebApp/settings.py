@@ -58,6 +58,8 @@ if 'HEROKU' in os.environ:
     DESABLE_LOGGERS = True
 
     API_URI = os.environ['API_URI']
+    ALLOWED_HOSTS = ['.beta-combunqweb.herokuapp.com',
+                     '.combunqweb.herokuapp.com', '.127.0.0.1']
 
 else:
     DEBUG = True
@@ -65,10 +67,9 @@ else:
     SESSION_COOKIE_SECURE = False
     DESABLE_LOGGERS = False
     API_URI = True
+    ALLOWED_HOSTS = []
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-ALLOWED_HOSTS = ['.beta-combunqweb.herokuapp.com',
-                 '.combunqweb.herokuapp.com', '.127.0.0.1']
 LOGIN_URL = 'two_factor:login'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
