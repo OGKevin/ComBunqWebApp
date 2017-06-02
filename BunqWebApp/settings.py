@@ -60,6 +60,8 @@ if 'HEROKU' in os.environ:
     API_URI = os.environ['API_URI']
     ALLOWED_HOSTS = ['.beta-combunqweb.herokuapp.com',
                      '.combunqweb.herokuapp.com', '.127.0.0.1']
+    USE_PROXY = True
+    PROXY_URI = os.environ['PROXY_URI']
 
 else:
     DEBUG = True
@@ -68,6 +70,7 @@ else:
     DESABLE_LOGGERS = False
     API_URI = True
     ALLOWED_HOSTS = ['*']
+    USE_PROXY = False
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 LOGIN_URL = 'two_factor:login'

@@ -9,6 +9,9 @@
     },
     "TZ": {
       "required": true
+    },
+    "PROXY_URI": {
+      "required": true
     }
   },
   "formation": {
