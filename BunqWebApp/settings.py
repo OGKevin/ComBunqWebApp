@@ -67,7 +67,7 @@ else:
     SESSION_COOKIE_SECURE = False
     DESABLE_LOGGERS = False
     API_URI = True
-    ALLOWED_HOSTS = []
+    ALLOWED_HOSTS = ['*']
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 LOGIN_URL = 'two_factor:login'
