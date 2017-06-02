@@ -37,7 +37,6 @@ class callback(AESCipher):
                    ]
 
     def __init__(self, user_file, user, password, **kwargs):
-        pprint(kwargs)
         AESCipher.__init__(self, password)
         self.user_file = self.decrypt(user_file['secret'])
         self.user = user
@@ -48,7 +47,6 @@ class callback(AESCipher):
     def _kwargs_setter(self, kwargs):
         for k in self.__variables:
             if kwargs.get(k) is not None:
-                print(k, kwargs.get(k))
                 setattr(self, k, kwargs.get(k))
             else:
                 setattr(self, k, None)
@@ -324,30 +322,56 @@ class callback(AESCipher):
         return png
 
     def customer_statement(self):
-        print('this is date start', self.date_start)
-        r = self.bunq_api.endpoints.customer_statement.create_customer_statement(  # noqa
-                                                        self.user_id,
-                                                        self.account_id,
-                                                        self.statement_format,
-                                                        self.date_start,
-                                                        self.date_end,
-                                                        self.regional_format
-        )
+        if self.statement_format == 'PDF':
+            r = self.bunq_api.endpoints.customer_statement.create_customer_statement_pdf(  # noqa
+                                                            self.user_id,
+                                                            self.account_id,
+                                                            self.date_start,
+                                                            self.date_end,
+                )
+        elif self.statement_format == 'CSV':
+            r = self.bunq_api.endpoints \
+                             .customer_statement \
+                             .create_customer_statement_csv(self.user_id,
+                                                            self.account_id,
+                                                            self.date_start,
+                                                            self.date_end,
+                                                            )
+        else:
+            r = self.bunq_api.endpoints \
+                             .customer_statement \
+                             .create_customer_statement_mt940(self.user_id,
+                                                              self.account_id,
+                                                              self.date_start,
+                                                              self.date_end)
+        if self.check_status_code(r):
+            statement_id = r.json()['Response'][0]['Id']['id']
+            return self.get_content_of_customer_statement(statement_id)
+        else:
+            return r.json()
 
-        if r.status_code == 200:
-            if self.statement_format == 'PDF':
-                statement_id = r.json()['Response'][0]['Id']['id']
-                file_contents = self.bunq_api.endpoints.customer_statement.get_content_of_customer_statement(self.user_id,
-                                                                                                             self.account_id,
-                                                                                                             statement_id)
-                creator = Creator(self.user)
-                temp_file = creator.temp_file(extension='.pdf')
-                temp_file.write(file_contents.content)
-                temp_file.close()
-                creator.store_in_session(file_path=temp_file.name)
-                pprint(temp_file.name)
-                
-        # pprint(r.json())
+    def get_content_of_customer_statement(self, statement_id,):
+        r = self.bunq_api.endpoints \
+                         .customer_statement \
+                         .get_content_of_customer_statement(self.user_id,
+                                                            self.account_id,
+                                                            statement_id)
+        if self.check_status_code(r):
+            creator = Creator(self.user)
+            temp_file = creator.temp_file(extension='.pdf')
+            temp_file.write(r.content)
+            temp_file.close()
+            creator.store_in_session(file_path=temp_file.name)
+            pprint(temp_file.name)
+
+            response = {
+                'Resopnse': [{
+                    'status': 'Statement has been created'
+                }]
+            }
+            return response
+        else:
+            return r.json()
 
     @property
     def init_api(self):
@@ -488,3 +512,10 @@ class callback(AESCipher):
             id = response[2]['UserPerson']['id']
 
         return id
+
+    @staticmethod
+    def check_status_code(response):
+        if response.status_code == 200:
+            return True
+        else:
+            return False
