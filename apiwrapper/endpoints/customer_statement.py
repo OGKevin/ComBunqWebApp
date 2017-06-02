@@ -30,4 +30,38 @@ class CustomerStatement(Endpoint):
         endpoint = self._get_base_endpoint(user_id, account_id, statement_id)
         endpoint += "/%s" % self.__endpoint_customer_statement_content
 
-        return self._make_get_request(endpoint)
+        return self._make_get_request(endpoint, verify=False)
+
+    def create_customer_statement_pdf(self, user_id, account_id, date_start,
+                                      date_end):
+        endpoint = self._get_base_endpoint(user_id, account_id)
+        payload = {
+            'statement_format': 'PDF',
+            'date_start': date_start,
+            'date_end': date_end,
+        }
+
+        return self._make_post_request(endpoint, payload)
+
+    def create_customer_statement_csv(self, user_id, account_id, date_start,
+                                      date_end, regional_format='EUROPEAN'):
+        endpoint = self._get_base_endpoint(user_id, account_id)
+        payload = {
+            'statement_format': 'CSV',
+            'date_start': date_start,
+            'date_end': date_end,
+            'regional_format': regional_format
+        }
+
+        return self._make_post_request(endpoint, payload)
+
+    def create_customer_statement_mt940(self, user_id, account_id, date_start,
+                                        date_end):
+        endpoint = self._get_base_endpoint(user_id, account_id)
+        payload = {
+            'statement_format': 'MT940',
+            'date_start': date_start,
+            'date_end': date_end,
+        }
+
+        return self._make_post_request(endpoint, payload)

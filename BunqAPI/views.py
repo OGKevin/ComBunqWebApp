@@ -102,13 +102,7 @@ class APIView(View):
     API that handles post requests to make calls to the bunq api.
     """
 
-    def post(self,
-             request,
-             selector,
-             user_id=None,
-             account_id=None,
-             payment_id=None):
-
+    def post(self, request, **kwargs):
         file_contents = json.loads(request.POST['json'])
         encryption_password = request.POST['pass']
         user = User.objects.get(username=request.user)
@@ -119,9 +113,7 @@ class APIView(View):
                     file_contents,
                     user,
                     encryption_password,
-                    user_id,
-                    account_id,
-                    payment_id
+                    **kwargs
                 )
             except UnicodeDecodeError:
                 error = {
@@ -132,7 +124,7 @@ class APIView(View):
                      }
                 return HttpResponse(json.dumps(error))
             else:
-                response = getattr(API, selector.strip('/'))()
+                response = getattr(API, kwargs.get('selector').strip('/'))()
                 return HttpResponse(json.dumps(response))
         else:  # pragma: no cover
             error = {

@@ -35,11 +35,3 @@ def create_user_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
-
-
-class Proxy(models.Model):
-    """docstring for Proxy."""
-    proxy_uri = models.CharField(blank=True, max_length=50)
-
-    def __str__(self):  # pragma: no cover
-        return self.proxy_uri

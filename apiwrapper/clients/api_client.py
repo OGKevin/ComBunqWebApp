@@ -11,7 +11,7 @@ from cryptography.hazmat.primitives.asymmetric import padding
 
 from apiwrapper.endpoints.controller import Controller as EndpointController
 
-from BunqAPI.models import Proxy
+# from BunqAPI.models import Proxy
 from django.conf import settings
 
 
@@ -58,9 +58,15 @@ class ApiClient:
 
         url = '%s%s' % (self._uri, endpoint)
 
-        proxies = {
-            'https': str(Proxy.objects.values_list('proxy_uri', flat=True)[0])
-        }
+        if settings.USE_PROXY:
+            proxies = {
+                'https': settings.PROXY_URI
+                }
+        else:
+            proxies = {
+                'https': ''
+            }
+
         return requests.request(
             method, url,
             headers=headers,
