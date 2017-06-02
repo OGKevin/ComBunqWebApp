@@ -329,6 +329,7 @@ class callback(AESCipher):
                                                             self.date_start,
                                                             self.date_end,
                 )
+            extension = '.pdf'
         elif self.statement_format == 'CSV':
             r = self.bunq_api.endpoints \
                              .customer_statement \
@@ -337,20 +338,31 @@ class callback(AESCipher):
                                                             self.date_start,
                                                             self.date_end,
                                                             )
-        else:
+            extension = '.csv'
+        elif self.statement_format == 'MT940':
             r = self.bunq_api.endpoints \
                              .customer_statement \
                              .create_customer_statement_mt940(self.user_id,
                                                               self.account_id,
                                                               self.date_start,
                                                               self.date_end)
+            extension = '.mt940'
+        else:
+            error = {
+                'Error': [{
+                    'error_description_translated': ('statement_format not'
+                                                     ' not set correctly.')
+                }]
+            }
+            return error
         if self.check_status_code(r):
             statement_id = r.json()['Response'][0]['Id']['id']
-            return self.get_content_of_customer_statement(statement_id)
+            return self.get_content_of_customer_statement(statement_id,
+                                                          extension)
         else:
             return r.json()
 
-    def get_content_of_customer_statement(self, statement_id,):
+    def get_content_of_customer_statement(self, statement_id, extension):
         r = self.bunq_api.endpoints \
                          .customer_statement \
                          .get_content_of_customer_statement(self.user_id,
@@ -358,7 +370,7 @@ class callback(AESCipher):
                                                             statement_id)
         if self.check_status_code(r):
             creator = Creator(self.user)
-            temp_file = creator.temp_file(extension='.pdf')
+            temp_file = creator.temp_file(extension=extension)
             temp_file.write(r.content)
             temp_file.close()
             creator.store_in_session(file_path=temp_file.name)

@@ -111,7 +111,7 @@ $(function() {
     /* Act on the event */
     deactivateItems()
     $(this).addClass('active')
-    sendPost(jsonObj, 'customer_statement/' + get_user_id() + '/' + get_account_id() + '/' + 'PDF' + '/' + get_begin_date() + '/' + get_end_date() + '/' + 'european')
+    sendPost(jsonObj, 'customer_statement/' + get_user_id() + '/' + get_account_id() + '/' + get_format_type() + '/' + get_begin_date() + '/' + get_end_date() + '/' + 'european')
   });
 });
 
@@ -135,6 +135,9 @@ function get_end_date() {
   return $('#end_date').val()
 }
 
+function get_format_type() {
+  return $("#format_type").val()
+}
 function sendPost(json, action, template) {
   $('#loading').html('<div class="ui segment"><div class="ui active inverted dimmer"><div class="ui large text loader"></div></div>')
   csrftoken = Cookies.get('csrftoken')
