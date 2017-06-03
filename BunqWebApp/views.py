@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from BunqWebApp.forms import registration
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
@@ -55,8 +55,6 @@ class RegisterView(View):
 
     def post(self, request):
         form = self.form(request.POST)
-        # setattr(self, '__request', request)
-        # self._request = request
 
         if form.is_valid():
             username = form.cleaned_data['username']
@@ -67,12 +65,13 @@ class RegisterView(View):
             registration = self.register_api_key(api_key, self._user, password)
 
             if registration:
-                print('no returning None')
                 return render(request,
-                              template_name='registration/complete.html')
+                              'registration/complete.html')
             else:
-                print('heeeeyy ERRRROR')
-                pass
+                return render(request, 'registration/register.html',
+                              {'form': form,
+                               'Error': 'api registration unsuccessful.',
+                               'error': True})
 
         else:
             return render(request, 'registration/register.html',
@@ -100,6 +99,5 @@ class RegisterView(View):
             Creator(user=self._user).user_json(data=json)
             return True
         else:
-            print('user should be deleted.\n%s' % self._user)
             self._user.delete()
             return False
