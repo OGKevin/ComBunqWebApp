@@ -1,17 +1,14 @@
 from django.shortcuts import render, redirect
 from BunqWebApp.forms import registration, LogInForm
 from django.contrib.auth.models import User
+from django.contrib.sessions.backends.db import SessionStore
 from django.contrib.auth import authenticate, login
 from django.views.generic.base import RedirectView
 from django.views import View
 from django.core import signing
-from filecreator.creator import Creator
 import requests
-from pprint import pprint
 import arrow
 import markdown2
-import datetime
-from BunqAPI.callbacks import callback
 from django.http import HttpResponse
 from BunqAPI.installation import Installation
 import json
@@ -105,8 +102,8 @@ class LogInView(View):
             password = form.cleaned_data['password']
             file_contents = request.FILES['user_file']
 
-            if self.authenticate_user(username, password):
-                self.decrypt_contents(file_contents, password)
+            if self.authenticate_user(username, password, request):
+                self.store_in_session(file_contents, password, username)
                 return redirect('my_bunq')
             else:
                 error = {
@@ -119,15 +116,24 @@ class LogInView(View):
             return render(request, 'registration/log_in.html', {'form': form})
 
     @staticmethod
-    def authenticate_user(username, password):
+    def authenticate_user(username, password, request):
         user = authenticate(username=username, password=password)
         if user is not None:
+            login(request, user)
             return True
         else:
             return False
 
     @staticmethod
-    def decrypt_contents(data, password):
+    def store_in_session(data, password, username):
+        user = User.objects.get(username=username)
         data = json.loads(data.read().decode())
         dec_data = signing.loads(data['secret'], key=password)
-        pprint(dec_data)
+
+        enc_data = signing.dumps(dec_data)
+
+        s = SessionStore()
+        s['api_data'] = enc_data
+        s.create()
+        user.profile.session_token = s.session_key
+        user.save()

@@ -10,6 +10,10 @@ from django.views import View
 from django.views.generic.base import RedirectView
 import json
 from django.contrib.auth import authenticate
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
+
+
 # from pprint import pprint
 
 # from django.http.response import FileResponse
@@ -76,7 +80,7 @@ class GenerateView(View):
         else:
             return False
 
-
+@method_decorator(login_required, name='dispatch')
 class MyBunqView(View):
     """docstring for MyBunqView.
         Shows the template on the my_bunq page.
@@ -86,6 +90,8 @@ class MyBunqView(View):
 
     def get(self, request):
         form = self.form()
+        user = User.objects.get(username=request.user)
+        callback(user)
         return render(request, self.template, {'form': form})
 
 
@@ -96,15 +102,13 @@ class APIView(View):
 
     def post(self, request, **kwargs):
         file_contents = json.loads(request.POST['json'])
-        encryption_password = request.POST['pass']
+        # encryption_password = request.POST['pass']
         user = User.objects.get(username=request.user)
 
         if file_contents['userID'] in user.profile.GUID:
             try:
                 API = callback(
-                    file_contents,
                     user,
-                    encryption_password,
                     **kwargs
                 )
             except UnicodeDecodeError:

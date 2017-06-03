@@ -1,6 +1,5 @@
 from django import forms
 from BunqWebApp import validator
-from pprint import pprint
 
 
 class registration(forms.Form):
@@ -28,7 +27,3 @@ class LogInForm(forms.Form):
     username = forms.CharField(max_length=15)
     password = forms.CharField(min_length=8, widget=forms.PasswordInput)
     user_file = forms.FileField()
-
-    def clean(self):
-        print('form file')
-        pprint(self.cleaned_data.get('user_file'))

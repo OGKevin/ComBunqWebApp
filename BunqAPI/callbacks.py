@@ -1,6 +1,5 @@
 from django.contrib.sessions.backends.db import SessionStore
 from django.contrib.sessions.models import Session
-from django.core.exceptions import ObjectDoesNotExist
 from apiwrapper.clients.api_client import ApiClient as API
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
@@ -9,6 +8,7 @@ import json
 import time
 from filecreator.creator import Creator
 from pprint import pprint
+from django.core import signing
 
 
 class callback:
@@ -37,10 +37,13 @@ class callback:
 
     def __init__(self, user, decrypt=True, **kwargs):
         # AESCipher.__init__(self, password)
-        self.user = user
         self._kwargs_setter(kwargs)
+        self._user = user
+
         # self.init_api = self.user_file
         # self.bunq_api = self.user_file
+        if decrypt:
+            self._get_user_data()
 
     def _kwargs_setter(self, kwargs):
         for k in self.__variables:
@@ -48,6 +51,13 @@ class callback:
                 setattr(self, k, kwargs.get(k))
             else:
                 setattr(self, k, None)
+
+    def _get_user_data(self):
+        session_key = self._user.profile.session_token
+        enc_string = Session.objects.get(
+            session_key=session_key).get_decoded()['api_data']
+        dec_data = signing.loads(enc_string)
+        self.bunq_api = dec_data
 
     def installation(self):
         rsa_key = self.create_rsa_key()
@@ -403,20 +413,10 @@ class callback:
 
     @bunq_api.setter
     def bunq_api(self, value):
-        try:
-            session_token = Session.objects.get(
-                session_key=self.user.profile.session_token
-            ).get_decoded()['session_token']
-        except (ObjectDoesNotExist, KeyError):
-            return None
-        else:
-            api = API(
-                privkey=value['privateKey'],
-                api_key=value['API'],
-                session_token=session_token,
-                server_pubkey=value['ServerPublicKey']['server_public_key']
-            )
-            self._bunq_api = api
+        api = API(privkey=value['private_key'], api_key=value['api_key'],
+                  installation_token=value['token'],
+                  server_pubkey=value['server_pubkey'])
+        self._bunq_api = api
 
     @property
     def user_id(self):
