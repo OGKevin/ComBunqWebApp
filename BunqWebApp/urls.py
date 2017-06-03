@@ -44,9 +44,9 @@ urlpatterns = [
     url(r'^API/(?P<selector>[\w-]+)/(?P<user_id>\d*)/(?P<account_id>\d*)/(?P<payment_id>\d*)$', APIView.as_view()),  # noqa,
     url(r'^API/(?P<selector>[\w-]+)/(?P<user_id>\d*)/(?P<account_id>\d*)/(?P<statement_format>[\w-]+)/(?P<date_start>[\w-]+)/(?P<date_end>[\w-]+)/(?P<regional_format>[\w-]+)$', APIView.as_view()),  # noqa,
     url(r'^API/filecreator/(?P<selector>[\w-]+)/(?P<extension>[\w-]+)$', filecreator.as_view(), name='API'),  # noqa
-    url(r'^filecreator/download$', file_downlaoder.as_view(), name='API'),  # noqa,
+    url(r'^filecreator/download$', file_downlaoder.as_view(),
+        name='filecreator'),
     url(r'^captcha/', include('captcha.urls')),
-    url(r'', include('two_factor.urls', 'two_factor')),
     # url(r'^.*$', views.RedirectView.as_view(), name='home'),
     # NOTE: this redirect is not working properly
 ] + static(settings.STATIC_URL)

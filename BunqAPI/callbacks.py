@@ -2,7 +2,10 @@ from BunqAPI.encryption import AESCipher
 from django.contrib.sessions.backends.db import SessionStore
 from django.contrib.sessions.models import Session
 from django.core.exceptions import ObjectDoesNotExist
-from apiwrapper.clients.api_client import ApiClient as API2
+from apiwrapper.clients.api_client import ApiClient as API
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric import rsa
 import requests
 import json
 import base64
@@ -12,14 +15,14 @@ from filecreator.creator import Creator
 from pprint import pprint
 
 
-class callback(AESCipher):
+class callback:
     """docstring for session.
         This class handles the callbacks to the bunq api.
 
         user_file = the contents of the users ecnrypted json.
         api_token = the api token from the bunq app.
         user = is the currently logged in user.
-        init_api = is the API2 instance before session token
+        init_api = is the API instance before session token
         userID = is the provided user id that can be used to retrieve data
                  of a specific user register to the API key.
         accountID = cardID = id's to retrieve a specific card or account
@@ -28,21 +31,20 @@ class callback(AESCipher):
         s = is the server session token stored in the django session. The key
             for this session is sotred in the database, only logged in users
             can retreive their keys.
-        bunq_api = is the API2 instace after the session token
+        bunq_api = is the API instace after the session token
                    is retrieved.
     """
 
     __variables = ['user_id', 'account_id', 'payment_id', 'date_start',
-                   'date_end', 'statement_format', 'regional_format'
-                   ]
+                   'date_end', 'statement_format', 'regional_format',
+                   'api_key']
 
-    def __init__(self, user_file, user, password, **kwargs):
-        AESCipher.__init__(self, password)
-        self.user_file = self.decrypt(user_file['secret'])
+    def __init__(self, user, decrypt=True, **kwargs):
+        # AESCipher.__init__(self, password)
         self.user = user
         self._kwargs_setter(kwargs)
-        self.init_api = self.user_file
-        self.bunq_api = self.user_file
+        # self.init_api = self.user_file
+        # self.bunq_api = self.user_file
 
     def _kwargs_setter(self, kwargs):
         for k in self.__variables:
@@ -50,6 +52,44 @@ class callback(AESCipher):
                 setattr(self, k, kwargs.get(k))
             else:
                 setattr(self, k, None)
+
+    def installation(self):
+        rsa_key = self.create_rsa_key()
+        bunq_api = API(privkey=rsa_key)
+
+        r = bunq_api.endpoints.installation.create_installation()
+
+        if r.status_code == 200:
+            token = r.json()['Response'][1]['Token']['token']
+            server_pubkey = r.json()['Response'][2]['ServerPublicKey'][
+                                            'server_public_key']
+
+            data = {
+                'token': token,
+                'server_pubkey': server_pubkey,
+                'private_key': rsa_key,
+                'api_key': self.api_key
+            }
+
+            self.init_api = data
+            registration = self.register()
+
+            if registration.status_code == 200:
+                return {
+                    'data': data,
+                    'status': True
+                }
+            else:
+                return {'status': False}
+
+        else:
+            error = {
+                'Error': [{
+                    'error_description_translated': ('something went wrong'
+                                                     ' during installation')
+                }]
+            }
+            return error
 
     def register(self):
         '''
@@ -353,13 +393,13 @@ class callback(AESCipher):
 
     @init_api.setter
     def init_api(self, value):
-        API = API2(
-            privkey=value['privateKey'],
-            api_key=value['API'],
-            installation_token=value['Token']['token'],
-            server_pubkey=value['ServerPublicKey']['server_public_key']
+        api = API(
+            privkey=value['private_key'],
+            api_key=value['api_key'],
+            installation_token=value['token'],
+            server_pubkey=value['server_pubkey']
         )
-        self._init_api = API
+        self._init_api = api
 
     @property
     def bunq_api(self):
@@ -374,7 +414,7 @@ class callback(AESCipher):
         except (ObjectDoesNotExist, KeyError):
             return None
         else:
-            API = API2(
+            API = API(
                 privkey=value['privateKey'],
                 api_key=value['API'],
                 session_token=session_token,
@@ -459,6 +499,17 @@ class callback(AESCipher):
     def regional_format(self, value):
         self._regional_format = value
 
+    @property
+    def api_key(self):
+        if self._api_key is None:
+            return None
+        else:
+            return self._api_key
+
+    @api_key.setter
+    def api_key(self, value):
+        self._api_key = value
+
     @staticmethod
     def to_int(string):
         return int(string)
@@ -493,3 +544,21 @@ class callback(AESCipher):
             return True
         else:
             return False
+
+    @staticmethod
+    def create_rsa_key():
+        # generate private key
+        private_key = rsa.generate_private_key(
+            public_exponent=65537,
+            key_size=2048,
+            backend=default_backend()
+        )
+
+        # output PEM encoded version of private key
+        privateKey = private_key.private_bytes(
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PrivateFormat.PKCS8,
+            encryption_algorithm=serialization.NoEncryption()
+        )
+
+        return privateKey.decode()

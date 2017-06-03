@@ -94,7 +94,6 @@ INSTALLED_APPS = [
     'captcha',
     'simple_history',
     'BunqAPI',
-    'two_factor',
     'raven.contrib.django.raven_compat',
     'filecreator'
 ]

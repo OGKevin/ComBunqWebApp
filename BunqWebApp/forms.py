@@ -12,6 +12,7 @@ class registration(forms.Form):
     confirm_password = forms.CharField(
         widget=forms.PasswordInput
     )
+    api_key = forms.CharField(max_length=150)
 
     def clean(self):
         password = self.cleaned_data.get('password')

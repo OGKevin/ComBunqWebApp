@@ -7,6 +7,8 @@ import requests
 import base64
 import json
 import logging
+import pathlib
+import os
 
 logger = logging.getLogger(name='raven')
 
@@ -117,7 +119,19 @@ class Creator(object):
             logger.error(r.json())
             return error
 
+    def user_json(self, data):
+        temp_file = self.temp_file(extension='.json', bytes_=False)
+        temp_file.write(json.dumps(obj=data))
+
+        self.store_in_session(file_path=temp_file.name)
+
+    def path_check(self):
+        file_path = self.user.tokens.file_token
+        if pathlib.Path(file_path).is_file():
+            os.remove(file_path)
+
     def store_in_session(self, file_path):
+        self.path_check()
         s = SessionStore()
         s['file_path'] = file_path
         s.create()

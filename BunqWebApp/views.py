@@ -1,17 +1,17 @@
 from django.shortcuts import render, redirect
 from BunqWebApp.forms import registration
 from django.contrib.auth.models import User
-# from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
 from django.views.generic.base import RedirectView
 from django.views import View
+from django.core import signing
+from filecreator.creator import Creator
 import requests
 # from pprint import pprint
 import arrow
 import markdown2
-# from django.http import HttpResponse
-# from django.template import loader
-
+import datetime
+from BunqAPI.callbacks import callback
 # Create your views here.
 
 
@@ -55,16 +55,51 @@ class RegisterView(View):
 
     def post(self, request):
         form = self.form(request.POST)
+        # setattr(self, '__request', request)
+        # self._request = request
 
         if form.is_valid():
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
-            user = User.objects.create_user(username, '', password)
-            user.save()
-            auth = authenticate(username=username, password=password)
-            if auth is not None:
-                login(request, auth)
+            api_key = form.cleaned_data['api_key']
+            self.create_and_login(username=username, password=password,
+                                  request=request)
+            registration = self.register_api_key(api_key, self._user, password)
 
-                return redirect('../two_factor/setup')
+            if registration:
+                print('no returning None')
+                return render(request,
+                              template_name='registration/complete.html')
+            else:
+                print('heeeeyy ERRRROR')
+                pass
+
         else:
-            return render(request, 'registration/register.html', {'form': form})  # noqa
+            return render(request, 'registration/register.html',
+                          {'form': form})
+
+    def create_and_login(self, username, password, request):
+        self._user = User.objects.create_user(username=username,
+                                              password=password)
+        authentication = authenticate(username=username, password=password)
+        if authentication is not None:
+            login(request, self._user)
+
+    def register_api_key(self, api_key, user, password):
+        c = callback(api_key=api_key, user=self._user)
+        installation = c.installation()
+
+        if installation['status']:
+            enc_string = signing.dumps(obj=installation['data'], key=password)
+            now = datetime.datetime.now()
+            json = {
+                'secret': enc_string,
+                'username': self._user.username,
+                'created': arrow.get(now).format(fmt='DD-MM-YYYY HH:mm:ss')
+            }
+            Creator(user=self._user).user_json(data=json)
+            return True
+        else:
+            print('user should be deleted.\n%s' % self._user)
+            self._user.delete()
+            return False

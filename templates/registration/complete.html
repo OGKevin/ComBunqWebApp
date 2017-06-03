@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>ComBunqWeb</title>
+    {%load static%}
+    {% load raven %}
+  	<script type='text/javascript' src="{%static "raven-js/dist/raven.min.js"%}"></script>
+    <script>Raven.config('{% sentry_public_dsn 'https' %}').install()</script>
+    <script type='text/javascript' src="{%static "jquery/dist/jquery.min.js"%}"></script>
+    <script type='text/javascript' src="{%static "jquery-file-download/src/Scripts/jquery.fileDownload.js"%}"></script>
+  </head>
+  <body>
+    <button id='download' type="button" name="button">download file</button>
+  </body>
+  <script type="text/javascript">
+    $(function functionName() {
+      $("#download").click(function(event) {
+        /* Act on the event */
+        $.fileDownload('/filecreator/download')
+          .done(function() {
+            alert('File download a success!');
+          })
+          .fail(function() {
+            alert('File download failed!');
+          });
+      });
+    })
+  </script>
+</html>
