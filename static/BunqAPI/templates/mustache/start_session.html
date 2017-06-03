@@ -1,7 +1,7 @@
  {{#.}} {{#UserCompany}}
- 
+
  <section class="box">
-   <a class="image featured"><img src="./download/avatar" alt="user avatar" /></a>
+   <a class="image featured"><img src="/filecreator/download" alt="user avatar" /></a>
    <header>
      <h3 class="ui header">
        <i class="user icon"></i>
@@ -12,7 +12,7 @@
    </header>
    <p>The sessions has started succesfully.
    <br> For this session, {{1.Token.token}} is being used to sign the API calls.
-   <br> {{! NOTE: this needs to be in min}} This sessios will expire in {{session_timeout}} seconds, unless an API call has been made during the last 30 seconds.
+   <br> {{! NOTE: this needs to be in min}} This session will expire in {{session_timeout}} seconds, unless an API call has been made during the last 30 seconds.
    <br>
    User ID: {{id}}
  </p>
@@ -20,7 +20,7 @@
 
 {{/UserCompany}} {{#UserPerson}}
 <section class="box">
-  <a class="image featured"><img src="./download/avatar" alt="user avatar" /></a>
+  <a class="image featured"><img src="/filecreator/download" alt="user avatar" /></a>
   <header>
     <h3 class="ui header">
       <i class="user icon"></i>
@@ -29,9 +29,9 @@
       </div>
     </h3>
   </header>
-  <p>The sessions has started succesfully.
+  <p>The session has started succesfully.
   <br> For this session, {{1.Token.token}} is being used to sign the API calls.
-  <br> {{! NOTE: this needs to be in min}} This sessios will expire in {{session_timeout}} seconds, unless an API call has been made during the last 30 seconds.
+  <br> {{! NOTE: this needs to be in min}} This session will expire in {{session_timeout}} seconds, unless an API call has been made during the last 30 seconds.
 <br>
 User ID: {{id}}
 

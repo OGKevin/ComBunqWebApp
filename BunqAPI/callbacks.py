@@ -8,12 +8,12 @@ import json
 import base64
 import tempfile
 import time
-from pdf_creator import creator
-# from pprint import pprint
+from filecreator.creator import Creator
+from pprint import pprint
 
 
 class callback(AESCipher):
-    """docstring for sessoin.
+    """docstring for session.
         This class handles the callbacks to the bunq api.
 
         user_file = the contents of the users ecnrypted json.
@@ -25,29 +25,31 @@ class callback(AESCipher):
         accountID = cardID = id's to retrieve a specific card or account
                     belonging to the user id.
         account_url = url used by most endpoints
-        s = is the server session token stored in the django sessoin. The key
+        s = is the server session token stored in the django session. The key
             for this session is sotred in the database, only logged in users
             can retreive their keys.
         bunq_api = is the API2 instace after the session token
                    is retrieved.
     """
 
-    def __init__(self,
-                 user_file,
-                 user,
-                 password,
-                 user_id=None,
-                 account_id=None,
-                 payment_id=None):
+    __variables = ['user_id', 'account_id', 'payment_id', 'date_start',
+                   'date_end', 'statement_format', 'regional_format'
+                   ]
 
+    def __init__(self, user_file, user, password, **kwargs):
         AESCipher.__init__(self, password)
         self.user_file = self.decrypt(user_file['secret'])
         self.user = user
-        self._user_id = user_id
-        self._account_id = account_id
-        self._payment_id = payment_id
+        self._kwargs_setter(kwargs)
         self.init_api = self.user_file
         self.bunq_api = self.user_file
+
+    def _kwargs_setter(self, kwargs):
+        for k in self.__variables:
+            if kwargs.get(k) is not None:
+                setattr(self, k, kwargs.get(k))
+            else:
+                setattr(self, k, None)
 
     def register(self):
         '''
@@ -249,7 +251,7 @@ class callback(AESCipher):
             payment = self.payment()
 
             try:
-                pdf = creator.payment(payment['Response'][0])
+                pdf = Creator(self.user, 'pdf').payment(payment['Response'][0])
             except KeyError:
                 error_msg = payment['Error'][0]['error_description_translated']
                 error = {
@@ -261,31 +263,8 @@ class callback(AESCipher):
                                                          '%s' % error_msg
                                                          )
                     }]}
-
                 return error
-
-            temp_file = tempfile.NamedTemporaryFile(
-                mode='wb',
-                dir=None,
-                suffix='.pdf',
-                prefix='ComBunqWebApp',
-                delete=False
-            )
-            temp_file.write(pdf)
-            temp_file.close()
-
-            s = SessionStore()
-            s['payment_pdf'] = temp_file.name
-            s.create()
-            self.user.profile.payment_token = s.session_key
-            self.user.save()
-
-            r = {
-                'Response': [{
-                    'status': 'PDF Generated.....'
-                }]
-            }
-            return r
+            return pdf
         else:
             error = {
                 'Error': [{
@@ -339,23 +318,72 @@ class callback(AESCipher):
     def get_avatar(self, avatar_id):
         r = self.init_api.endpoints.attachment_public.get_content_of_public_attachment(avatar_id)  # noqa
 
-        png = r.content
+        png = Creator(self.user).avatar(r.content)
+        return png
 
-        temp_file = tempfile.NamedTemporaryFile(
-            mode='wb',
-            dir=None,
-            suffix='.png',
-            prefix='ComBunqWebApp',
-            delete=False
-        )
-        temp_file.write(png)
-        temp_file.close()
+    def customer_statement(self):
+        if self.statement_format == 'PDF':
+            r = self.bunq_api.endpoints.customer_statement.create_customer_statement_pdf(  # noqa
+                                                            self.user_id,
+                                                            self.account_id,
+                                                            self.date_start,
+                                                            self.date_end,
+                )
+            extension = '.pdf'
+        elif self.statement_format == 'CSV':
+            r = self.bunq_api.endpoints \
+                             .customer_statement \
+                             .create_customer_statement_csv(self.user_id,
+                                                            self.account_id,
+                                                            self.date_start,
+                                                            self.date_end,
+                                                            )
+            extension = '.csv'
+        elif self.statement_format == 'MT940':
+            r = self.bunq_api.endpoints \
+                             .customer_statement \
+                             .create_customer_statement_mt940(self.user_id,
+                                                              self.account_id,
+                                                              self.date_start,
+                                                              self.date_end)
+            extension = '.mt940'
+        else:
+            error = {
+                'Error': [{
+                    'error_description_translated': ('statement_format not'
+                                                     ' not set correctly.')
+                }]
+            }
+            return error
+        if self.check_status_code(r):
+            statement_id = r.json()['Response'][0]['Id']['id']
+            return self.get_content_of_customer_statement(statement_id,
+                                                          extension)
+        else:
+            return r.json()
 
-        s = SessionStore()
-        s['avatar_png'] = temp_file.name
-        s.create()
-        self.user.profile.avatar_token = s.session_key
-        self.user.save()
+    def get_content_of_customer_statement(self, statement_id, extension):
+        r = self.bunq_api.endpoints \
+                         .customer_statement \
+                         .get_content_of_customer_statement(self.user_id,
+                                                            self.account_id,
+                                                            statement_id)
+        if self.check_status_code(r):
+            creator = Creator(self.user)
+            temp_file = creator.temp_file(extension=extension)
+            temp_file.write(r.content)
+            temp_file.close()
+            creator.store_in_session(file_path=temp_file.name)
+            pprint(temp_file.name)
+
+            response = {
+                'Resopnse': [{
+                    'status': 'Statement has been created'
+                }]
+            }
+            return response
+        else:
+            return r.json()
 
     @property
     def init_api(self):
@@ -421,6 +449,54 @@ class callback(AESCipher):
         else:
             return self.to_int(self._payment_id)
 
+    @payment_id.setter
+    def payment_id(self, value):
+        self._payment_id = value
+
+    @property
+    def date_start(self):
+        if self._date_start is None:
+            return None
+        else:
+            return self._date_start
+
+    @date_start.setter
+    def date_start(self, value):
+        self._date_start = value
+
+    @property
+    def date_end(self):
+        if self._date_end is None:
+            return None
+        else:
+            return self._date_end
+
+    @date_end.setter
+    def date_end(self, value):
+        self._date_end = value
+
+    @property
+    def statement_format(self):
+        if self._statement_format is None:
+            return None
+        else:
+            return self._statement_format
+
+    @statement_format.setter
+    def statement_format(self, value):
+        self._statement_format = value
+
+    @property
+    def regional_format(self):
+        if self._regional_format is None:
+            return None
+        else:
+            return self._regional_format
+
+    @regional_format.setter
+    def regional_format(self, value):
+        self._regional_format = value
+
     @staticmethod
     def to_int(string):
         return int(string)
@@ -448,3 +524,10 @@ class callback(AESCipher):
             id = response[2]['UserPerson']['id']
 
         return id
+
+    @staticmethod
+    def check_status_code(response):
+        if response.status_code == 200:
+            return True
+        else:
+            return False

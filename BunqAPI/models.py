@@ -24,8 +24,6 @@ class Profile(models.Model):
     )
     session_token = models.CharField(blank=True, max_length=150)
     invoice_token = models.CharField(blank=True, max_length=150)
-    avatar_token = models.CharField(blank=True, max_length=150)
-    payment_token = models.CharField(blank=True, max_length=150)
 
 
 @receiver(post_save, sender=User)
@@ -37,11 +35,3 @@ def create_user_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
-
-
-class Proxy(models.Model):
-    """docstring for Proxy."""
-    proxy_uri = models.CharField(blank=True, max_length=50)
-
-    def __str__(self):  # pragma: no cover
-        return self.proxy_uri

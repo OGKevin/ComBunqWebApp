@@ -7,9 +7,7 @@ import base64
 from BunqAPI import views
 from django.contrib.auth import authenticate
 from faker import Faker
-# from pprint import pprint
 from unittest.mock import patch
-from BunqAPI.models import Proxy
 import requests
 import requests_mock
 # Create your tests here.
@@ -21,7 +19,6 @@ class testScript(TestCase):
 
     def setUp(self):
         fake = Faker()
-        Proxy.objects.create(proxy_uri='')
         username = fake.name()
         self.password = fake.password(
             length=10,
@@ -79,9 +76,6 @@ class testView(TestCase):
 
     """
 
-    def setUp(self):
-        Proxy.objects.create(proxy_uri='')
-
     def test_generate(self):
         response = self.client.get('/generate', follow=True)
         self.assertEqual(response.status_code, 200)
@@ -114,7 +108,6 @@ class TestViewCode(TestCase):
 
     def setUp(self):
         fake = Faker()
-        Proxy.objects.create(proxy_uri='')
         name = fake.name()
         pas = fake.password(
             length=10,
@@ -170,7 +163,6 @@ class TestCallback(TestCase):
 
     def setUp(self):
         fake = Faker()
-        Proxy.objects.create(proxy_uri='')
         username = fake.name()
         password = fake.password()
         user = User.objects.create_user(username, '', password)
@@ -245,7 +237,7 @@ class TestCallback(TestCase):
     def test_start_session(self, mock, mock3):
         request = self.factory.post('/API/start_session', data=self.post_data)
         request.user = self.user
-        r = views.APIView().post(request, 'start_session')
+        r = views.APIView().post(request, selector='start_session')
         self.assertEqual(r.status_code, 200)
 
     @patch('%sattachment_public.AttachmentPublic.get_content_of_public_attachment' % c, side_effect=get_avatar)  # noqa
@@ -257,11 +249,11 @@ class TestCallback(TestCase):
 
         request1 = self.factory.post('/API/start_session', data=data)
         request1.user = user
-        views.APIView().post(request1, 'start_session')
+        views.APIView().post(request1, selector='start_session')
 
         request2 = self.factory.post('/API/users', data=data)
         request2.user = user
-        r2 = views.APIView().post(request2, 'users')
+        r2 = views.APIView().post(request2, selector='users')
 
         self.assertEqual(r2.status_code, 200)
 
@@ -274,11 +266,12 @@ class TestCallback(TestCase):
 
         request1 = self.factory.post('/API/start_session', data=data)
         request1.user = user
-        views.APIView().post(request1, 'start_session')
+        views.APIView().post(request1, selector='start_session')
 
         request2 = self.factory.post('/API/accounts', data=data)
         request2.user = user
-        r2 = views.APIView().post(request2, 'accounts', self.id)
+        r2 = views.APIView().post(request2, selector='accounts',
+                                  user_id=self.id)
 
         self.assertEqual(r2.status_code, 200)
 
@@ -291,11 +284,13 @@ class TestCallback(TestCase):
 
         request1 = self.factory.post('/API/start_session', data=data)
         request1.user = user
-        views.APIView().post(request1, 'start_session')
+        views.APIView().post(request1, selector='start_session')
 
         request2 = self.factory.post('/API/payment', data=data)
         request2.user = user
-        r2 = views.APIView().post(request2, 'payment', self.id, self.id)
+        r2 = views.APIView().post(request2, selector='payment',
+                                  user_id=self.id,
+                                  account_id=self.id)
 
         self.assertEqual(r2.status_code, 200)
 
@@ -309,11 +304,11 @@ class TestCallback(TestCase):
 
         request1 = self.factory.post('/API/start_session', data=data)
         request1.user = user
-        views.APIView().post(request1, 'start_session')
+        views.APIView().post(request1, selector='start_session')
 
         request2 = self.factory.post('/API/invoice', data=data)
         request2.user = user
-        r2 = views.APIView().post(request2, 'invoice', userID)
+        r2 = views.APIView().post(request2, selector='invoice', user_id=userID)
 
         self.assertEqual(r2.status_code, 200)
 
@@ -326,11 +321,12 @@ class TestCallback(TestCase):
 
         request1 = self.factory.post('/API/start_session', data=data)
         request1.user = user
-        views.APIView().post(request1, 'start_session')
+        views.APIView().post(request1, selector='start_session')
 
         request2 = self.factory.post('/API/card', data=data)
         request2.user = user
-        r2 = views.APIView().post(request2, 'card', self.id)
+        r2 = views.APIView().post(request2, selector='card',
+                                  account_id=self.id)
 
         self.assertEqual(r2.status_code, 200)
 
@@ -343,31 +339,14 @@ class TestCallback(TestCase):
 
         request1 = self.factory.post('/API/start_session', data=data)
         request1.user = user
-        views.APIView().post(request1, 'start_session')
+        views.APIView().post(request1, selector='start_session')
 
         request2 = self.factory.post('/API/invoice', data=data)
         request2.user = user
-        views.APIView().post(request2, 'invoice', self.id)
+        views.APIView().post(request2, selector='invoice', user_id=self.id)
 
         request3 = self.factory.get('/decryt/downlaod/invoice')
         request3.user = user
 
         r = views.FileDownloader().get(request3, 'invoice')
-        self.assertEqual(r.status_code, 200)
-
-    @patch('%ssession_server.SessionServer.create_new_session_server' % c, side_effect=get_start_session)  # noqa
-    @patch('%sinvoice.Invoice.get_all_invoices_for_user' % c, side_effect=get_inoice)  # noqa  # noqa
-    @patch('%sattachment_public.AttachmentPublic.get_content_of_public_attachment' % c, side_effect=get_avatar)  # noqa
-    def test_avatar_downloader(self, mock, mock2, mock3):
-        user = self.user
-        data = self.post_data
-
-        request1 = self.factory.post('/API/start_session', data=data)
-        request1.user = user
-        views.APIView().post(request1, 'start_session')
-
-        request3 = self.factory.get('/my_bunq/download/avatar')
-        request3.user = user
-
-        r = views.FileDownloader().get(request3, 'avatar')
         self.assertEqual(r.status_code, 200)

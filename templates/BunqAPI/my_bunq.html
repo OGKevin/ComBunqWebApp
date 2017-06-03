@@ -17,7 +17,7 @@
 		<link rel="stylesheet" href="{%static "font-awesome/css/font-awesome.min.css"%}"/>
 		<link rel="stylesheet" href="{%static "assets/css/main.css"%}" />
 		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
-		
+
 		<script>
 			var start_session_template = '{%static 'BunqAPI/templates/mustache/start_session.html '%}'
 			var ussers_template = '{%static 'BunqAPI/templates/mustache/users.html '%}'
@@ -44,7 +44,7 @@
 								<li><a href="../Manager">Manager</a></li>
 								<li class="current"><a href="../my_bunq">My bunq</a></li>
 								<li><a href="../generate">Generate</a></li>
-								<li><a href="../account/register">Sing Up</a></li>
+								<li><a href="../account/register">Sign Up</a></li>
 								<li>
 									<a href="#">Settings</a>
 									<ul>
@@ -83,7 +83,7 @@
 								</form>
 								<button class="ui secondary button" id="load_file">Load file</button>
 								<div id="user_profile" class="">
-									
+
 									<!-- <section class="box">
 										<a href="#" class="image featured"><img src="images/pic09.jpg" alt="" /></a>
 										<header>
@@ -102,23 +102,35 @@ Restart session </button>
 										</header>
 										<p>Veroeros sed amet blandit consequat veroeros lorem blandit adipiscing et feugiat sed lorem consequat feugiat lorem dolore.</p>
 										<div class="ui input">
-										  <input id="userID" type="text" placeholder="userID">
+										  <input id="userID" type="text" placeholder="user_id">
 										</div>
 										<div class="ui input">
-										  <input id="accountID" type="text" placeholder="accountID/cardID">
+										  <input id="accountID" type="text" placeholder="account_id/card_id">
 										</div>
 										<div class="ui input">
-										  <input id="paymentID" type="text" placeholder="paymentID">
+										  <input id="paymentID" type="text" placeholder="payment_id">
+										</div>
+										<p>The input boxes below are needed for 'Export transactions'</p>
+
+										<div class="ui input">
+										  <input id="begin_date" type="text" placeholder="start date: YYYY-MM-DD">
+										</div>
+										<div class="ui input">
+										  <input id="end_date" type="text" placeholder="end date: YYYY-MM-DD">
+										</div>
+										<div class="ui input">
+										  <input id="format_type" type="text" placeholder="CSV, PDF, MT940">
 										</div>
 										<div class="ui secondary vertical pointing menu">
-											<a id="start_session" class="item">Restart sessoin</a>
+											<a id="start_session" class="item">Restart session</a>
 											<a id="users" class="item">Users</a>
 											<a id="accounts" class="item">Accounts</a>
 											<a id="payment" class="item">Payment</a>
 											<a id="card" class= "item">Cards</a>
-											<a id="export_transactions" class= "item">Export transactions</a>
+											<a id="export_transactions" class= "item">Export transactions table</a>
 											<a id="export_invoice" class= "item">Export invoice</a>
 											<a id="export_payment" class= "item">Export payment</a>
+											<a id="export_payment2" class= "item">Export transactions</a>
 										</div>
 									</section>
 
@@ -314,6 +326,7 @@ Restart session </button>
 	  <link rel="stylesheet" href="{%static "font-awesome/css/font-awesome.min.css"%}"/>
 	  <link rel="stylesheet" href="{%static "semantic/dist/semantic.min.css"%}"/>
 		<script type='text/javascript' src="{%static "vanilla-datatables/vanilla-dataTables.min.js"%}"></script>
+		<script type='text/javascript' src="{%static "table-to-json/src/jquery.tabletojson.js"%}"></script>
 		<link rel="stylesheet" href="{%static "vanilla-datatables/vanilla-dataTables.min.css"%}"/>
 		<script type='text/javascript' src="{%static "BunqAPI/JS/my_bunq.js "%}"></script>
 	  <!-- <script type='text/javascript' src="{%static "BunqAPI/JS/vue.js "%}"></script> -->

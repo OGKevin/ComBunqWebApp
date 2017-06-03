@@ -102,13 +102,7 @@ class APIView(View):
     API that handles post requests to make calls to the bunq api.
     """
 
-    def post(self,
-             request,
-             selector,
-             user_id=None,
-             account_id=None,
-             payment_id=None):
-
+    def post(self, request, **kwargs):
         file_contents = json.loads(request.POST['json'])
         encryption_password = request.POST['pass']
         user = User.objects.get(username=request.user)
@@ -119,9 +113,7 @@ class APIView(View):
                     file_contents,
                     user,
                     encryption_password,
-                    user_id,
-                    account_id,
-                    payment_id
+                    **kwargs
                 )
             except UnicodeDecodeError:
                 error = {
@@ -132,7 +124,7 @@ class APIView(View):
                      }
                 return HttpResponse(json.dumps(error))
             else:
-                response = getattr(API, selector.strip('/'))()
+                response = getattr(API, kwargs.get('selector').strip('/'))()
                 return HttpResponse(json.dumps(response))
         else:  # pragma: no cover
             error = {
@@ -159,36 +151,6 @@ class FileDownloader(View):
         with open(file_path, 'rb') as f:
             response = HttpResponse(f.read(), content_type="application/force-download")  # noqa
             response['Content-Disposition'] = 'attachment; filename=%s' % smart_str('BunqWebApp_invoice.pdf')  # noqa
-            try:
-                return response
-            # except Exception as e:
-            #     raise
-            finally:
-                os.remove(file_path)
-
-    def avatar(self, user):
-        file_path = Session.objects.get(
-            session_key=user.profile.avatar_token
-        ).get_decoded()["avatar_png"]
-
-        with open(file_path, 'rb') as f:
-            response = HttpResponse(f.read(), content_type="application/force-download")  # noqa
-            response['Content-Disposition'] = 'attachment; filename=%s' % smart_str('BunqWebApp_avatar.png')  # noqa
-            try:
-                return response
-            # except Exception as e:
-            #     raise
-            finally:
-                os.remove(file_path)
-
-    def payment(self, user):
-        file_path = Session.objects.get(
-            session_key=user.profile.payment_token
-        ).get_decoded()["payment_pdf"]
-
-        with open(file_path, 'rb') as f:
-            response = HttpResponse(f.read(), content_type="application/force-download")  # noqa
-            response['Content-Disposition'] = 'attachment; filename=%s' % smart_str('BunqWebApp_payment.pdf')  # noqa
             try:
                 return response
             # except Exception as e:
