@@ -9,7 +9,7 @@
     },
     "TZ": {
       "required": true
-    },
+    }
   },
   "formation": {
   },
