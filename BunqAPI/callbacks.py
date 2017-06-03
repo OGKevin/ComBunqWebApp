@@ -13,7 +13,7 @@ from pprint import pprint
 
 
 class callback(AESCipher):
-    """docstring for sessoin.
+    """docstring for session.
         This class handles the callbacks to the bunq api.
 
         user_file = the contents of the users ecnrypted json.
@@ -25,7 +25,7 @@ class callback(AESCipher):
         accountID = cardID = id's to retrieve a specific card or account
                     belonging to the user id.
         account_url = url used by most endpoints
-        s = is the server session token stored in the django sessoin. The key
+        s = is the server session token stored in the django session. The key
             for this session is sotred in the database, only logged in users
             can retreive their keys.
         bunq_api = is the API2 instace after the session token
