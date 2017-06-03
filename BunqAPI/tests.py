@@ -94,14 +94,6 @@ class testView(TestCase):
         response = self.client.post('/API/register', follow=True)
         self.assertEqual(response.status_code, 200)
 
-    def test_invoice_downloader(self):
-        response = self.client.get('/my_bunq/download/invoice', follow=True)
-        self.assertEqual(response.status_code, 200)
-
-    def test_avatar_downloader(self):
-        response = self.client.get('/my_bunq/download/avatar', follow=True)
-        self.assertEqual(response.status_code, 200)
-
 
 class TestViewCode(TestCase):
     """docstring for TestViewCode."""
@@ -329,24 +321,3 @@ class TestCallback(TestCase):
                                   account_id=self.id)
 
         self.assertEqual(r2.status_code, 200)
-
-    @patch('%ssession_server.SessionServer.create_new_session_server' % c, side_effect=get_start_session)  # noqa
-    @patch('%sinvoice.Invoice.get_all_invoices_for_user' % c, side_effect=get_inoice)  # noqa  # noqa
-    @patch('%sattachment_public.AttachmentPublic.get_content_of_public_attachment' % c, side_effect=get_avatar)  # noqa
-    def test_invoice_downloader(self, mock, mock2, mock3):
-        user = self.user
-        data = self.post_data
-
-        request1 = self.factory.post('/API/start_session', data=data)
-        request1.user = user
-        views.APIView().post(request1, selector='start_session')
-
-        request2 = self.factory.post('/API/invoice', data=data)
-        request2.user = user
-        views.APIView().post(request2, selector='invoice', user_id=self.id)
-
-        request3 = self.factory.get('/decryt/downlaod/invoice')
-        request3.user = user
-
-        r = views.FileDownloader().get(request3, 'invoice')
-        self.assertEqual(r.status_code, 200)

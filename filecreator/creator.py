@@ -3,6 +3,12 @@ from django.template.loader import render_to_string
 import csv
 import tempfile
 from django.contrib.sessions.backends.db import SessionStore
+import requests
+import base64
+import json
+import logging
+
+logger = logging.getLogger(name='raven')
 
 
 # from pprint import pprint
@@ -22,7 +28,7 @@ class Creator(object):
         if data['Payment']['amount']['value'] < 0:
             data['Payment']['amount']['out'] = True
             data['Payment']['amount']['value'] = (
-                                    data['Payment']['amount']['value'] * -1)
+                data['Payment']['amount']['value'] * -1)
 
         data['Payment']['amount']['value'] = ("%0.2f" % (
             data['Payment']['amount']['value']
@@ -74,6 +80,42 @@ class Creator(object):
         }
 
         return response
+
+    def invoice(self, data):
+        url = "https://api.sycade.com/btp-int/Invoice/Generate"
+        headers = {
+            'content-type': 'application/json',
+            'cache-control': 'no-cache',
+        }
+        r = requests.request(method='POST', url=url, headers=headers,
+                             data=data)
+
+        if r.status_code == 200:
+            pdf = base64.b64decode(
+                json.loads(r.text)['Invoice']
+            )
+            temp_file = self.temp_file(extension='.pdf', bytes_=True)
+            temp_file.write(pdf)
+            temp_file.close()
+
+            self.store_in_session(file_path=temp_file.name)
+
+            response = {
+                'Response': [{
+                    'status': 'Invoice PDF generated.'
+                }]
+            }
+            return response
+
+        else:
+            error = {
+                'Error': [{
+                    'error_description_translated': ('PDF generator API'
+                                                     ' returned an error.')
+                }]
+            }
+            logger.error(r.json())
+            return error
 
     def store_in_session(self, file_path):
         s = SessionStore()

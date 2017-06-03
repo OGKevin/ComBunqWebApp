@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from Manager.views import ManagerView, ManagerFormView
-from BunqAPI.views import GenerateView, MyBunqView, APIView, FileDownloader, RedirectView  # noqa
+from BunqAPI.views import GenerateView, MyBunqView, APIView, RedirectView
 from BunqWebApp import views
 from filecreator.views import APIView as filecreator
 from filecreator.views import FileDownloaderView as file_downlaoder
@@ -38,8 +38,6 @@ urlpatterns = [
     url(r'^Manager/form/(?i)$', ManagerFormView.as_view(), name='managerForm'),
     url(r'^generate/$', GenerateView.as_view(), name='generate'),
     url(r'^my_bunq/$', MyBunqView.as_view(), name='my_bunq'),
-    url(r'^my_bunq/download/(?P<action>[\w-]+)$', FileDownloader.as_view(), name='downloader'),  # noqa
-    # NOTE: after invoice has moved to filecreator this url can be removed
     url(r'^API/(?P<selector>[\w-]+)$', APIView.as_view()),  # noqa,
     url(r'^API/(?P<selector>[\w-]+)/(?P<user_id>\d*)$', APIView.as_view()),  # noqa,
     url(r'^API/(?P<selector>[\w-]+)/(?P<user_id>\d*)/(?P<account_id>\d*)$', APIView.as_view()),  # noqa,

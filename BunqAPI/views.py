@@ -131,29 +131,3 @@ class APIView(View):
                 'Error': [{'error_description_translated': 'This file is not yours to use.'}]  # noqa
                 }
             return HttpResponse(json.dumps(error))
-
-
-@method_decorator(otp_required, name='dispatch')
-class FileDownloader(View):
-    """docstring for FileDownloader.
-    Handles downloading files via GET.
-    """
-
-    def get(self, request, action):
-        user = User.objects.get(username=request.user)
-        return getattr(self, action.strip('/'))(user)
-
-    def invoice(self, user):
-        file_path = Session.objects.get(
-            session_key=user.profile.invoice_token
-        ).get_decoded()['invoice_pdf']
-
-        with open(file_path, 'rb') as f:
-            response = HttpResponse(f.read(), content_type="application/force-download")  # noqa
-            response['Content-Disposition'] = 'attachment; filename=%s' % smart_str('BunqWebApp_invoice.pdf')  # noqa
-            try:
-                return response
-            # except Exception as e:
-            #     raise
-            finally:
-                os.remove(file_path)

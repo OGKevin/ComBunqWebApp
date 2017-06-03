@@ -187,7 +187,7 @@ function sendPost(json, action, template) {
         } else if (action.match(/payment/)) {
           createTable(r.Response)
         } else if (action.match(/invoice/)) {
-          $.fileDownload('./download/invoice')
+          $.fileDownload('/filecreator/download')
             .done(function() {
               alert('File download a success!');
             })

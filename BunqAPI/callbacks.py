@@ -236,7 +236,10 @@ class callback(AESCipher):
                 }
                 return error
             else:
-                return self.get_invoice_pdf(json.dumps(invoice))
+                # return self.get_invoice_pdf(json.dumps(invoice))
+                creator = Creator(user=self.user, extension=None)
+                data = json.dumps(invoice)
+                return creator.invoice(data)
 
         else:
             error = {
@@ -273,47 +276,6 @@ class callback(AESCipher):
             }
 
             return error
-
-    def get_invoice_pdf(self, invoice):
-        url = "https://api.sycade.com/btp-int/Invoice/Generate"
-        headers = {
-            'content-type':  "application/json",
-            'cache-control': "no-cache",
-        }
-        r = requests.request("POST", url, data=invoice, headers=headers)
-        if r.status_code == 200:
-            pdf = base64.b64decode(
-                json.loads(r.text)['Invoice']
-            )
-            temp_file = tempfile.NamedTemporaryFile(
-                mode='wb',
-                dir=None,
-                suffix='.pdf',
-                prefix='ComBunqWebApp',
-                delete=False
-            )
-            temp_file.write(pdf)
-            temp_file.close()
-
-            s = SessionStore()
-            s['invoice_pdf'] = temp_file.name
-            s.create()
-            self.user.profile.invoice_token = s.session_key
-            self.user.save()
-
-            r = {
-                'Response': [{
-                    'status': 'PDF Generated.....'
-                }]
-            }
-            return r
-        else:  # pragma: no cover
-            r = {
-                'Error': [{
-                    'error_description_translated': 'PDF generator API returned an error'  # noqa
-                }]
-            }
-            return r
 
     def get_avatar(self, avatar_id):
         r = self.init_api.endpoints.attachment_public.get_content_of_public_attachment(avatar_id)  # noqa
