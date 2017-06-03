@@ -2,18 +2,14 @@ from django.shortcuts import render
 from BunqAPI.forms import GenerateKeyForm, MyBunqForm
 from BunqAPI.installation import installation
 from BunqAPI.callbacks import callback
-from django.utils.decorators import method_decorator
 from django.utils.encoding import smart_str
 from django.http import HttpResponse
 # from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 # from django.contrib.auth.decorators import login_required
-from django_otp.decorators import otp_required
-from django.contrib.sessions.models import Session
 from django.views import View
 from django.views.generic.base import RedirectView
 import json
-import os
 # from pprint import pprint
 
 # from django.http.response import FileResponse
@@ -32,7 +28,6 @@ class RedirectView(RedirectView):
         return super().get_redirct_url()
 
 
-@method_decorator(otp_required, name='dispatch')
 class GenerateView(View):
     """docstring for GenerateView.
     This view handesl generating new JSON file and register the credentials
@@ -83,7 +78,6 @@ class GenerateView(View):
             return render(request, self.template, {'form': form})
 
 
-@method_decorator(otp_required, name='dispatch')
 class MyBunqView(View):
     """docstring for MyBunqView.
         Shows the template on the my_bunq page.
@@ -96,7 +90,6 @@ class MyBunqView(View):
         return render(request, self.template, {'form': form})
 
 
-@method_decorator(otp_required, name='dispatch')
 class APIView(View):
     """docstring for APIView.
     API that handles post requests to make calls to the bunq api.
