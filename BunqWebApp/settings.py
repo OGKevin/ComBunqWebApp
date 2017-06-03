@@ -63,6 +63,11 @@ if 'HEROKU' in os.environ:
     USE_PROXY = True
     PROXY_URI = os.environ['PROXY_URI']
 
+    if API_URI == 'True':
+        API_URI = True
+    else:
+        API_URI = False
+
 else:
     DEBUG = True
     SECURE_SSL_REDIRECT = False
