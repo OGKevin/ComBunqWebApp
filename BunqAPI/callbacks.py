@@ -1,4 +1,3 @@
-from BunqAPI.encryption import AESCipher
 from django.contrib.sessions.backends.db import SessionStore
 from django.contrib.sessions.models import Session
 from django.core.exceptions import ObjectDoesNotExist
@@ -6,10 +5,7 @@ from apiwrapper.clients.api_client import ApiClient as API
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
-import requests
 import json
-import base64
-import tempfile
 import time
 from filecreator.creator import Creator
 from pprint import pprint
@@ -414,13 +410,13 @@ class callback:
         except (ObjectDoesNotExist, KeyError):
             return None
         else:
-            API = API(
+            api = API(
                 privkey=value['privateKey'],
                 api_key=value['API'],
                 session_token=session_token,
                 server_pubkey=value['ServerPublicKey']['server_public_key']
             )
-            self._bunq_api = API
+            self._bunq_api = api
 
     @property
     def user_id(self):

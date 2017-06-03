@@ -1,8 +1,7 @@
 from django.shortcuts import render
 from BunqAPI.forms import GenerateKeyForm, MyBunqForm
-from BunqAPI.installation import installation
+from BunqAPI.installation import Installation
 from BunqAPI.callbacks import callback
-from django.utils.encoding import smart_str
 from django.http import HttpResponse
 # from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
@@ -10,6 +9,7 @@ from django.contrib.auth.models import User
 from django.views import View
 from django.views.generic.base import RedirectView
 import json
+from django.contrib.auth import authenticate
 # from pprint import pprint
 
 # from django.http.response import FileResponse
@@ -45,37 +45,36 @@ class GenerateView(View):
         user = User.objects.get(username=request.user)
 
         if form.is_valid():
-            form_data = form.cleaned_data
+            self._username = request.user
+            self._password = form.cleaned_data['user_password']
+            api_key = form.cleaned_data['API']
 
-            generate_data = installation(
-                user,
-                form_data['encryption_password'],
-                form_data['API']
-            ).encrypt()
+            if self.authenticate_user():
+                user = User.objects.get(username=self._username)
+                registration = Installation(user=user, api_key=api_key,
+                                            password=self._password)
 
-            registration = callback(
-                json.loads(generate_data),
-                user,
-                form_data['encryption_password'],
-            ).register()
-
-            if registration.status_code is 200:
-                response = HttpResponse(
-                    generate_data, content_type='application/force-download')
-                response['Content-Disposition'] = 'attachment; filename=%s' % smart_str('BunqWebApp.json')  # noqa
-
-                user.save()
-            else:
-                error = {
-                    "Error": [{
-                        "error_description_translated": 'something whent wrong while registering your API key wiht the bunq servers'  # noqa
-                    }]
-                }
-                response = HttpResponse(json.dumps(error))
-            return response
+                if registration.status:
+                    response = render(request, 'registration/complete.html')
+                else:
+                    response = json.dumps({
+                        "Error": [{
+                            "error_description_translated": 'something whent wrong while registering your API key wiht the bunq servers'  # noqa
+                        }]
+                    })
+                return response
 
         else:
             return render(request, self.template, {'form': form})
+
+    def authenticate_user(self):
+        user = authenticate(username=self._username,
+                            password=self._password)
+
+        if user is not None:
+            return True
+        else:
+            return False
 
 
 class MyBunqView(View):
