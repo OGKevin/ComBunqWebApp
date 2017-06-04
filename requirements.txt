@@ -23,7 +23,7 @@ Faker==0.7.15
 gunicorn==19.7.1
 html5lib==0.999999999
 idna==2.5
-lxml==3.7.3
+lxml==3.8.0
 markdown2==2.3.4
 Naked==0.1.31
 olefile==0.44
