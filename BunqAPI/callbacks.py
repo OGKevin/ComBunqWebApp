@@ -1,5 +1,6 @@
 from django.contrib.sessions.backends.db import SessionStore
 from django.contrib.sessions.models import Session
+from django.core.exceptions import ObjectDoesNotExist
 from apiwrapper.clients.api_client import ApiClient as API
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
@@ -7,7 +8,7 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 import json
 import time
 from filecreator.creator import Creator
-from pprint import pprint
+# from pprint import pprint
 from django.core import signing
 
 
@@ -77,7 +78,7 @@ class callback:
                 'api_key': self.api_key
             }
 
-            self.init_api = data
+            self.bunq_api = data
             registration = self.register()
 
             if registration.status_code == 200:
@@ -103,7 +104,7 @@ class callback:
         https://doc.bunq.com/api/1/call/device-server/method/post
         '''
 
-        r = self.init_api.endpoints.device_server.create_new_device_server('ComBunqWebApp')  # noqa
+        r = self.bunq_api.endpoints.device_server.create_new_device_server('ComBunqWebApp')  # noqa
         return r
 
     def load_file(self):
@@ -150,7 +151,7 @@ class callback:
 
         When the session expires the token will be unusbale.
         '''
-        r = self.init_api.endpoints.session_server.create_new_session_server()
+        r = self.bunq_api.endpoints.session_server.create_new_session_server()
 
         if r.status_code == 200:
             try:
@@ -159,17 +160,17 @@ class callback:
                 return r.json()
             else:
                 s = SessionStore()
-                s['session_token'] = session_token
+                s['session_server_token'] = session_token
                 s.create()
-                self.user.profile.session_token = s.session_key
-                self.user.save()
+                self._user.profile.session_server_token = s.session_key
+                self._user.save()
 
                 avatar_uuid = self.get_avatar_id(r.json()['Response'],
                                                  'start_session')
 
                 self.get_avatar(avatar_uuid)
 
-                self.bunq_api = self.user_file
+                # self.bunq_api = self.user_file
 
                 return r.json()
         else:
@@ -268,29 +269,35 @@ class callback:
         if self.user_id is not None:
             r = self.bunq_api.endpoints.invoice.get_all_invoices_for_user(
                 self.user_id
-            ).json()
+            )
 
-            try:
-                invoice = r['Response'][0]['Invoice']
-            except IndexError:
-                error = {
-                    'Error': [{
-                        'error_description_translated': ('the response seems '
-                                                         'to have no invoice '
-                                                         'in it.')
-                    }]
-                }
-                return error
+            if self.check_status_code(r):
+                try:
+                    invoice = r.json()['Response'][0]['Invoice']
+                except IndexError:
+                    error = {
+                        'Error': [{
+                            'error_description_translated': ('the response '
+                                                             'seems'
+                                                             'to have no '
+                                                             'invoice '
+                                                             'in it.')
+                        }]
+                    }
+                    return error
+                else:
+                    # return self.get_invoice_pdf(json.dumps(invoice))
+                    creator = Creator(user=self._user, extension=None)
+                    data = json.dumps(invoice)
+                    return creator.invoice(data)
             else:
-                # return self.get_invoice_pdf(json.dumps(invoice))
-                creator = Creator(user=self.user, extension=None)
-                data = json.dumps(invoice)
-                return creator.invoice(data)
+                return r.json()
 
         else:
             error = {
                 'Error': [{
-                    'error_description_translated': 'There is no user id specified'  # noqa
+                    'error_description_translated': ('There is no user id'
+                                                     'specified')
                 }]
             }
             return error
@@ -300,7 +307,8 @@ class callback:
             payment = self.payment()
 
             try:
-                pdf = Creator(self.user, 'pdf').payment(payment['Response'][0])
+                pdf = Creator(self._user,
+                              'pdf').payment(payment['Response'][0])
             except KeyError:
                 error_msg = payment['Error'][0]['error_description_translated']
                 error = {
@@ -324,19 +332,21 @@ class callback:
             return error
 
     def get_avatar(self, avatar_id):
-        r = self.init_api.endpoints.attachment_public.get_content_of_public_attachment(avatar_id)  # noqa
+        r = self.bunq_api.endpoints \
+                .attachment_public.get_content_of_public_attachment(avatar_id)
 
-        png = Creator(self.user).avatar(r.content)
+        png = Creator(self._user).avatar(r.content)
         return png
 
     def customer_statement(self):
         if self.statement_format == 'PDF':
-            r = self.bunq_api.endpoints.customer_statement.create_customer_statement_pdf(  # noqa
+            r = self.bunq_api.endpoints.customer_statement \
+                                       .create_customer_statement_pdf(
                                                             self.user_id,
                                                             self.account_id,
                                                             self.date_start,
                                                             self.date_end,
-                )
+                                                            )
             extension = '.pdf'
         elif self.statement_format == 'CSV':
             r = self.bunq_api.endpoints \
@@ -377,12 +387,11 @@ class callback:
                                                             self.account_id,
                                                             statement_id)
         if self.check_status_code(r):
-            creator = Creator(self.user)
+            creator = Creator(self._user)
             temp_file = creator.temp_file(extension=extension)
             temp_file.write(r.content)
             temp_file.close()
             creator.store_in_session(file_path=temp_file.name)
-            pprint(temp_file.name)
 
             response = {
                 'Resopnse': [{
@@ -394,22 +403,12 @@ class callback:
             return r.json()
 
     @property
-    def init_api(self):
-        return self._init_api
-
-    @init_api.setter
-    def init_api(self, value):
-        api = API(
-            privkey=value['private_key'],
-            api_key=value['api_key'],
-            installation_token=value['token'],
-            server_pubkey=value['server_pubkey']
-        )
-        self._init_api = api
-
-    @property
     def bunq_api(self):
-        return self._bunq_api
+        if self.session_server_token is not None:
+            self._bunq_api.session_token = self.session_server_token
+            return self._bunq_api
+        else:
+            return self._bunq_api
 
     @bunq_api.setter
     def bunq_api(self, value):
@@ -417,6 +416,17 @@ class callback:
                   installation_token=value['token'],
                   server_pubkey=value['server_pubkey'])
         self._bunq_api = api
+
+    @property
+    def session_server_token(self):
+        try:
+            session_token = Session.objects.get(
+                session_key=self._user.profile.session_server_token
+            ).get_decoded()['session_server_token']
+        except (ObjectDoesNotExist, KeyError):
+            return None
+        else:
+            return session_token
 
     @property
     def user_id(self):

@@ -80,6 +80,7 @@ class GenerateView(View):
         else:
             return False
 
+
 @method_decorator(login_required, name='dispatch')
 class MyBunqView(View):
     """docstring for MyBunqView.
@@ -95,35 +96,40 @@ class MyBunqView(View):
         return render(request, self.template, {'form': form})
 
 
+@method_decorator(login_required, name='dispatch')
 class APIView(View):
     """docstring for APIView.
     API that handles post requests to make calls to the bunq api.
     """
 
     def post(self, request, **kwargs):
-        file_contents = json.loads(request.POST['json'])
-        # encryption_password = request.POST['pass']
+        # # file_contents = json.loads(request.POST['json'])ß
+        # # encryption_password = request.POST['pass']
         user = User.objects.get(username=request.user)
+        API = callback(user, **kwargs)
+        response = getattr(API, kwargs.get('selector').strip('/'))()
+        return HttpResponse(json.dumps(response))
 
-        if file_contents['userID'] in user.profile.GUID:
-            try:
-                API = callback(
-                    user,
-                    **kwargs
-                )
-            except UnicodeDecodeError:
-                error = {
-                    "Error": [
-                        {"error_description_translated": "During decpyting something whent wrong, maybe you entreded a wrong password?"}  # noqa
-                        ]
-
-                     }
-                return HttpResponse(json.dumps(error))
-            else:
-                response = getattr(API, kwargs.get('selector').strip('/'))()
-                return HttpResponse(json.dumps(response))
-        else:  # pragma: no cover
-            error = {
-                'Error': [{'error_description_translated': 'This file is not yours to use.'}]  # noqa
-                }
-            return HttpResponse(json.dumps(error))
+        #
+        # if file_contents['userID'] in user.profile.GUID:
+        #     try:
+        #         API = callback(
+        #             user,
+        #             **kwargs
+        #         )
+        #     except UnicodeDecodeError:
+        #         error = {
+        #             "Error": [
+        #                 {"error_description_translated": "During decpyting something whent wrong, maybe you entreded a wrong password?"}  # noqa
+        #                 ]
+        #
+        #              }
+        #         return HttpResponse(json.dumps(error))
+        #     else:
+        #         response = getattr(API, kwargs.get('selector').strip('/'))()
+        #         return HttpResponse(json.dumps(response))
+        # else:  # pragma: no cover
+        #     error = {
+        #         'Error': [{'error_description_translated': 'This file is not yours to use.'}]  # noqa
+        #         }
+        #     return HttpResponse(json.dumps(error))

@@ -157,6 +157,14 @@ class ApiClient:
         return self.privkey is not None
 
     @property
+    def session_token(self):
+        return self._session_token
+
+    @session_token.setter
+    def session_token(self, value):
+        self._session_token = value
+
+    @property
     def endpoints(self):
         if self.request_parameters_are_set():
             return self.__endpoint_controller

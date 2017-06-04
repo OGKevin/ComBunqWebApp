@@ -2,7 +2,8 @@ var dataTable;
 
 $(function() {
   var jsonObj;
-
+  sendPost(jsonObj, "load_file", false)
+  
   function get_file() {
     data = $("#id_encrypted_file")[0].files[0]
     var reader = new FileReader()

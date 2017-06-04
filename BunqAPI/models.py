@@ -23,6 +23,7 @@ class Profile(models.Model):
         null=True
     )
     session_token = models.CharField(blank=True, max_length=150)
+    session_server_token = models.CharField(blank=True, max_length=150)
 
 
 @receiver(post_save, sender=User)
