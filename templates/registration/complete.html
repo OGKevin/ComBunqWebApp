@@ -18,12 +18,15 @@
       $("#download").click(function(event) {
         /* Act on the event */
         $.fileDownload('/filecreator/download')
-          .done(function() {
-            alert('File download a success!');
+        .done(function() {
+          alert('File download a success!');
           })
           .fail(function() {
             alert('File download failed!');
           });
+          setTimeout(function functionName() {
+            window.location.replace("../logout");
+          }, 1000)
       });
     })
   </script>

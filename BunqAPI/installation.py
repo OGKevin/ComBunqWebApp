@@ -12,7 +12,7 @@ class Installation:
         self.password = password
 
     def register_api_key(self):
-        c = callback(api_key=self.api_key, user=self.user)
+        c = callback(api_key=self.api_key, user=self.user, decrypt=False)
         installation = c.installation()
 
         if installation['status']:
