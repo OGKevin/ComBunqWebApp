@@ -104,7 +104,8 @@ class callback:
         https://doc.bunq.com/api/1/call/device-server/method/post
         '''
 
-        r = self.bunq_api.endpoints.device_server.create_new_device_server('ComBunqWebApp')  # noqa
+        r = self.bunq_api.endpoints.device_server \
+                                   .create_new_device_server('ComBunqWebApp')
         return r
 
     def load_file(self):
@@ -119,7 +120,8 @@ class callback:
 
             time.sleep(.5)
 
-            self.account_id = accounts['Response'][0]['MonetaryAccountBank']['id']  # noqa
+            self.account_id = accounts['Response'][0][
+                                                'MonetaryAccountBank']['id']
 
             time.sleep(1.5)
 
@@ -153,7 +155,7 @@ class callback:
         '''
         r = self.bunq_api.endpoints.session_server.create_new_session_server()
 
-        if r.status_code == 200:
+        if self.check_status_code(r):
             try:
                 session_token = r.json()['Response'][1]['Token']['token']
             except KeyError:  # pragma: no cover
@@ -176,7 +178,8 @@ class callback:
         else:
             error = {
                 'Error': [{
-                    'error_description_translated': 'Something went wrong starting the session'  # noqa
+                    'error_description_translated': ('Something went wrong'
+                                                     ' starting the session')
                 }]
             }
             return error
@@ -209,9 +212,10 @@ class callback:
             r = self.bunq_api.endpoints.monetary_account.get_account_by_id(
                 self.user_id, self.account_id).json()
         else:
-            r = self.bunq_api.endpoints.monetary_account.get_all_accounts_for_user(  # noqa
-                self.user_id
-                ).json()
+            r = self.bunq_api.endpoints.monetary_account \
+                                       .get_all_accounts_for_user(
+                                                                self.user_id
+                                                                    ).json()
         return r
 
     def payment(self, mode='normal'):
@@ -226,8 +230,10 @@ class callback:
         if mode == 'normal':
             if self.account_id and self.user_id is not None:
                 if self.payment_id is None:
-                    r = self.bunq_api.endpoints.payment.get_all_payments_for_account(  # noqa
-                        self.user_id, self.account_id).json()
+                    r = self.bunq_api.endpoints\
+                            .payment.get_all_payments_for_account(
+                                                        self.user_id,
+                                                        self.account_id).json()
                 else:
                     r = self.bunq_api.endpoints.payment.get_payment_by_id(
                         self.user_id, self.account_id, self.payment_id
@@ -524,15 +530,19 @@ class callback:
     def get_avatar_id(response, mode=None):
         if mode == 'start_session':
             try:
-                id = response[2]['UserCompany']['avatar']['image'][0]['attachment_public_uuid']  # noqa
+                id = response[2]['UserCompany']['avatar']['image'][0][
+                                                    'attachment_public_uuid']
             except KeyError:
-                id = response[2]['UserPerson']['avatar']['image'][0]['attachment_public_uuid']  # noqa
+                id = response[2]['UserPerson']['avatar']['image'][0][
+                                                    'attachment_public_uuid']
             return id
         else:
             try:
-                id = response[0]['UserCompany']['avatar']['image'][0]['attachment_public_uuid']  # noqa
+                id = response[0]['UserCompany']['avatar']['image'][0][
+                                                    'attachment_public_uuid']
             except KeyError:
-                id = response[0]['UserPerson']['avatar']['image'][0]['attachment_public_uuid']  # noqa
+                id = response[0]['UserPerson']['avatar']['image'][0][
+                                                    'attachment_public_uuid']
             return id
 
     @staticmethod

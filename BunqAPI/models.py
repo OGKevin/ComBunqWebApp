@@ -24,6 +24,7 @@ class Profile(models.Model):
     )
     session_token = models.CharField(blank=True, max_length=150)
     session_server_token = models.CharField(blank=True, max_length=150)
+    session_end_date = models.DateTimeField()
 
 
 @receiver(post_save, sender=User)
