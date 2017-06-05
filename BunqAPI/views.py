@@ -32,6 +32,7 @@ class RedirectView(RedirectView):
         return super().get_redirct_url()
 
 
+@method_decorator(login_required, name='dispatch')
 class GenerateView(View):
     """docstring for GenerateView.
     This view handesl generating new JSON file and register the credentials
@@ -63,7 +64,12 @@ class GenerateView(View):
                 else:
                     response = json.dumps({
                         "Error": [{
-                            "error_description_translated": 'something whent wrong while registering your API key wiht the bunq servers'  # noqa
+                            "error_description_translated": ('something whent '
+                                                             'wrong while '
+                                                             'registering your'
+                                                             ' API key wiht '
+                                                             'the bunq '
+                                                             'servers')
                         }]
                     })
                 return response
