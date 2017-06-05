@@ -115,27 +115,3 @@ class APIView(View):
         API = callback(user, **kwargs)
         response = getattr(API, kwargs.get('selector').strip('/'))()
         return HttpResponse(json.dumps(response))
-
-        #
-        # if file_contents['userID'] in user.profile.GUID:
-        #     try:
-        #         API = callback(
-        #             user,
-        #             **kwargs
-        #         )
-        #     except UnicodeDecodeError:
-        #         error = {
-        #             "Error": [
-        #                 {"error_description_translated": "During decpyting something whent wrong, maybe you entreded a wrong password?"}  # noqa
-        #                 ]
-        #
-        #              }
-        #         return HttpResponse(json.dumps(error))
-        #     else:
-        #         response = getattr(API, kwargs.get('selector').strip('/'))()
-        #         return HttpResponse(json.dumps(response))
-        # else:  # pragma: no cover
-        #     error = {
-        #         'Error': [{'error_description_translated': 'This file is not yours to use.'}]  # noqa
-        #         }
-        #     return HttpResponse(json.dumps(error))
