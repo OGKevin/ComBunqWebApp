@@ -27,3 +27,11 @@ class LogInForm(forms.Form):
     username = forms.CharField(max_length=15)
     password = forms.CharField(min_length=8, widget=forms.PasswordInput)
     user_file = forms.FileField()
+
+
+class MigrationLogIn(forms.Form):
+    username = forms.CharField(max_length=15)
+    password = forms.CharField(min_length=8, widget=forms.PasswordInput)
+    encryption_password = forms.CharField(min_length=8,
+                                          widget=forms.PasswordInput)
+    user_file = forms.FileField()

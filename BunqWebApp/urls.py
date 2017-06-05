@@ -34,6 +34,7 @@ urlpatterns = [
     url(r'^account/register/$', views.RegisterView.as_view(), name='register'),
     url(r'^account/logout/$', auth_views.logout, name='logout'),
     url(r'^accounts/login/$', views.LogInView.as_view(), name='login'),
+    url(r'^accounts/login/old$', views.MigrationService.as_view()),
     url(r'^accounts/profile/$', RedirectView.as_view(), name='my_bunq'),
     url(r'^Manager/(?i)$', ManagerView.as_view(), name='Manager'),
     url(r'^Manager/form/(?i)$', ManagerFormView.as_view(), name='managerForm'),

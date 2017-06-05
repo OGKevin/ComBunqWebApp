@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from BunqWebApp.forms import registration, LogInForm
+from BunqWebApp import forms, decrypt
 from django.contrib.auth.models import User
 from django.contrib.sessions.backends.db import SessionStore
 from django.contrib.auth import authenticate, login
@@ -48,7 +48,7 @@ class HomeView(View):
 
 class RegisterView(View):
     """docstring for RegisterView."""
-    form = registration
+    form = forms.registration
 
     def get(self, request):
         form = self.form()
@@ -88,7 +88,7 @@ class RegisterView(View):
 
 
 class LogInView(View):
-    form = LogInForm
+    form = forms.LogInForm
 
     def get(self, request):
         form = self.form()
@@ -137,3 +137,51 @@ class LogInView(View):
         s.create()
         user.session.session_token = s.session_key
         user.save()
+
+
+class MigrationService(View):
+    form = forms.MigrationLogIn
+
+    def get(self, request):
+        form = self.form()
+        return render(request, 'registration/old_log_in.html', {
+                                                            'form': form})
+
+    def post(self, request):
+        form = self.form(request.POST, request.FILES)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            encryption_password = form.cleaned_data['encryption_password']
+            user_file = request.FILES['user_file']
+            if self.authenticate_user(username=username, password=password,
+                                      request=request):
+                api_key = self.decrypt_file(user_file=user_file,
+                                            encryption_password=encryption_password)  # noqa
+                if api_key:
+                    print(api_key)
+                else:
+                    print('decrypt_file no')
+            else:
+                print('autentication no')
+        else:
+            print('invalid form')
+
+    @staticmethod
+    def authenticate_user(username, password, request):
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def decrypt_file(user_file, encryption_password):
+        aes = decrypt.AESCipher(key=encryption_password)
+        try:
+            dec = aes.decrypt(enc=user_file.read().decode()['secret'])
+        except UnicodeDecodeError:
+            return False
+        else:
+            return dec['API']
