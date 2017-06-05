@@ -10,6 +10,7 @@ import time
 from filecreator.creator import Creator
 # from pprint import pprint
 from django.core import signing
+import datetime
 
 
 class callback:
@@ -54,7 +55,7 @@ class callback:
                 setattr(self, k, None)
 
     def _get_user_data(self):
-        session_key = self._user.profile.session_token
+        session_key = self._user.session.session_token
         enc_string = Session.objects.get(
             session_key=session_key).get_decoded()['api_data']
         dec_data = signing.loads(enc_string)
@@ -111,30 +112,36 @@ class callback:
     def load_file(self):
         start_session = self.start_session()
 
-        if 'Response' in start_session:
-            self.user_id = self.get_user_id(start_session['Response'])
+        if start_session is not None and 'Response' in start_session:
+            self.user_id = self._get_user_id(start_session['Response'])
+            start_session = start_session['Response']
 
-            time.sleep(1.5)
-
-            accounts = self.accounts()
-
-            time.sleep(.5)
-
-            self.account_id = accounts['Response'][0][
-                                                'MonetaryAccountBank']['id']
-
-            time.sleep(1.5)
-
-            payments = self.payment()
-
-            response = {
-                'start_session': start_session['Response'],
-                'accounts': accounts['Response'],
-                'payments': payments['Response']
-            }
-
+        elif start_session is None:
+            self.user_id = Session.objects.get(
+                session_key=self._user.session.session_server_token_and_user_id
+            ).get_decoded()['user_id']
+            start_session = None
         else:
-            response = start_session
+            return start_session
+
+        time.sleep(1.5)
+
+        accounts = self.accounts()
+
+        time.sleep(.5)
+
+        self.account_id = accounts['Response'][0][
+                                            'MonetaryAccountBank']['id']
+
+        time.sleep(1.5)
+
+        payments = self.payment()
+
+        response = {
+            'start_session': start_session,
+            'accounts': accounts['Response'],
+            'payments': payments['Response']
+        }
 
         return response
 
@@ -144,7 +151,7 @@ class callback:
         https://doc.bunq.com/api/1/call/session-server/method/post
         the response can also be seen via this link on the docs. This session
         token is needed to make future API calls to the API. Therefore its
-        getting stored in the database in the user profile.
+        getting stored in the database in the user session.
 
         From the docs:
         A session expires after the same amount of time you have set for auto
@@ -153,18 +160,24 @@ class callback:
 
         When the session expires the token will be unusbale.
         '''
+        if self._check_session_active():
+            return None
+
         r = self.bunq_api.endpoints.session_server.create_new_session_server()
 
         if self.check_status_code(r):
             try:
                 session_token = r.json()['Response'][1]['Token']['token']
+                user_id = self._get_user_id(r.json()['Response'])
             except KeyError:  # pragma: no cover
                 return r.json()
             else:
                 s = SessionStore()
                 s['session_server_token'] = session_token
+                s['user_id'] = user_id
                 s.create()
-                self._user.profile.session_server_token = s.session_key
+                self._user.session \
+                          .session_server_token_and_user_id = s.session_key
                 self._user.save()
 
                 avatar_uuid = self.get_avatar_id(r.json()['Response'],
@@ -172,8 +185,7 @@ class callback:
 
                 self.get_avatar(avatar_uuid)
 
-                # self.bunq_api = self.user_file
-
+                self._sotre_session_expire(r.json()['Response'][2])
                 return r.json()
         else:
             error = {
@@ -408,6 +420,30 @@ class callback:
         else:
             return r.json()
 
+    def _check_session_active(self):
+        current_time = datetime.datetime.now(datetime.timezone.utc)
+        session_end = self._user.session.session_end_date
+        print(current_time)
+        print(session_end)
+
+        if current_time >= session_end:
+            return False
+        else:
+            return True
+
+    def _sotre_session_expire(self, response):
+        try:
+            response = response['UserCompany']
+        except KeyError:
+            response = response['UserPerson']
+        finally:
+            session_timeout = datetime.timedelta(seconds=response[
+                                                            'session_timeout'])
+            session_expire_date = datetime.datetime.now() + session_timeout
+
+            self._user.session.session_end_date = session_expire_date
+            self._user.save()
+
     @property
     def bunq_api(self):
         if self.session_server_token is not None:
@@ -427,7 +463,7 @@ class callback:
     def session_server_token(self):
         try:
             session_token = Session.objects.get(
-                session_key=self._user.profile.session_server_token
+                session_key=self._user.session.session_server_token_and_user_id
             ).get_decoded()['session_server_token']
         except (ObjectDoesNotExist, KeyError):
             return None
@@ -546,7 +582,7 @@ class callback:
             return id
 
     @staticmethod
-    def get_user_id(response):
+    def _get_user_id(response):
         try:
             id = response[2]['UserCompany']['id']
         except KeyError:

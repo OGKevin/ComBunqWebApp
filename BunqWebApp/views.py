@@ -135,5 +135,5 @@ class LogInView(View):
         s = SessionStore()
         s['api_data'] = enc_data
         s.create()
-        user.profile.session_token = s.session_key
+        user.session.session_token = s.session_key
         user.save()
