@@ -11,6 +11,7 @@ import requests
 import arrow
 import markdown2
 from django.http import HttpResponse
+from django.contrib import messages
 from BunqAPI.installation import Installation
 import json
 # from pprint import pprint
@@ -104,16 +105,9 @@ class LogInView(View):
             password = form.cleaned_data['password']
             file_contents = request.FILES['user_file']
 
-            if self.authenticate_user(username, password, request):
-                self.store_in_session(file_contents, password, username)
-                return redirect('my_bunq')
-            else:
-                error = {
-                    'Error': [{
-                        'error': 'user autentication failed'
-                    }]
-                }
-                return HttpResponse(json.dumps(error))
+            self.authenticate_user(username, password, request)
+            self.store_in_session(file_contents, password, username)
+            return redirect('my_bunq')
         else:
             return render(request, 'registration/log_in.html', {'form': form})
 
@@ -157,21 +151,20 @@ class MigrationService(View):
             password = form.cleaned_data['password']
             encryption_password = form.cleaned_data['encryption_password']
             user_file = request.FILES['user_file']
-            if self.authenticate_user(username=username, password=password,
-                                      request=request):
-                api_key = self.decrypt_file(user_file=user_file,
-                                            encryption_password=encryption_password)  # noqa
-                if api_key is not False:
-                    print(api_key)
-                    form = self.generate_form(initial={'API': api_key})
-                    return render(request, 'BunqAPI/index.html',
-                                  {'form': form})
-                else:
-                    print('decrypt_file no')
+            self.authenticate_user(username=username, password=password,
+                                   request=request)
+            api_key = self.decrypt_file(user_file=user_file,
+                                        encryption_password=encryption_password)  # noqa
+            if api_key is not False:
+                print(api_key)
+                form = self.generate_form(initial={'API': api_key})
+                return render(request, 'BunqAPI/index.html',
+                              {'form': form})
             else:
-                print('autentication no')
+                messages.error(request, 'decryption unsuccessful')
+                return render(request, 'registration/old_log_in.html',
+                              {'form': form})
         else:
-            print('invalid form')
             return render(request, 'registration/old_log_in.html', {
                                                                 'form': form})
 

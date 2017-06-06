@@ -1,5 +1,6 @@
 from django import forms
 from BunqWebApp import validator
+from django.contrib.auth import authenticate
 
 
 class registration(forms.Form):
@@ -28,6 +29,16 @@ class LogInForm(forms.Form):
     password = forms.CharField(min_length=8, widget=forms.PasswordInput)
     user_file = forms.FileField()
 
+    def clean(self):
+        password = self.cleaned_data.get('password')
+        username = self.cleaned_data.get('username')
+        user = authenticate(username=username, password=password)
+
+        if user is None:
+            raise forms.ValidationError('Username or password incorrect')
+
+        return self.cleaned_data
+
 
 class MigrationLogIn(forms.Form):
     username = forms.CharField(max_length=15)
@@ -35,3 +46,12 @@ class MigrationLogIn(forms.Form):
     encryption_password = forms.CharField(min_length=8,
                                           widget=forms.PasswordInput)
     user_file = forms.FileField()
+
+    def clean(self):
+        password = self.cleaned_data.get('password')
+        username = self.cleaned_data.get('username')
+        user = authenticate(username=username, password=password)
+
+        if user is None:
+            raise forms.ValidationError('Username or password incorrect')
+        return self.cleaned_data

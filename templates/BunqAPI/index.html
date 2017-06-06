@@ -81,6 +81,11 @@
                   </ul>
 
 								</header>
+								{% if messages %}
+								{% for msg in messages%}
+								<strong>{{msg}}</strong>
+								{% endfor %}
+								{% endif %}
                 <form class="ui form" action="/generate/" method="post">
                   {% csrf_token %}
                   {{form}}

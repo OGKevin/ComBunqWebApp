@@ -12,6 +12,7 @@ import json
 from django.contrib.auth import authenticate
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 
 # from pprint import pprint
@@ -57,22 +58,21 @@ class GenerateView(View):
             if self.authenticate_user():
                 user = User.objects.get(username=self._username)
                 registration = Installation(user=user, api_key=api_key,
-                                            password=self._password)
+                                            password=self._password,
+                                            delete_user=False)
 
                 if registration.status:
-                    response = render(request, 'registration/complete.html')
+                    return render(request, 'registration/complete.html')
                 else:
-                    response = json.dumps({
-                        "Error": [{
-                            "error_description_translated": ('something whent '
-                                                             'wrong while '
-                                                             'registering your'
-                                                             ' API key wiht '
-                                                             'the bunq '
-                                                             'servers')
-                        }]
-                    })
-                return response
+                    messages.error(request, ('something went wrong while '
+                                             'registering your API key '
+                                             'with the bunq servers'))
+                    return render(request, self.template, {'form': form})
+            else:
+                messages.error(request, ('User authentication failed. '
+                                         'This password is not the '
+                                         'correct user password.'))
+                return render(request, self.template, {'form': form})
 
         else:
             return render(request, self.template, {'form': form})

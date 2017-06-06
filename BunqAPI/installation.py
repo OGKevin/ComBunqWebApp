@@ -6,10 +6,11 @@ import datetime
 
 
 class Installation:
-    def __init__(self, user, api_key, password):
+    def __init__(self, user, api_key, password, delete_user=True):
         self.user = user
         self.api_key = api_key
         self.password = password
+        self._delete_user = delete_user
 
     def register_api_key(self):
         c = callback(api_key=self.api_key, user=self.user, decrypt=False)
@@ -27,7 +28,8 @@ class Installation:
             Creator(user=self.user).user_json(data=json)
             return True
         else:
-            self.user.delete()
+            if self._delete_user:
+                self.user.delete()
             return False
 
     @property
