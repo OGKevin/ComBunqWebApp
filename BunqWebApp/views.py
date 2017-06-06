@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from BunqWebApp import forms, decrypt
+from BunqAPI.forms import GenerateKeyForm
 from django.contrib.auth.models import User
 from django.contrib.sessions.backends.db import SessionStore
 from django.contrib.auth import authenticate, login
@@ -12,6 +13,7 @@ import markdown2
 from django.http import HttpResponse
 from BunqAPI.installation import Installation
 import json
+# from pprint import pprint
 # Create your views here.
 
 
@@ -141,6 +143,7 @@ class LogInView(View):
 
 class MigrationService(View):
     form = forms.MigrationLogIn
+    generate_form = GenerateKeyForm
 
     def get(self, request):
         form = self.form()
@@ -158,14 +161,19 @@ class MigrationService(View):
                                       request=request):
                 api_key = self.decrypt_file(user_file=user_file,
                                             encryption_password=encryption_password)  # noqa
-                if api_key:
+                if api_key is not False:
                     print(api_key)
+                    form = self.generate_form(initial={'API': api_key})
+                    return render(request, 'BunqAPI/index.html',
+                                  {'form': form})
                 else:
                     print('decrypt_file no')
             else:
                 print('autentication no')
         else:
             print('invalid form')
+            return render(request, 'registration/old_log_in.html', {
+                                                                'form': form})
 
     @staticmethod
     def authenticate_user(username, password, request):
@@ -180,7 +188,8 @@ class MigrationService(View):
     def decrypt_file(user_file, encryption_password):
         aes = decrypt.AESCipher(key=encryption_password)
         try:
-            dec = aes.decrypt(enc=user_file.read().decode()['secret'])
+            dec = aes.decrypt(enc=json.loads(user_file.read().decode())[
+                                                                    'secret'])
         except UnicodeDecodeError:
             return False
         else:

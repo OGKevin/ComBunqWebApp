@@ -5,7 +5,7 @@
     <title>Old login</title>
   </head>
   <body>
-    <form class="" action="" method="post">
+    <form enctype="multipart/form-data" class="" action="" method="post">
       {% csrf_token %}
       {{form}}
       <button type="submit" name="button">submit</button>
