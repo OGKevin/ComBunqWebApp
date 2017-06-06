@@ -2,7 +2,7 @@ from django.shortcuts import render
 from BunqAPI.forms import GenerateKeyForm, MyBunqForm
 from BunqAPI.installation import Installation
 from BunqAPI.callbacks import callback
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 # from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 # from django.contrib.auth.decorators import login_required
@@ -13,6 +13,7 @@ from django.contrib.auth import authenticate
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.core.exceptions import ObjectDoesNotExist
 
 
 # from pprint import pprint
@@ -98,7 +99,10 @@ class MyBunqView(View):
     def get(self, request):
         form = self.form()
         user = User.objects.get(username=request.user)
-        callback(user)
+        try:
+            callback(user)
+        except ObjectDoesNotExist:
+            return HttpResponseForbidden('You are not logged in correctly.')
         return render(request, self.template, {'form': form})
 
 
