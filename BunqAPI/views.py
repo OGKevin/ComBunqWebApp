@@ -102,7 +102,8 @@ class MyBunqView(View):
         try:
             callback(user)
         except ObjectDoesNotExist:
-            return HttpResponseForbidden('You are not logged in correctly.')
+            return HttpResponseForbidden('You are not logged in correctly.'
+                                         '<a href="/account/logout">Back</a>')
         return render(request, self.template, {'form': form})
 
 
