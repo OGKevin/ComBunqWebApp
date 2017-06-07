@@ -11,6 +11,7 @@ from filecreator.creator import Creator
 # from pprint import pprint
 from django.core import signing
 import datetime
+import base64
 
 
 class callback:
@@ -38,13 +39,10 @@ class callback:
                    'api_key']
 
     def __init__(self, user, decrypt=True, **kwargs):
-        # AESCipher.__init__(self, password)
         self._kwargs_setter(kwargs)
         self._user = user
         self._use_session_token = True
 
-        # self.init_api = self.user_file
-        # self.bunq_api = self.user_file
         if decrypt:
             self._get_user_data()
 
@@ -163,6 +161,7 @@ class callback:
         When the session expires the token will be unusbale.
         '''
         if self._check_session_active():
+            Creator(self._user).create_avatar_from_session()
             return self._get_saved_response(name='start_session')
 
         self._use_session_token = False
@@ -361,9 +360,10 @@ class callback:
         r = self.bunq_api.endpoints \
                 .attachment_public.get_content_of_public_attachment(avatar_id)
 
-        
+        enc_png = base64.b64encode(r.content)
+        self._save_response(enc_png.decode(), 'avatar')
 
-        Creator(self._user).avatar(r.content)
+        Creator(self._user).create_avatar_from_session()
 
     def customer_statement(self):
         if self.statement_format == 'PDF':

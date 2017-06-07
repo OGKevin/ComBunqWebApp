@@ -9,6 +9,7 @@ import json
 import logging
 import pathlib
 import os
+from django.core import signing
 
 logger = logging.getLogger(name='raven')
 
@@ -79,8 +80,11 @@ class Creator(object):
         session_key = self.user.session.session_token
         s = SessionStore(session_key=session_key)
 
+        dec_data = signing.loads(s['avatar'])
+        png = base64.b64decode(dec_data.encode())
+
         temp_file = self.temp_file('.png')
-        temp_file.write(s['avatar'])
+        temp_file.write(png)
         temp_file.close()
 
         self.store_in_session(temp_file.name)
