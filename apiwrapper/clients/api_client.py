@@ -53,6 +53,9 @@ class ApiClient:
     def post(self, endpoint, payload):
         return self.request('POST', endpoint, payload)
 
+    def delete(self, endpoint):
+        return self.request('DELETE', endpoint)
+
     def request(self, method, endpoint, payload=None):
         headers = self.create_headers(method, endpoint, payload)
 
