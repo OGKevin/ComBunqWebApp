@@ -161,7 +161,7 @@ class callback:
         When the session expires the token will be unusbale.
         '''
         if self._check_session_active():
-            return None
+            return self._get_saved_response(name='start_session')
 
         r = self.bunq_api.endpoints.session_server.create_new_session_server()
 
@@ -186,6 +186,8 @@ class callback:
                 self.get_avatar(avatar_uuid)
 
                 self._sotre_session_expire(r.json()['Response'][2])
+
+                self._save_response(response=r.json(), name='start_session')
                 return r.json()
         else:
             error = {
@@ -443,6 +445,19 @@ class callback:
 
             self._user.session.session_end_date = session_expire_date
             self._user.save()
+
+    def _save_response(self, response, name):
+        session_key = self._user.session.session_token
+        s = SessionStore(session_key=session_key)
+        enc_data = signing.dumps(obj=response)
+        s[name] = enc_data
+        s.save()
+
+    def _get_saved_response(self, name):
+        session_key = self._user.session.session_token
+        s = SessionStore(session_key=session_key)
+        dec_data = signing.loads(s[name])
+        return dec_data
 
     @property
     def bunq_api(self):
