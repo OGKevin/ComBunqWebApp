@@ -41,6 +41,7 @@ class callback:
         # AESCipher.__init__(self, password)
         self._kwargs_setter(kwargs)
         self._user = user
+        self._use_session_token = True
 
         # self.init_api = self.user_file
         # self.bunq_api = self.user_file
@@ -62,6 +63,7 @@ class callback:
         self.bunq_api = dec_data
 
     def installation(self):
+        self._use_session_token = False
         rsa_key = self.create_rsa_key()
         bunq_api = API(privkey=rsa_key)
 
@@ -104,7 +106,7 @@ class callback:
         Registers the device
         https://doc.bunq.com/api/1/call/device-server/method/post
         '''
-
+        self._use_session_token = False
         r = self.bunq_api.endpoints.device_server \
                                    .create_new_device_server('ComBunqWebApp')
         return r
@@ -163,7 +165,11 @@ class callback:
         if self._check_session_active():
             return self._get_saved_response(name='start_session')
 
+        self._use_session_token = False
+
         r = self.bunq_api.endpoints.session_server.create_new_session_server()
+
+        self._use_session_token = True
 
         if self.check_status_code(r):
             try:
@@ -462,7 +468,7 @@ class callback:
 
     @property
     def bunq_api(self):
-        if self.session_server_token is not None:
+        if self.session_server_token is not None and self._use_session_token:
             self._bunq_api.session_token = self.session_server_token
             return self._bunq_api
         else:
