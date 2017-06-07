@@ -106,8 +106,17 @@ class LogInView(View):
             file_contents = request.FILES['user_file']
 
             self.authenticate_user(username, password, request)
-            self.store_in_session(file_contents, password, username)
-            return redirect('my_bunq')
+            if self.store_in_session(file_contents, password, username):
+                return redirect('my_bunq')
+            else:
+                messages.error(request=request,
+                               message=('File decrypttion went wrong. Maybe '
+                                        'you are using the old JSON? You can '
+                                        'check this if you see "UUID" in the '
+                                        'json file. To view the contents of '
+                                        'your JSON file simply drag and drop '
+                                        'it in your browser.'))
+            return render(request, 'registration/log_in.html', {'form': form})
         else:
             return render(request, 'registration/log_in.html', {'form': form})
 
@@ -124,7 +133,11 @@ class LogInView(View):
     def store_in_session(data, password, username):
         user = User.objects.get(username=username)
         data = json.loads(data.read().decode())
-        dec_data = signing.loads(data['secret'], key=password)
+
+        try:
+            dec_data = signing.loads(data['secret'], key=password)
+        except signing.BadSignature:
+            return False
 
         enc_data = signing.dumps(dec_data)
 

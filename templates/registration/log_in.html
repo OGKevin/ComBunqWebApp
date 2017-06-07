@@ -9,6 +9,11 @@
     <title>ComBunqWebApp</title>
   </head>
   <body>
+    {% if messages%}
+    {% for msg in messages%}
+    <strong>{{msg}}</strong>
+    {%endfor%}
+    {%endif%}
     <form enctype="multipart/form-data" class="" action="" method="post">
       {% csrf_token %}
       {{form}}
