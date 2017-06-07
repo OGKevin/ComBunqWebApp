@@ -19,6 +19,7 @@ class Session(models.Model):
                                                         max_length=150)
     session_end_date = models.DateTimeField(blank=True, null=True,
                                             default=timezone.now)
+    # session_server_id = models.CharField(blank=True, null=True, max_length=150)
 
 
 @receiver(post_save, sender=User)

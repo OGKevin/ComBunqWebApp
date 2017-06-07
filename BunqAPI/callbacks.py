@@ -171,22 +171,14 @@ class callback:
         self._use_session_token = True
 
         if self.check_status_code(r):
-            try:
                 session_token = r.json()['Response'][1]['Token']['token']
                 user_id = self._get_user_id(r.json()['Response'])
-            except KeyError:  # pragma: no cover
-                return r.json()
-            else:
-                s = SessionStore()
-                s['session_server_token'] = session_token
-                s['user_id'] = user_id
-                s.create()
-                self._user.session \
-                          .session_server_token_and_user_id = s.session_key
-                self._user.save()
-
                 avatar_uuid = self.get_avatar_id(r.json()['Response'],
                                                  'start_session')
+                session_id = r.json()['Response'][0]['Id']['id']
+
+                self._store_session_server_info(session_token, user_id,
+                                                session_id)
 
                 self.get_avatar(avatar_uuid)
 
@@ -439,6 +431,17 @@ class callback:
             return False
         else:
             return True
+
+    def _store_session_server_info(self, session_token, user_id, session_id):
+        s = SessionStore()
+        s['session_server_token'] = session_token
+        s['user_id'] = user_id
+        s.create()
+        self._user.session \
+                  .session_server_token_and_user_id = s.session_key
+
+        # self._user.session.session_server_id = session_id
+        self._user.save()
 
     def _sotre_session_expire(self, response):
         try:
