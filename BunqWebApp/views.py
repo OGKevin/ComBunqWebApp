@@ -106,7 +106,8 @@ class LogInView(View):
             file_contents = request.FILES['user_file']
 
             self.authenticate_user(username, password, request)
-            if self.store_in_session(file_contents, password, username):
+            session = self.store_in_session(file_contents, password, username)
+            if session is not False:
                 return redirect('my_bunq')
             else:
                 messages.error(request=request,
