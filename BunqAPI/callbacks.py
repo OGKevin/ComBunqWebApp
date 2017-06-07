@@ -353,8 +353,9 @@ class callback:
         r = self.bunq_api.endpoints \
                 .attachment_public.get_content_of_public_attachment(avatar_id)
 
-        png = Creator(self._user).avatar(r.content)
-        return png
+        
+
+        Creator(self._user).avatar(r.content)
 
     def customer_statement(self):
         if self.statement_format == 'PDF':

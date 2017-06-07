@@ -69,19 +69,21 @@ class Creator(object):
         return response
 
     def avatar(self, data):
-        temp_file = Creator.temp_file('.png')
+        temp_file = self.temp_file('.png')
         temp_file.write(data)
         temp_file.close()
 
         self.store_in_session(temp_file.name)
 
-        response = {
-            'Response': [{
-                'status': 'Avatar file Generated'
-            }]
-        }
+    def create_avatar_from_session(self):
+        session_key = self.user.session.session_token
+        s = SessionStore(session_key=session_key)
 
-        return response
+        temp_file = self.temp_file('.png')
+        temp_file.write(s['avatar'])
+        temp_file.close()
+
+        self.store_in_session(temp_file.name)
 
     def invoice(self, data):
         url = "https://api.sycade.com/btp-int/Invoice/Generate"
