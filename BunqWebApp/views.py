@@ -10,7 +10,7 @@ from django.core import signing
 import requests
 import arrow
 import markdown2
-from django.http import HttpResponse
+# from django.http import HttpResponse
 from django.contrib import messages
 from BunqAPI.installation import Installation
 import json
