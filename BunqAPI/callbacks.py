@@ -1,6 +1,6 @@
 from django.contrib.sessions.backends.db import SessionStore
 from django.contrib.sessions.models import Session
-from django.core.exceptions import ObjectDoesNotExist
+# from django.core.exceptions import ObjectDoesNotExist
 from apiwrapper.clients.api_client import ApiClient as API
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
@@ -162,12 +162,6 @@ class callback:
         '''
         if self._check_session_active():
             Creator(self._user).create_avatar_from_session()
-            # session_id = self._user.session.session_server_id
-            # # self._use_session_token = False
-            # r = self.bunq_api.endpoints.session.delete_session(int(session_id))
-            # # self._use_session_token = True
-            # print('delete')
-            # pprint(r.json())
             return self._get_saved_response(name='start_session')
 
         self._use_session_token = False
