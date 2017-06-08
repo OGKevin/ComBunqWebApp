@@ -55,6 +55,9 @@ class callback:
 
     def _get_user_data(self):
         session_key = self._user.session.session_token
+        print('callback')
+        print(self._user)
+        print(session_key)
         enc_string = Session.objects.get(
             session_key=session_key).get_decoded()['api_data']
         dec_data = signing.loads(enc_string)

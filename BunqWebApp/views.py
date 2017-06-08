@@ -105,7 +105,7 @@ class LogInView(View):
         if form.is_valid():
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
-            file_contents = request.FILES['user_file']
+            file_contents = request.FILES['user_file'].read().decode()
 
             self.authenticate_user(username, password, request)
             session = self.store_in_session(file_contents, password, username)
@@ -132,7 +132,7 @@ class LogInView(View):
     @staticmethod
     def store_in_session(data, password, username):
         user = User.objects.get(username=username)
-        data = json.loads(data.read().decode())
+        data = json.loads(data)
 
         try:
             dec_data = signing.loads(data['secret'], key=password)
@@ -146,6 +146,9 @@ class LogInView(View):
         s.create()
         user.session.session_token = s.session_key
         user.save()
+        print('ivews')
+        print(user)
+        print(s.session_key)
 
 
 class LogOutView(View):
