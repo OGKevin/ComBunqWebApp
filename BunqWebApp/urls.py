@@ -22,7 +22,7 @@ from BunqAPI.views import GenerateView, MyBunqView, APIView, RedirectView
 from BunqWebApp import views
 from filecreator.views import APIView as filecreator
 from filecreator.views import FileDownloaderView as file_downlaoder
-from django.contrib.auth import views as auth_views
+# from django.contrib.auth import views as auth_views
 
 '''
 Each app needs to get its own URL conf. It works fine this way but its not
@@ -32,7 +32,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', views.HomeView.as_view(), name='home'),
     url(r'^account/register/$', views.RegisterView.as_view(), name='register'),
-    url(r'^account/logout/$', auth_views.logout, name='logout'),
+    url(r'^account/logout/$', views.LogOutView.as_view(), name='logout'),
     url(r'^accounts/login/$', views.LogInView.as_view(), name='login'),
     url(r'^accounts/login/old$', views.MigrationService.as_view()),
     url(r'^accounts/profile/$', RedirectView.as_view(), name='my_bunq'),

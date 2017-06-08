@@ -3,16 +3,18 @@ from BunqWebApp import forms, decrypt
 from BunqAPI.forms import GenerateKeyForm
 from django.contrib.auth.models import User
 from django.contrib.sessions.backends.db import SessionStore
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.views.generic.base import RedirectView
 from django.views import View
 from django.core import signing
 import requests
 import arrow
 import markdown2
+import datetime
 # from django.http import HttpResponse
 from django.contrib import messages
 from BunqAPI.installation import Installation
+from BunqAPI.callbacks import callback
 import json
 # from pprint import pprint
 # Create your views here.
@@ -126,9 +128,6 @@ class LogInView(View):
         user = authenticate(username=username, password=password)
         if user is not None:
             login(request, user)
-            return True
-        else:
-            return False
 
     @staticmethod
     def store_in_session(data, password, username):
@@ -147,6 +146,26 @@ class LogInView(View):
         s.create()
         user.session.session_token = s.session_key
         user.save()
+
+
+class LogOutView(View):
+
+    def get(self, request):
+        user = User.objects.get(username=request.user.username)
+        self.check_bunq_session(user)
+        logout(request)
+        return render(request, 'registration/logged_out.html')
+
+    @staticmethod
+    def check_bunq_session(user):
+        now = datetime.datetime.now(datetime.timezone.utc)
+        session_end = user.session.session_end_date
+
+        if now <= session_end:
+            c = callback(user)
+            if c.delete_session():
+                user.session.session_end_date = now
+                user.save()
 
 
 class MigrationService(View):

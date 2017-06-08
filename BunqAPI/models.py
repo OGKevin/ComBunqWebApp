@@ -15,11 +15,15 @@ class Session(models.Model):
     """
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     session_token = models.CharField(blank=True, max_length=150)
-    session_server_token_and_user_id = models.CharField(blank=True,
-                                                        max_length=150)
+    session_user_id = models.CharField(blank=True, max_length=150)
+    # NOTE: user_id should be stored in session_token
+    # NOTE: These below are not webClient session keys
+
     session_end_date = models.DateTimeField(blank=True, null=True,
                                             default=timezone.now)
-    # session_server_id = models.CharField(blank=True, null=True, max_length=150)
+    session_server_id = models.CharField(blank=True, null=True, max_length=150)
+    session_server_token = models.CharField(blank=True, null=True,
+                                            max_length=150)
 
 
 @receiver(post_save, sender=User)

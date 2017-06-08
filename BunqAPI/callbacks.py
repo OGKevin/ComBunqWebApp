@@ -162,6 +162,12 @@ class callback:
         '''
         if self._check_session_active():
             Creator(self._user).create_avatar_from_session()
+            # session_id = self._user.session.session_server_id
+            # # self._use_session_token = False
+            # r = self.bunq_api.endpoints.session.delete_session(int(session_id))
+            # # self._use_session_token = True
+            # print('delete')
+            # pprint(r.json())
             return self._get_saved_response(name='start_session')
 
         self._use_session_token = False
@@ -194,6 +200,15 @@ class callback:
                 }]
             }
             return error
+
+    def delete_session(self):
+        session_id = self._user.session.session_server_id
+        r = self.bunq_api.endpoints.session.delete_session(int(session_id))
+
+        if self.check_status_code(r):
+            return True
+        else:
+            return False
 
     def users(self):
         '''
@@ -434,13 +449,13 @@ class callback:
 
     def _store_session_server_info(self, session_token, user_id, session_id):
         s = SessionStore()
-        s['session_server_token'] = session_token
         s['user_id'] = user_id
         s.create()
         self._user.session \
-                  .session_server_token_and_user_id = s.session_key
+                  .session_user_id = s.session_key
 
-        # self._user.session.session_server_id = session_id
+        self._user.session.session_server_id = session_id
+        self._user.session.session_server_token = session_token
         self._user.save()
 
     def _sotre_session_expire(self, response):
@@ -486,14 +501,8 @@ class callback:
 
     @property
     def session_server_token(self):
-        try:
-            session_token = Session.objects.get(
-                session_key=self._user.session.session_server_token_and_user_id
-            ).get_decoded()['session_server_token']
-        except (ObjectDoesNotExist, KeyError):
-            return None
-        else:
-            return session_token
+        session_server_token = self._user.session.session_server_token
+        return session_server_token
 
     @property
     def user_id(self):

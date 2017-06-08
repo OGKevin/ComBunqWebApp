@@ -26,5 +26,5 @@ class Endpoint:
     def _make_delete_request(self, endpoint):
         res = self._api_client.delete(endpoint)
         if res.status_code is not 200:
-            logging.error(res.json()['Error'][0]['error_description'])
+            logger.error(res.json()['Error'][0]['error_description'])
         return res
