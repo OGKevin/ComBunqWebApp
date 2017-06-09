@@ -1,0 +1,21 @@
+{
+	"Response": [{
+			"Id": {
+				"id": 24
+			}
+		},
+		{
+			"Token": {
+				"id": 134,
+				"created": "2015-06-13 23:19:16.215235",
+				"updated": "2015-06-30 09:12:31.981573",
+				"token": "a4f9d888eea84f52722b9baf2f17c289d549edf6e0eccdbf868eb922be306fb6"
+			}
+		},
+		{
+			"ServerPublicKey": {
+				"server_public_key": "-----BEGIN PUBLIC KEY-----\\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2cKx+z2NbEapmQWvvov2\\nn0k699ZJmWn1yZulOfVeSfHKdGAVj4TlWwAJuvFmThgtHTp+PiJUxKsNUrHHcp+A\\nCY0mVH+6f19roBH/B4IS7H5fnXMnpf39IfPDw+hv17bKE+dnuhPuEcloG+LgEOgo\\ncjwEb18h5IR3dfbxBHXUce2i4wqfGakAzHumJbPb5XgMMYxng+fqV7uH34CpRpS0\\n4bzjuvkwMlRWQsIMUuOvcAjRoCMf1aViFd2+4sEm7RFlyux5PKkq72F\\/GITirzlA\\nT7T22qrApKnZNPR9y0pGC13FFdx5lVszBNnsKyXDwqrzOsUONSFU+F6JRg6xqUoC\\niQIDAQAB\\n-----END PUBLIC KEY-----\\n"
+			}
+		}
+	]
+}

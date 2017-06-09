@@ -146,9 +146,6 @@ class LogInView(View):
         s.create()
         user.session.session_token = s.session_key
         user.save()
-        print('ivews')
-        print(user)
-        print(s.session_key)
 
 
 class LogOutView(View):

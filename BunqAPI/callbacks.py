@@ -55,9 +55,6 @@ class callback:
 
     def _get_user_data(self):
         session_key = self._user.session.session_token
-        print('callback')
-        print(self._user)
-        print(session_key)
         enc_string = Session.objects.get(
             session_key=session_key).get_decoded()['api_data']
         dec_data = signing.loads(enc_string)
@@ -363,7 +360,7 @@ class callback:
     def get_avatar(self, avatar_id):
         r = self.bunq_api.endpoints \
                 .attachment_public.get_content_of_public_attachment(avatar_id)
-
+        print(r)
         enc_png = base64.b64encode(r.content)
         self._save_response(enc_png.decode(), 'avatar')
 
@@ -436,8 +433,6 @@ class callback:
     def _check_session_active(self):
         current_time = datetime.datetime.now(datetime.timezone.utc)
         session_end = self._user.session.session_end_date
-        print(current_time)
-        print(session_end)
 
         if current_time >= session_end:
             return False
