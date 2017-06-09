@@ -59,7 +59,7 @@ if 'HEROKU' in os.environ:
 
     API_URI = os.environ['API_URI']
     ALLOWED_HOSTS = ['.beta-combunqweb.herokuapp.com',
-                     '.combunqweb.herokuapp.com', '.127.0.0.1']
+                     '.combunqweb.herokuapp.com', '.bunqweb.com']
     USE_PROXY = True
     PROXY_URI = os.environ['PROXY_URI']
 
