@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from BunqWebApp import validator
 from django.core.exceptions import ValidationError
 from BunqWebApp import forms
+from faker import Faker
 
 
 class Validation(TestCase):
@@ -50,16 +51,23 @@ class Forms(TestCase):
     """docstring for Froms.
     This will test the forms
     """
+
+    fake = Faker()
+
     def test_registration(self):
+        password = self.fake.password()
+
         form_data = {
-            'username': 'DAMN.',
-            'password': 'testtesttesttest',
-            'confirm_password': 'testtesttesttest'
+            'username': self.fake.name(),
+            'password': password,
+            'confirm_password': password,
+            'api_key': self.fake.sha1()
         }
         form_data2 = {
-            'username': 'DAMN.',
-            'password': 'testtesttesttest',
-            'confirm_password': 'not the same pass'
+            'username': self.fake.name(),
+            'password': self.fake.password(),
+            'confirm_password': self.fake.password(),
+            'api_key': self.fake.sha1()
         }
         form = forms.registration(data=form_data)
         form2 = forms.registration(data=form_data2)

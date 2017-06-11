@@ -1,0 +1,49 @@
+{
+	"Response": [{
+		"Id":{"id": 42},
+		"created": "2016-06-13 23:19:16.215235",
+		"updated": "2016-06-13 23:19:16.215235",
+		"date_start": "2016-06-13",
+		"date_end": "2016-06-20",
+		"status": "COMPLETED",
+		"statement_number": 3,
+		"statement_format": "CSV",
+		"regional_format": "EUROPEAN",
+		"alias_monetary_account": {
+			"iban": "NL12BUNQ0300065264",
+			"display_name": "Mary",
+			"avatar": {
+				"uuid": "5a442bed-3d43-4a85-b532-dbb251052f4a",
+				"anchor_uuid": "f0de919f-8c36-46ee-acb7-ea9c35c1b231",
+				"image": [{
+					"attachment_public_uuid": "d93e07e3-d420-45e5-8684-fc0c09a63686",
+					"content_type": "image/jpeg",
+					"height": 380,
+					"width": 520
+				}]
+			},
+			"label_user": {
+				"uuid": "252e-fb1e-04b74214-b9e9467c3-c6d2fbf",
+				"avatar": {
+					"uuid": "5a442bed-3d43-4a85-b532-dbb251052f4a",
+					"anchor_uuid": "f0de919f-8c36-46ee-acb7-ea9c35c1b231",
+					"image": [{
+						"attachment_public_uuid": "d93e07e3-d420-45e5-8684-fc0c09a63686",
+						"content_type": "image/jpeg",
+						"height": 380,
+						"width": 520
+					}]
+				},
+				"public_nick_name": "Mary",
+				"display_name": "Mary",
+				"country": "NL"
+			},
+			"country": "NL",
+			"bunq_me": {
+				"type": "EMAIL",
+				"value": "bravo@bunq.com",
+				"name": ""
+			}
+		}
+	}]
+}

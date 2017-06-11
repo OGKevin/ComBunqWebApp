@@ -360,7 +360,6 @@ class callback:
     def get_avatar(self, avatar_id):
         r = self.bunq_api.endpoints \
                 .attachment_public.get_content_of_public_attachment(avatar_id)
-        print(r)
         enc_png = base64.b64encode(r.content)
         self._save_response(enc_png.decode(), 'avatar')
 
@@ -458,7 +457,9 @@ class callback:
         finally:
             session_timeout = datetime.timedelta(seconds=response[
                                                             'session_timeout'])
-            session_expire_date = datetime.datetime.now() + session_timeout
+            session_expire_date = datetime.datetime.now(
+                datetime.timezone.utc
+            ) + session_timeout
 
             self._user.session.session_end_date = session_expire_date
             self._user.save()
