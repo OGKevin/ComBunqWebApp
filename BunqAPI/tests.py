@@ -233,3 +233,17 @@ class TestCode(TestCase):
     def get_customer_statment(self):
         with open('BunqAPI/test_files/customer_statement.json', 'r') as f:
             return json.loads(f.read())
+
+
+# @requests_mock.Mocker(real_http=False)
+# @patch('apiwrapper.endpoints.endpoint.Endpoint._make_get_request',
+#        side_effect=make_get_request)
+class TestViews(TestCase):
+
+    def test_my_bunq_view(self):
+        r = self.client.get('/my_bunq')
+        self.assertEqual(r.status_code, 301)
+
+    def test_generate_view(self):
+        r = self.client.get('/generate')
+        self.assertEqual(r.status_code, 301)

@@ -112,15 +112,10 @@ class callback:
     def load_file(self):
         start_session = self.start_session()
 
-        if start_session is not None and 'Response' in start_session:
+        if 'Response' in start_session:
             self.user_id = self._get_user_id(start_session['Response'])
             start_session = start_session['Response']
 
-        elif start_session is None:
-            self.user_id = Session.objects.get(
-                session_key=self._user.session.session_server_token_and_user_id
-            ).get_decoded()['user_id']
-            start_session = None
         else:
             return start_session
 
