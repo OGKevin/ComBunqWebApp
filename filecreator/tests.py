@@ -56,5 +56,5 @@ class TestCode(TestCase):
 
     @property
     def get_avatar(self):
-        with open('BunqAPI/test_files/avatar.txt', 'r') as f:
+        with open('BunqAPI/test_files/avatar.txt', 'rb') as f:
             return f.read()
