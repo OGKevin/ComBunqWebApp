@@ -93,18 +93,16 @@ class MyBunqView(View):
     """docstring for MyBunqView.
         Shows the template on the my_bunq page.
     """
-    form = MyBunqForm
     template = 'BunqAPI/my_bunq.html'
 
     def get(self, request):
-        form = self.form()
         user = User.objects.get(username=request.user)
         try:
             callback(user)
         except (ObjectDoesNotExist, KeyError):
             return HttpResponseForbidden('You are not logged in correctly.'
                                          '<a href="/account/logout">Back</a>')
-        return render(request, self.template, {'form': form})
+        return render(request, self.template)
 
 
 @method_decorator(login_required, name='dispatch')

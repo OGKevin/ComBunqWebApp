@@ -1,6 +1,7 @@
-from django.test import TestCase
+from django.test import TestCase, RequestFactory
 from BunqAPI.installation import Installation
 from BunqAPI.callbacks import callback
+from BunqAPI import views
 from faker import Faker
 from django.contrib.auth.models import User
 from django.contrib.sessions.backends.db import SessionStore
@@ -12,6 +13,7 @@ import requests
 from unittest.mock import patch
 import json
 import re
+import os
 
 
 def make_get_request(endpoint, verify=False):
@@ -59,6 +61,8 @@ class TestCode(TestCase):
         self.store_in_session(data=file_contents)
 
         self.c = callback(self.user)
+
+        os.remove(file_path)
 
     def test_installation(self, mock, _):
         mock.register_uri(requests_mock.ANY, self.installation,
@@ -235,9 +239,6 @@ class TestCode(TestCase):
             return json.loads(f.read())
 
 
-# @requests_mock.Mocker(real_http=False)
-# @patch('apiwrapper.endpoints.endpoint.Endpoint._make_get_request',
-#        side_effect=make_get_request)
 class TestViews(TestCase):
 
     def test_my_bunq_view(self):
@@ -247,3 +248,69 @@ class TestViews(TestCase):
     def test_generate_view(self):
         r = self.client.get('/generate')
         self.assertEqual(r.status_code, 301)
+
+
+# @requests_mock.Mocker(real_http=False)
+# @patch('apiwrapper.endpoints.endpoint.Endpoint._make_get_request',
+#        side_effect=make_get_request)
+class TestViewCode(TestCase):
+
+    fake = Faker()
+    installation = re.compile('/v1/installation')
+    device_server = re.compile('/v1/device-server')
+    attachemt_pubilc = re.compile('/v1/attachment-public/')
+    session_server = re.compile('/v1/session-server')
+    session = re.compile('/session/')
+    accounts = re.compile('/monetary-account')
+    payment = re.compile('/payments')
+    users = re.compile('/user')
+    card = re.compile('/card')
+    invoice = re.compile('/invoice')
+    invoice_api = re.compile('https://api.sycade.com/btp-int/Invoice/Generate')
+    customer_statement = re.compile('/customer-statement')
+
+    # @requests_mock.Mocker(real_http=False)
+    def setUp(self):
+        # mock.register_uri(requests_mock.ANY, self.installation,
+        #                   json=self.get_installation)
+        # mock.register_uri(requests_mock.ANY, self.device_server)
+        self.request = RequestFactory()
+        self.password = self.fake.password()
+        self.user = User.objects.create_user(username=self.fake.name(),
+                                             password=self.password)
+
+    #     i = Installation(user=self.user, api_key=self.fake.sha1(),
+    #                      password=self.password)
+    #     i.status
+    #     key = self.user.tokens.file_token
+    #     file_path = SessionStore(session_key=key)['file_path']
+    #     with open(file_path, 'r') as f:
+    #         file_contents = f.read()
+    #     self.store_in_session(data=file_contents)
+    #
+    #     # self.c = callback(self.user)
+    #
+    #     os.remove(file_path)
+    #
+    # def store_in_session(self, data):
+    #     data = json.loads(data)
+    #
+    #     dec_data = signing.loads(data['secret'], key=self.password)
+    #
+    #     enc_data = signing.dumps(dec_data)
+    #
+    #     s = SessionStore()
+    #     s['api_data'] = enc_data
+    #     s.create()
+    #     self.user.session.session_token = s.session_key
+    #     self.user.save()
+
+    def test_my_bunq_view(self):
+        request = self.request.get(path='/my_bunq')
+        request.user = self.user
+        request.session = {}
+
+        self.client.login(username=self.user.username, password=self.password)
+
+        response = views.MyBunqView.as_view()(request)
+        self.assertEqual(response.status_code, 403)
