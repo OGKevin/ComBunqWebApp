@@ -46,7 +46,7 @@ except NameError:
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-if 'HEROKU' in os.environ:
+if 'HEROKU' in os.environ:  # pragma: no cover
     DEBUG = False
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True

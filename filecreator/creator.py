@@ -115,7 +115,7 @@ class Creator(object):
             }
             return response
 
-        else:
+        else:  # pragma: no cover
             error = {
                 'Error': [{
                     'error_description_translated': ('PDF generator API'
@@ -131,7 +131,7 @@ class Creator(object):
 
         self.store_in_session(file_path=temp_file.name)
 
-    def path_check(self):
+    def path_check(self):  # pragma: no cover
         file_path = self.user.tokens.file_token
         if pathlib.Path(file_path).is_file():
             os.remove(file_path)

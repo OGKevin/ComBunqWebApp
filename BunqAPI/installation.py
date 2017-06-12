@@ -27,7 +27,7 @@ class Installation:
             }
             Creator(user=self.user).user_json(data=json)
             return True
-        else:
+        else:  # pragma: no cover
             if self._delete_user:
                 self.user.delete()
             return False
@@ -36,5 +36,5 @@ class Installation:
     def status(self):
         if self.register_api_key():
             return True
-        else:
+        else:  # pragma: no cover
             return False

@@ -36,5 +36,5 @@ def create_user_session(sender, instance, created, **kwargs):
 def save_user_session(sender, instance, **kwargs):
     try:
         instance.session.save()
-    except ObjectDoesNotExist:
+    except ObjectDoesNotExist:  # pragma: no cover
         Session.objects.create(user=instance)
