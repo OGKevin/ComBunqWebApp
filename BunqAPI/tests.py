@@ -279,32 +279,6 @@ class TestViewCode(TestCase):
         self.user = User.objects.create_user(username=self.fake.name(),
                                              password=self.password)
 
-    #     i = Installation(user=self.user, api_key=self.fake.sha1(),
-    #                      password=self.password)
-    #     i.status
-    #     key = self.user.tokens.file_token
-    #     file_path = SessionStore(session_key=key)['file_path']
-    #     with open(file_path, 'r') as f:
-    #         file_contents = f.read()
-    #     self.store_in_session(data=file_contents)
-    #
-    #     # self.c = callback(self.user)
-    #
-    #     os.remove(file_path)
-    #
-    # def store_in_session(self, data):
-    #     data = json.loads(data)
-    #
-    #     dec_data = signing.loads(data['secret'], key=self.password)
-    #
-    #     enc_data = signing.dumps(dec_data)
-    #
-    #     s = SessionStore()
-    #     s['api_data'] = enc_data
-    #     s.create()
-    #     self.user.session.session_token = s.session_key
-    #     self.user.save()
-
     def test_my_bunq_view(self):
         request = self.request.get(path='/my_bunq')
         request.user = self.user
