@@ -64,18 +64,18 @@ class GenerateView(View):
 
                 if registration.status:
                     return render(request, 'registration/complete.html')
-                else:
+                else:  # pragma: no cover
                     messages.error(request, ('something went wrong while '
                                              'registering your API key '
                                              'with the bunq servers'))
                     return render(request, self.template, {'form': form})
-            else:
+            else:  # pragma: no cover
                 messages.error(request, ('User authentication failed. '
                                          'This password is not the '
                                          'correct user password.'))
                 return render(request, self.template, {'form': form})
 
-        else:
+        else:  # pragma: no cover
             return render(request, self.template, {'form': form})
 
     def authenticate_user(self):
@@ -84,7 +84,7 @@ class GenerateView(View):
 
         if user is not None:
             return True
-        else:
+        else:  # pragma : no cover
             return False
 
 
@@ -102,7 +102,7 @@ class MyBunqView(View):
         except (ObjectDoesNotExist, KeyError):
             return HttpResponseForbidden('You are not logged in correctly.'
                                          '<a href="/account/logout">Back</a>')
-        return render(request, self.template)
+        return render(request, self.template)  # pragma: no cover
 
 
 @method_decorator(login_required, name='dispatch')

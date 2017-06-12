@@ -250,9 +250,9 @@ class TestViews(TestCase):
         self.assertEqual(r.status_code, 301)
 
 
-# @requests_mock.Mocker(real_http=False)
-# @patch('apiwrapper.endpoints.endpoint.Endpoint._make_get_request',
-#        side_effect=make_get_request)
+@requests_mock.Mocker(real_http=False)
+@patch('apiwrapper.endpoints.endpoint.Endpoint._make_get_request',
+       side_effect=make_get_request)
 class TestViewCode(TestCase):
 
     fake = Faker()
@@ -279,7 +279,7 @@ class TestViewCode(TestCase):
         self.user = User.objects.create_user(username=self.fake.name(),
                                              password=self.password)
 
-    def test_my_bunq_view(self):
+    def test_my_bunq_view(self, mock, _):
         request = self.request.get(path='/my_bunq')
         request.user = self.user
         request.session = {}
@@ -288,3 +288,26 @@ class TestViewCode(TestCase):
 
         response = views.MyBunqView.as_view()(request)
         self.assertEqual(response.status_code, 403)
+
+    def test_generate_view(self, mock, _):
+        mock.register_uri(requests_mock.ANY, self.installation,
+                          json=self.get_installation)
+        mock.register_uri(requests_mock.ANY, self.device_server)
+        data = {
+            'user_password': self.password,
+            'API': self.fake.sha1()
+        }
+
+        request = self.request.post('/generate', data=data)
+        request.user = self.user
+        request.session = {}
+
+        self.client.login(username=self.user.username, password=self.password)
+
+        response = views.GenerateView.as_view()(request)
+        self.assertEqual(response.status_code, 200)
+
+    @property
+    def get_installation(self):
+        with open('BunqAPI/test_files/installation.json', 'r') as f:
+            return json.loads(f.read())

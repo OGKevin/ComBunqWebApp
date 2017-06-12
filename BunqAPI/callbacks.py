@@ -82,7 +82,7 @@ class callback:
             self.bunq_api = data
             registration = self.register()
 
-            if registration.status_code == 200:
+            if self.check_status_code(registration):
                 return {
                     'data': data,
                     'status': True
