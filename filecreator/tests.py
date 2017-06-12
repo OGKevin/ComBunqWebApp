@@ -31,12 +31,30 @@ class TestCode(TestCase):
         self.delete_file()
 
     def test_transactions(self):
-        pass
+        c = Creator(user=self.user, extension='csv')
+        data = self.get_transactions
+        c.transactions(data=data)
+
+        self.delete_file()
 
     def test_avatar(self):
-        pass
+        c = Creator(user=self.user)
+        data = self.get_avatar
+        c.avatar(data=data)
+
+        self.delete_file()
 
     @property
     def get_payment(self):
         with open('BunqAPI/test_files/payments.json', 'r') as f:
             return json.loads(f.read())
+
+    @property
+    def get_transactions(self):
+        with open('filecreator/test_files/transactions_csv.json', 'r') as f:
+            return json.loads(f.read())
+
+    @property
+    def get_avatar(self):
+        with open('BunqAPI/test_files/avatar.txt', 'r') as f:
+            return f.read()
