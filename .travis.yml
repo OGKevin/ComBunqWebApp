@@ -4,7 +4,7 @@ python:
 - 3.6.1
 addons:
   postgresql: '9.6'
-    apt:
+  apt:
     packages:
       - wkhtmltopdf
 before_install:
