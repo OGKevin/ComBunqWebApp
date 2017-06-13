@@ -24,6 +24,7 @@ from apiwrapper.endpoints.schedule import Schedule
 from apiwrapper.endpoints.scheduled_payment import ScheduledPayment
 from apiwrapper.endpoints.server_public_key import ServerPublicKey
 from apiwrapper.endpoints.session_server import SessionServer
+from apiwrapper.endpoints.session import Session
 from apiwrapper.endpoints.share_invite_bank_inquiry import \
     ShareInviteBankInquiry
 from apiwrapper.endpoints.share_invite_bank_response import \
@@ -62,6 +63,7 @@ class Controller:
         self.scheduled_payment = ScheduledPayment(api_client)
         self.server_public_key = ServerPublicKey(api_client)
         self.session_server = SessionServer(api_client)
+        self.session = Session(api_client)
         self.share_inquiry = ShareInviteBankInquiry(api_client)
         self.share_response = ShareInviteBankResponse(api_client)
         self.tab_attachment = TabAttachment(api_client)

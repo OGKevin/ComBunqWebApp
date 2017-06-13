@@ -7,6 +7,9 @@ import json
 from django.contrib.sessions.models import Session
 import os
 from django.utils.encoding import smart_str
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+
 
 # Create your views here.
 
@@ -21,9 +24,10 @@ class APIView(View):
         return HttpResponse(json.dumps(getattr(crt, selector.strip('/'))(data)))  # noqa
 
 
+@method_decorator(login_required, name='dispatch')
 class FileDownloaderView(View):
     """docstring for FileDownloaderView."""
-
+    # @login_required(login_url='/accounts/login/')
     def get(self, request):
         user = User.objects.get(username=request.user)
         file_path = Session.objects.get(

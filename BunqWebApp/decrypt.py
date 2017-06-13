@@ -1,11 +1,8 @@
 from Crypto.Cipher import AES
-# from Crypto.PublicKey import RSA
-from Crypto import Random
+# from Crypto import Random
 import json
-# from pprint import pprint
 import base64
 import hashlib
-# from django.contrib.auth.models import User
 
 
 class AESCipher(object):
@@ -19,12 +16,6 @@ class AESCipher(object):
     def __init__(self, key):
         self.bs = 32
         self.key = hashlib.sha256(key.encode()).digest()
-
-    def encrypt(self, raw):
-        raw = self._pad(raw)
-        iv = Random.new().read(AES.block_size)
-        cipher = AES.new(self.key, AES.MODE_CBC, iv)
-        return base64.b64encode(iv + cipher.encrypt(raw)).decode()
 
     def decrypt(self, enc):
 

@@ -23,5 +23,5 @@ def create_user_tokens(sender, instance, created, **kwargs):
 def save_user_tokens(sender, instance, **kwargs):
     try:
         instance.tokens.save()
-    except ObjectDoesNotExist:
+    except ObjectDoesNotExist:  # pragma: no cover
         Tokens.objects.create(user=instance)

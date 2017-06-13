@@ -1,323 +1,313 @@
 from django.test import TestCase, RequestFactory
-from BunqAPI.installation import installation
-from django.contrib.auth.models import User
-from BunqAPI.encryption import AESCipher
-import json
-import base64
+from BunqAPI.installation import Installation
+from BunqAPI.callbacks import callback
 from BunqAPI import views
-from django.contrib.auth import authenticate
 from faker import Faker
-from unittest.mock import patch
-import requests
+from django.contrib.auth.models import User
+from django.contrib.sessions.backends.db import SessionStore
+from django.core import signing
 import requests_mock
-# Create your tests here.
+import requests
+# from pprint import pprint
+# from apiwrapper.clients.api_client
+from unittest.mock import patch
+import json
+import re
+import os
 
 
-class testScript(TestCase):
-    """docstring for testScript.
-    This test is supposed to test the scipts."""
+def make_get_request(endpoint, verify=False):
+    url = 'https://sandbox.public.api.bunq.com/v1'
+    return requests.get(url=url + endpoint)
 
-    def setUp(self):
-        fake = Faker()
-        username = fake.name()
-        self.password = fake.password(
-            length=10,
-            special_chars=True,
-            digits=True,
-            upper_case=True,
-            lower_case=True)
-        self.user = User.objects.create_user(username, '', self.password)
+
+@requests_mock.Mocker(real_http=False)
+@patch('apiwrapper.endpoints.endpoint.Endpoint._make_get_request',
+       side_effect=make_get_request)
+class TestCode(TestCase):
+
+    fake = Faker()
+    installation = re.compile('/v1/installation')
+    device_server = re.compile('/v1/device-server')
+    attachemt_pubilc = re.compile('/v1/attachment-public/')
+    session_server = re.compile('/v1/session-server')
+    session = re.compile('/session/')
+    accounts = re.compile('/monetary-account')
+    payment = re.compile('/payments')
+    users = re.compile('/user')
+    card = re.compile('/card')
+    invoice = re.compile('/invoice')
+    invoice_api = re.compile('https://api.sycade.com/btp-int/Invoice/Generate')
+    customer_statement = re.compile('/customer-statement')
+
+    @requests_mock.Mocker(real_http=False)
+    def setUp(self, mock):
+        mock.register_uri(requests_mock.ANY, self.installation,
+                          json=self.get_installation)
+        mock.register_uri(requests_mock.ANY, self.device_server)
+
+        username = self.fake.name()
+        self.password = self.fake.password()
+        self.user = User.objects.create_user(username=username,
+                                             password=self.password,
+                                             email=None)
+        i = Installation(user=self.user, api_key=self.fake.sha1(),
+                         password=self.password)
+        i.status
+        key = self.user.tokens.file_token
+        file_path = SessionStore(session_key=key)['file_path']
+        with open(file_path, 'r') as f:
+            file_contents = f.read()
+        self.store_in_session(data=file_contents)
+
+        self.c = callback(self.user)
+
+        os.remove(file_path)
+
+    def test_installation(self, mock, _):
+        mock.register_uri(requests_mock.ANY, self.installation,
+                          json=self.get_installation)
+        mock.register_uri(requests_mock.ANY, self.device_server)
+        i = Installation(user=self.user, api_key=self.fake.sha1(),
+                         password=self.password)
+
+        self.assertTrue(i.status)
+
+    def test_load_file(self, mock, _):
+        mock.register_uri(requests_mock.ANY, self.installation,
+                          json=self.get_installation)
+        mock.register_uri(requests_mock.ANY, self.attachemt_pubilc,
+                          content=self.get_avatar)
+        mock.register_uri(requests_mock.ANY, self.session_server,
+                          json=self.get_start_session)
+        mock.register_uri(requests_mock.ANY, self.accounts,
+                          json=self.get_accounts)
+        mock.register_uri(requests_mock.ANY, self.payment,
+                          json=self.get_payments)
+
+        # c = callback(user=self.user)
+        self.c.load_file()
+        self.c.account_id = self.fake.random_number()
+        self.c.payment_id = self.fake.random_number()
+        self.c.load_file()  # NOTE: need to find an assertion for this.
+        # assertEqual doesnt do the job due to the order
+        # of the JSON's
+
+    def test_delete_session(self, mock, _):
+        mock.register_uri(requests_mock.ANY, self.attachemt_pubilc,
+                          content=self.get_avatar)
+        mock.register_uri(requests_mock.ANY, self.session_server,
+                          json=self.get_start_session)
+        mock.register_uri(requests_mock.ANY, self.session)
+
+        self.c.start_session()
+        self.assertTrue(self.c.delete_session())
+
+    def test_users(self, mock, _):
+        mock.register_uri(requests_mock.ANY, self.users,
+                          json=self.get_users)
+        mock.register_uri(requests_mock.ANY, self.attachemt_pubilc,
+                          content=self.get_avatar)
+        # c = callback(user=self.user)
+        self.c.users()
+        self.c.user_id = self.fake.random_number()
+        self.c.users()
+
+    def test_card(self, mock, _):
+        mock.register_uri(requests_mock.ANY, self.card,
+                          json=self.get_card)
+
+        # c = callback(user=self.user)
+        self.c.user_id = self.fake.random_number()
+        self.c.card()
+        self.c.account_id = self.fake.random_number()
+        self.c.card()
+
+    def test_invoice(self, mock, _):
+        mock.register_uri(requests_mock.ANY, self.invoice,
+                          json=self.get_invoice_data)
+        mock.register_uri(requests_mock.ANY, self.invoice_api,
+                          text=self.get_invoice_pdf)
+
+        self.c.user_id = self.fake.random_number()
+        self.c.invoice()
+
+    def test_payment_pdf(self, mock, _):
+        mock.register_uri(requests_mock.ANY, self.payment,
+                          json=self.get_payments)
+
+        self.c.payment_id = self.fake.random_number()
+        self.c.get_payment_pdf()
+
+    def test_cusomer_statement_pdf(self, mock, _):
+        mock.register_uri(requests_mock.ANY, self.customer_statement,
+                          json=self.get_customer_statment)
+
+        self.c.user_id = self.fake.random_number()
+        self.c.account_id = self.fake.random_number()
+        self.c.date_start = self.fake.date()
+        self.c.date_end = self.fake.date()
+        self.c.statement_format = 'PDF'
+
+        self.c.customer_statement()
+
+    def test_cusomer_statement_csv(self, mock, _):
+        mock.register_uri(requests_mock.ANY, self.customer_statement,
+                          json=self.get_customer_statment)
+
+        self.c.user_id = self.fake.random_number()
+        self.c.account_id = self.fake.random_number()
+        self.c.date_start = self.fake.date()
+        self.c.date_end = self.fake.date()
+        self.c.statement_format = 'CSV'
+
+        self.c.customer_statement()
+
+    def test_cusomer_statement_mt940(self, mock, _):
+        mock.register_uri(requests_mock.ANY, self.customer_statement,
+                          json=self.get_customer_statment)
+
+        self.c.user_id = self.fake.random_number()
+        self.c.account_id = self.fake.random_number()
+        self.c.date_start = self.fake.date()
+        self.c.date_end = self.fake.date()
+        self.c.statement_format = 'MT940'
+
+        self.c.customer_statement()
+
+    def store_in_session(self, data):
+        data = json.loads(data)
+
+        dec_data = signing.loads(data['secret'], key=self.password)
+
+        enc_data = signing.dumps(dec_data)
+
+        s = SessionStore()
+        s['api_data'] = enc_data
+        s.create()
+        self.user.session.session_token = s.session_key
         self.user.save()
 
-    def installation(self):
-        decryt = AESCipher(self.password)
-        encryt = json.loads(installation(
-            self.user, self.password, 'API_KEY').encrypt())
-        d = AESCipher.decrypt(decryt, encryt['secret'])
-        self.assertIs(len(d), 4)
-        self.assertTrue(isinstance(d, dict))
+    @property
+    def get_installation(self):
+        with open('BunqAPI/test_files/installation.json', 'r') as f:
+            return json.loads(f.read())
 
-    def installation_error1(self):
-        decryt = AESCipher('wrong password')
-        encryt = json.loads(installation(
-            self.user, self.password, 'API_KEY').encrypt())
-        self.assertRaises(
-            UnicodeDecodeError,
-            AESCipher.decrypt,
-            decryt, encryt['secret']
-        )
+    @property
+    def get_start_session(self):
+        with open('BunqAPI/test_files/start_session.json', 'r') as f:
+            return json.loads(f.read())
 
-    def installation_error2(self):
-        decryt = AESCipher(self.password)
-        encryt = json.loads(installation(
-            self.user, self.password, 'API_KEY').encrypt())
-        secret = encryt['secret'] = 'destroyed'
-        self.assertRaises(
-            base64.binascii.Error,
-            AESCipher.decrypt,
-            decryt, secret
-        )
+    @property
+    def get_accounts(self):
+        with open('BunqAPI/test_files/accounts.json', 'r') as f:
+            return json.loads(f.read())
 
-    def GUIDs(self):
-        guid = self.user.profile.GUID
-        self.assertTrue(isinstance(guid, list))
+    @property
+    def get_payments(self):
+        with open('BunqAPI/test_files/payments.json') as f:
+            return json.loads(f.read())
 
-    def test_run(self):
-        self.installation()
-        self.installation_error1()
-        self.installation_error2()
-        self.GUIDs()
+    @property
+    def get_avatar(self):
+        with open('BunqAPI/test_files/avatar.txt', 'rb') as f:
+            return f.read()
 
+    @property
+    def get_users(self):
+        with open('BunqAPI/test_files/users.json', 'r') as f:
+            return json.loads(f.read())
 
-class testView(TestCase):
-    """docstring for testView.
-    This test is supposed to test the views.
-    Need to find a way to simulate logged in with 2FA
+    @property
+    def get_card(self):
+        with open('BunqAPI/test_files/card.json', 'r') as f:
+            return json.loads(f.read())
 
-    """
+    @property
+    def get_invoice_data(self):
+        with open('BunqAPI/test_files/invoice.json', 'r') as f:
+            return json.loads(f.read())
 
-    def test_generate(self):
-        response = self.client.get('/generate', follow=True)
-        self.assertEqual(response.status_code, 200)
+    @property
+    def get_invoice_pdf(self):
+        with open('BunqAPI/test_files/invoice.txt', 'r') as f:
+            return f.read()
 
-        response2 = self.client.post('/generate', follow=True)
-        self.assertEqual(response2.status_code, 200)
-
-    def test_my_bunq(self):
-        response = self.client.get('/my_bunq', follow=True)
-        self.assertEqual(response.status_code, 200)
-
-        response2 = self.client.post('/my_bunq', follow=True)
-        self.assertEqual(response2.status_code, 200)
-
-    def test_api(self):
-        response = self.client.post('/API/register', follow=True)
-        self.assertEqual(response.status_code, 200)
+    @property
+    def get_customer_statment(self):
+        with open('BunqAPI/test_files/customer_statement.json', 'r') as f:
+            return json.loads(f.read())
 
 
+class TestViews(TestCase):
+
+    def test_my_bunq_view(self):
+        r = self.client.get('/my_bunq')
+        self.assertEqual(r.status_code, 301)
+
+    def test_generate_view(self):
+        r = self.client.get('/generate')
+        self.assertEqual(r.status_code, 301)
+
+
+@requests_mock.Mocker(real_http=False)
+@patch('apiwrapper.endpoints.endpoint.Endpoint._make_get_request',
+       side_effect=make_get_request)
 class TestViewCode(TestCase):
-    """docstring for TestViewCode."""
 
+    fake = Faker()
+    installation = re.compile('/v1/installation')
+    device_server = re.compile('/v1/device-server')
+    attachemt_pubilc = re.compile('/v1/attachment-public/')
+    session_server = re.compile('/v1/session-server')
+    session = re.compile('/session/')
+    accounts = re.compile('/monetary-account')
+    payment = re.compile('/payments')
+    users = re.compile('/user')
+    card = re.compile('/card')
+    invoice = re.compile('/invoice')
+    invoice_api = re.compile('https://api.sycade.com/btp-int/Invoice/Generate')
+    customer_statement = re.compile('/customer-statement')
+
+    # @requests_mock.Mocker(real_http=False)
     def setUp(self):
-        fake = Faker()
-        name = fake.name()
-        pas = fake.password(
-            length=10,
-            special_chars=True,
-            digits=True,
-            upper_case=True,
-            lower_case=True
-        )
-        User.objects.create_user(name, '', pas)
-        self.user = authenticate(username=name, password=pas)
-        self.user.is_verified = lambda: True
-        self.factory = RequestFactory()
+        # mock.register_uri(requests_mock.ANY, self.installation,
+        #                   json=self.get_installation)
+        # mock.register_uri(requests_mock.ANY, self.device_server)
+        self.request = RequestFactory()
+        self.password = self.fake.password()
+        self.user = User.objects.create_user(username=self.fake.name(),
+                                             password=self.password)
 
-    def test_generate_get(self):
-        request = self.factory.get('/generate')
+    def test_my_bunq_view(self, mock, _):
+        request = self.request.get(path='/my_bunq')
         request.user = self.user
-        self.assertEqual(
-            views.GenerateView().get(request).status_code,
-            200
-        )
+        request.session = {}
 
-    def test_my_bunq_get(self):
-        request = self.factory.get('/my_bunq')
-        request.user = self.user
-        self.assertEqual(
-            views.MyBunqView().get(request).status_code,
-            200
-        )
+        self.client.login(username=self.user.username, password=self.password)
 
-    def test_generate_post(self):
+        response = views.MyBunqView.as_view()(request)
+        self.assertEqual(response.status_code, 403)
+
+    def test_generate_view(self, mock, _):
+        mock.register_uri(requests_mock.ANY, self.installation,
+                          json=self.get_installation)
+        mock.register_uri(requests_mock.ANY, self.device_server)
         data = {
-            'API': Faker().sha256(raw_output=False),
-            'encryption_password': Faker().password(
-                length=10,
-                special_chars=True,
-                digits=True,
-                upper_case=True,
-                lower_case=True
-            ),
-        }
-        request = self.factory.post('/generate', data=data)
-        request.user = self.user
-
-        self.assertEqual(
-            views.GenerateView().post(request).status_code,
-            200
-        )
-
-
-class TestCallback(TestCase):
-    """docstring for TestCallback."""
-    c = 'apiwrapper.endpoints.'
-
-    def setUp(self):
-        fake = Faker()
-        username = fake.name()
-        password = fake.password()
-        user = User.objects.create_user(username, '', password)
-        encryption_password = fake.password()
-        data = installation(
-            user,
-            encryption_password,
-            fake.sha1()
-        ).encrypt()
-        user.save()
-        self.id = fake.random_number()
-        self.factory = RequestFactory()
-        self.user = authenticate(username=username, password=password)
-        self.user.is_verified = lambda: True
-
-        self.post_data = {
-            'json': data,
-            'pass': encryption_password,
+            'user_password': self.password,
+            'API': self.fake.sha1()
         }
 
-    @requests_mock.Mocker()
-    def get_inoice(a, m):
-        f = open('BunqAPI/test_files/invoice.json', 'r')
-        m.get('http://fake_url', json=json.loads(f.read()))
-        r = requests.get('http://fake_url')
-        return r
-
-    @requests_mock.Mocker()
-    def get_start_session(m):
-        f = open('BunqAPI/test_files/start_session.json', 'r')
-        m.get('http://fake_url', json=json.loads(f.read()))
-        r = requests.get('http://fake_url')
-        return r
-
-    @requests_mock.Mocker()
-    def get_user(m):
-        f = open('BunqAPI/test_files/users.json', 'r')
-        m.get('http://fake_url', json=json.loads(f.read()))
-        r = requests.get('http://fake_url')
-        return r
-
-    @requests_mock.Mocker()
-    def get_accounts(a, m):
-        f = open('BunqAPI/test_files/accounts.json', 'r')
-        m.get('http://fake_url', json=json.loads(f.read()))
-        r = requests.get('http://fake_url')
-        return r
-
-    @requests_mock.Mocker()
-    def get_payment(a, b, m):
-        f = open('BunqAPI/test_files/payments.json')
-        m.get('http://fake_url', json=json.loads(f.read()))
-        r = requests.get('http://fake_url')
-        return r
-
-    @requests_mock.Mocker()
-    def get_card(a, m):
-        f = open('BunqAPI/test_files/card.json')
-        m.get('http://fake_url', json=json.loads(f.read()))
-        r = requests.get('http://fake_url')
-        return r
-
-    @requests_mock.Mocker()
-    def get_avatar(a, m):
-        f = open('BunqAPI/test_files/avatar.txt')
-        m.get('http://fake_url', json=f.read())
-        r = requests.get('http://fake_url')
-        return r
-
-    @patch('%ssession_server.SessionServer.create_new_session_server' % c, side_effect=get_start_session)  # noqa
-    @patch('%sattachment_public.AttachmentPublic.get_content_of_public_attachment' % c, side_effect=get_avatar)  # noqa
-    def test_start_session(self, mock, mock3):
-        request = self.factory.post('/API/start_session', data=self.post_data)
+        request = self.request.post('/generate', data=data)
         request.user = self.user
-        r = views.APIView().post(request, selector='start_session')
-        self.assertEqual(r.status_code, 200)
+        request.session = {}
 
-    @patch('%sattachment_public.AttachmentPublic.get_content_of_public_attachment' % c, side_effect=get_avatar)  # noqa
-    @patch('%ssession_server.SessionServer.create_new_session_server' % c, side_effect=get_start_session)  # noqa
-    @patch('%suser.User.get_logged_in_user' % c, side_effect=get_user)
-    def test_users(self, mock, mock2, mock3):
-        user = self.user
-        data = self.post_data
+        self.client.login(username=self.user.username, password=self.password)
 
-        request1 = self.factory.post('/API/start_session', data=data)
-        request1.user = user
-        views.APIView().post(request1, selector='start_session')
+        response = views.GenerateView.as_view()(request)
+        self.assertEqual(response.status_code, 200)
 
-        request2 = self.factory.post('/API/users', data=data)
-        request2.user = user
-        r2 = views.APIView().post(request2, selector='users')
-
-        self.assertEqual(r2.status_code, 200)
-
-    @patch('%ssession_server.SessionServer.create_new_session_server' % c, side_effect=get_start_session)  # noqa
-    @patch('%sattachment_public.AttachmentPublic.get_content_of_public_attachment' % c, side_effect=get_avatar)  # noqa
-    @patch('%smonetary_account.MonetaryAccount.get_all_accounts_for_user' % c, side_effect=get_accounts)  # noqa
-    def test_accounts(self, mock, mock2, mock3):
-        user = self.user
-        data = self.post_data
-
-        request1 = self.factory.post('/API/start_session', data=data)
-        request1.user = user
-        views.APIView().post(request1, selector='start_session')
-
-        request2 = self.factory.post('/API/accounts', data=data)
-        request2.user = user
-        r2 = views.APIView().post(request2, selector='accounts',
-                                  user_id=self.id)
-
-        self.assertEqual(r2.status_code, 200)
-
-    @patch('%ssession_server.SessionServer.create_new_session_server' % c, side_effect=get_start_session)  # noqa
-    @patch('%spayment.Payment.get_all_payments_for_account' % c, side_effect=get_payment)  # noqa
-    @patch('%sattachment_public.AttachmentPublic.get_content_of_public_attachment' % c, side_effect=get_avatar)  # noqa
-    def test_payment(self, mock, mock2, mock3):
-        user = self.user
-        data = self.post_data
-
-        request1 = self.factory.post('/API/start_session', data=data)
-        request1.user = user
-        views.APIView().post(request1, selector='start_session')
-
-        request2 = self.factory.post('/API/payment', data=data)
-        request2.user = user
-        r2 = views.APIView().post(request2, selector='payment',
-                                  user_id=self.id,
-                                  account_id=self.id)
-
-        self.assertEqual(r2.status_code, 200)
-
-    @patch('%ssession_server.SessionServer.create_new_session_server' % c, side_effect=get_start_session)  # noqa
-    @patch('%sinvoice.Invoice.get_all_invoices_for_user' % c, side_effect=get_inoice)  # noqa
-    @patch('%sattachment_public.AttachmentPublic.get_content_of_public_attachment' % c, side_effect=get_avatar)  # noqa
-    def test_invoice(self, mock, mock2, mock3):
-        user = self.user
-        data = self.post_data
-        userID = self.id
-
-        request1 = self.factory.post('/API/start_session', data=data)
-        request1.user = user
-        views.APIView().post(request1, selector='start_session')
-
-        request2 = self.factory.post('/API/invoice', data=data)
-        request2.user = user
-        r2 = views.APIView().post(request2, selector='invoice', user_id=userID)
-
-        self.assertEqual(r2.status_code, 200)
-
-    @patch('%ssession_server.SessionServer.create_new_session_server' % c, side_effect=get_start_session)  # noqa
-    @patch('%sattachment_public.AttachmentPublic.get_content_of_public_attachment' % c, side_effect=get_avatar)  # noqa
-    @patch('%scard.Card.get_all_cards_for_user' % c, side_effect=get_card)  # noqa
-    def test_card(self, mock, mock2, mock3):
-        user = self.user
-        data = self.post_data
-
-        request1 = self.factory.post('/API/start_session', data=data)
-        request1.user = user
-        views.APIView().post(request1, selector='start_session')
-
-        request2 = self.factory.post('/API/card', data=data)
-        request2.user = user
-        r2 = views.APIView().post(request2, selector='card',
-                                  account_id=self.id)
-
-        self.assertEqual(r2.status_code, 200)
+    @property
+    def get_installation(self):
+        with open('BunqAPI/test_files/installation.json', 'r') as f:
+            return json.loads(f.read())

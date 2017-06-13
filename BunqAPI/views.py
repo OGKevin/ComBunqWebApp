@@ -1,19 +1,21 @@
 from django.shortcuts import render
-from BunqAPI.forms import GenerateKeyForm, MyBunqForm
-from BunqAPI.installation import installation
+from BunqAPI.forms import GenerateKeyForm
+from BunqAPI.installation import Installation
 from BunqAPI.callbacks import callback
-from django.utils.decorators import method_decorator
-from django.utils.encoding import smart_str
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 # from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 # from django.contrib.auth.decorators import login_required
-from django_otp.decorators import otp_required
-from django.contrib.sessions.models import Session
 from django.views import View
 from django.views.generic.base import RedirectView
 import json
-import os
+from django.contrib.auth import authenticate
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.core.exceptions import ObjectDoesNotExist
+
+
 # from pprint import pprint
 
 # from django.http.response import FileResponse
@@ -32,7 +34,7 @@ class RedirectView(RedirectView):
         return super().get_redirct_url()
 
 
-@method_decorator(otp_required, name='dispatch')
+@method_decorator(login_required, name='dispatch')
 class GenerateView(View):
     """docstring for GenerateView.
     This view handesl generating new JSON file and register the credentials
@@ -50,84 +52,69 @@ class GenerateView(View):
         user = User.objects.get(username=request.user)
 
         if form.is_valid():
-            form_data = form.cleaned_data
+            self._username = request.user
+            self._password = form.cleaned_data['user_password']
+            api_key = form.cleaned_data['API']
 
-            generate_data = installation(
-                user,
-                form_data['encryption_password'],
-                form_data['API']
-            ).encrypt()
+            if self.authenticate_user():
+                user = User.objects.get(username=self._username)
+                registration = Installation(user=user, api_key=api_key,
+                                            password=self._password,
+                                            delete_user=False)
 
-            registration = callback(
-                json.loads(generate_data),
-                user,
-                form_data['encryption_password'],
-            ).register()
+                if registration.status:
+                    return render(request, 'registration/complete.html')
+                else:  # pragma: no cover
+                    messages.error(request, ('something went wrong while '
+                                             'registering your API key '
+                                             'with the bunq servers'))
+                    return render(request, self.template, {'form': form})
+            else:  # pragma: no cover
+                messages.error(request, ('User authentication failed. '
+                                         'This password is not the '
+                                         'correct user password.'))
+                return render(request, self.template, {'form': form})
 
-            if registration.status_code is 200:
-                response = HttpResponse(
-                    generate_data, content_type='application/force-download')
-                response['Content-Disposition'] = 'attachment; filename=%s' % smart_str('BunqWebApp.json')  # noqa
-
-                user.save()
-            else:
-                error = {
-                    "Error": [{
-                        "error_description_translated": 'something whent wrong while registering your API key wiht the bunq servers'  # noqa
-                    }]
-                }
-                response = HttpResponse(json.dumps(error))
-            return response
-
-        else:
+        else:  # pragma: no cover
             return render(request, self.template, {'form': form})
 
+    def authenticate_user(self):
+        user = authenticate(username=self._username,
+                            password=self._password)
 
-@method_decorator(otp_required, name='dispatch')
+        if user is not None:
+            return True
+        else:  # pragma : no cover
+            return False
+
+
+@method_decorator(login_required, name='dispatch')
 class MyBunqView(View):
     """docstring for MyBunqView.
         Shows the template on the my_bunq page.
     """
-    form = MyBunqForm
     template = 'BunqAPI/my_bunq.html'
 
     def get(self, request):
-        form = self.form()
-        return render(request, self.template, {'form': form})
+        user = User.objects.get(username=request.user)
+        try:
+            callback(user)
+        except (ObjectDoesNotExist, KeyError):
+            return HttpResponseForbidden('You are not logged in correctly.'
+                                         '<a href="/account/logout">Back</a>')
+        return render(request, self.template)  # pragma: no cover
 
 
-@method_decorator(otp_required, name='dispatch')
+@method_decorator(login_required, name='dispatch')
 class APIView(View):
     """docstring for APIView.
     API that handles post requests to make calls to the bunq api.
     """
 
     def post(self, request, **kwargs):
-        file_contents = json.loads(request.POST['json'])
-        encryption_password = request.POST['pass']
+        # # file_contents = json.loads(request.POST['json'])ß
+        # # encryption_password = request.POST['pass']
         user = User.objects.get(username=request.user)
-
-        if file_contents['userID'] in user.profile.GUID:
-            try:
-                API = callback(
-                    file_contents,
-                    user,
-                    encryption_password,
-                    **kwargs
-                )
-            except UnicodeDecodeError:
-                error = {
-                    "Error": [
-                        {"error_description_translated": "During decpyting something whent wrong, maybe you entreded a wrong password?"}  # noqa
-                        ]
-
-                     }
-                return HttpResponse(json.dumps(error))
-            else:
-                response = getattr(API, kwargs.get('selector').strip('/'))()
-                return HttpResponse(json.dumps(response))
-        else:  # pragma: no cover
-            error = {
-                'Error': [{'error_description_translated': 'This file is not yours to use.'}]  # noqa
-                }
-            return HttpResponse(json.dumps(error))
+        API = callback(user, **kwargs)
+        response = getattr(API, kwargs.get('selector').strip('/'))()
+        return HttpResponse(json.dumps(response))

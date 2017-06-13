@@ -7,6 +7,9 @@ import requests
 import base64
 import json
 import logging
+import pathlib
+import os
+from django.core import signing
 
 logger = logging.getLogger(name='raven')
 
@@ -67,19 +70,24 @@ class Creator(object):
         return response
 
     def avatar(self, data):
-        temp_file = Creator.temp_file('.png')
+        temp_file = self.temp_file('.png')
         temp_file.write(data)
         temp_file.close()
 
         self.store_in_session(temp_file.name)
 
-        response = {
-            'Response': [{
-                'status': 'Avatar file Generated'
-            }]
-        }
+    def create_avatar_from_session(self):
+        session_key = self.user.session.session_token
+        s = SessionStore(session_key=session_key)
 
-        return response
+        dec_data = signing.loads(s['avatar'])
+        png = base64.b64decode(dec_data.encode())
+
+        temp_file = self.temp_file('.png')
+        temp_file.write(png)
+        temp_file.close()
+
+        self.store_in_session(temp_file.name)
 
     def invoice(self, data):
         url = "https://api.sycade.com/btp-int/Invoice/Generate"
@@ -107,7 +115,7 @@ class Creator(object):
             }
             return response
 
-        else:
+        else:  # pragma: no cover
             error = {
                 'Error': [{
                     'error_description_translated': ('PDF generator API'
@@ -117,7 +125,19 @@ class Creator(object):
             logger.error(r.json())
             return error
 
+    def user_json(self, data):
+        temp_file = self.temp_file(extension='.json', bytes_=False)
+        temp_file.write(json.dumps(obj=data))
+
+        self.store_in_session(file_path=temp_file.name)
+
+    def path_check(self):  # pragma: no cover
+        file_path = self.user.tokens.file_token
+        if pathlib.Path(file_path).is_file():
+            os.remove(file_path)
+
     def store_in_session(self, file_path):
+        self.path_check()
         s = SessionStore()
         s['file_path'] = file_path
         s.create()
