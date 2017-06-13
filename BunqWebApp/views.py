@@ -110,6 +110,7 @@ class LogInView(View):
             self.authenticate_user(username, password, request)
             session = self.store_in_session(file_contents, password, username)
             if session is not False:
+                self.check_bunq_session(username)
                 return redirect('my_bunq')
             else:
                 messages.error(request=request,
@@ -146,6 +147,19 @@ class LogInView(View):
         s.create()
         user.session.session_token = s.session_key
         user.save()
+
+    @staticmethod
+    def check_bunq_session(username):
+        user = User.objects.get(username=username)
+        cb = callback(user)
+        last_login = user.last_login
+        session_end = user.session.session_end_date
+
+        if last_login <= session_end:
+            cb.delete_session()
+            user.session.session_end_date = datetime.datetime.now(
+                datetime.timezone.utc)
+            user.save()
 
 
 class LogOutView(View):
