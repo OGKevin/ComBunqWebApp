@@ -81,7 +81,12 @@
                   </ul>
 
 								</header>
-                <form class="ui form" action="" method="post">
+								{% if messages %}
+								{% for msg in messages%}
+								<strong>{{msg}}</strong>
+								{% endfor %}
+								{% endif %}
+                <form class="ui form" action="/generate/" method="post">
                   {% csrf_token %}
                   {{form}}
                   <button type="sumbit" name="button" id="button">generate</button>

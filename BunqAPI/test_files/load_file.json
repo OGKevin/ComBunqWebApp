@@ -1,0 +1,1159 @@
+{
+  "accounts": [{
+      "MonetaryAccountBank": {
+        "alias": [{
+            "name": "+31682501531",
+            "type": "PHONE_NUMBER",
+            "value": "+31682501531"
+          },
+          {
+            "name": "rae-cv@bunq.org",
+            "type": "EMAIL",
+            "value": "rae-cv@bunq.org"
+          },
+          {
+            "name": "Guthrie Onderlinge Waarborgmaatschappij",
+            "type": "IBAN",
+            "value": "NL98BUNQ9900019091"
+          }
+        ],
+        "avatar": {
+          "anchor_uuid": "672b76f9-5c58-4ae7-82d9-abef87d0614d",
+          "image": [{
+            "attachment_public_uuid": "75c2a1ba-da8e-43e8-836b-df91c1242bde",
+            "content_type": "image/png",
+            "height": 1024,
+            "width": 1024
+          }],
+          "uuid": "23f7dd8b-5ebd-4acb-80c4-456614a20514"
+        },
+        "balance": {
+          "currency": "EUR",
+          "value": "10952.42"
+        },
+        "country": "NL",
+        "created": "2016-03-15 01:02:45.828381",
+        "currency": "EUR",
+        "daily_limit": {
+          "currency": "EUR",
+          "value": "1000"
+        },
+        "daily_spent": {
+          "currency": "EUR",
+          "value": "0"
+        },
+        "description": "bunq account",
+        "id": 1837,
+        "monetary_account_profile": {
+          "profile_action_required": "NO_ACTION_NEEDED",
+          "profile_amount_required": {
+            "currency": "EUR",
+            "value": "0"
+          },
+          "profile_drain": "None",
+          "profile_fill": {
+            "balance_preferred": {
+              "currency": "EUR",
+              "value": "50"
+            },
+            "balance_threshold_low": {
+              "currency": "EUR",
+              "value": "10"
+            },
+            "issuer": {
+              "bic": "ABNANL2A",
+              "name": "ABN AMRO"
+            },
+            "method_fill": "IDEAL",
+            "status": "INACTIVE"
+          }
+        },
+        "notification_filters": [],
+        "overdraft_limit": {
+          "currency": "EUR",
+          "value": "0"
+        },
+        "public_uuid": "672b76f9-5c58-4ae7-82d9-abef87d0614d",
+        "setting": {
+          "color": "#54C7FC",
+          "default_avatar_status": "AVATAR_DEFAULT",
+          "restriction_chat": "ALLOW_INCOMING"
+        },
+        "status": "ACTIVE",
+        "sub_status": "None",
+        "timezone": "europe/amsterdam",
+        "updated": "2016-03-15 01:02:45.828381",
+        "user_id": 1816
+      }
+    },
+    {
+      "MonetaryAccountBank": {
+        "alias": [{
+          "name": "Guthrie Onderlinge Waarborgmaatschappij",
+          "type": "IBAN",
+          "value": "NL41BUNQ9900029526"
+        }],
+        "avatar": {
+          "anchor_uuid": "6d69f12a-953a-43c1-a93b-4f532c4b04f2",
+          "image": [{
+            "attachment_public_uuid": "3e971e03-3ea0-4849-9030-969f0cbe6e5e",
+            "content_type": "image/png",
+            "height": 1024,
+            "width": 1024
+          }],
+          "uuid": "1ed1f804-45d0-4eff-bbc2-0acd45923af7"
+        },
+        "balance": {
+          "currency": "EUR",
+          "value": "500"
+        },
+        "country": "NL",
+        "created": "2017-05-12 15:58:36.336347",
+        "currency": "EUR",
+        "daily_limit": {
+          "currency": "EUR",
+          "value": "1000"
+        },
+        "daily_spent": {
+          "currency": "EUR",
+          "value": "0"
+        },
+        "description": "DAMN.",
+        "id": 2879,
+        "monetary_account_profile": {
+          "profile_action_required": "NO_ACTION_NEEDED",
+          "profile_amount_required": {
+            "currency": "EUR",
+            "value": "0"
+          },
+          "profile_drain": "None",
+          "profile_fill": "None"
+        },
+        "notification_filters": [],
+        "overdraft_limit": {
+          "currency": "EUR",
+          "value": "0"
+        },
+        "public_uuid": "6d69f12a-953a-43c1-a93b-4f532c4b04f2",
+        "setting": {
+          "color": "#997CF7",
+          "default_avatar_status": "AVATAR_DEFAULT",
+          "restriction_chat": "ALLOW_INCOMING"
+        },
+        "status": "ACTIVE",
+        "sub_status": "None",
+        "timezone": "europe/amsterdam",
+        "updated": "2017-05-12 16:20:00.732418",
+        "user_id": 1816
+      }
+    },
+    {
+      "MonetaryAccountBank": {
+        "alias": [{
+          "name": "Guthrie Onderlinge Waarborgmaatschappij",
+          "type": "IBAN",
+          "value": "NL06BUNQ9900029283"
+        }],
+        "avatar": {
+          "anchor_uuid": "8e7666de-09b3-400e-acc0-8c3e5ec410d0",
+          "image": [{
+            "attachment_public_uuid": "bc2bf172-145a-409f-a1b7-741bf946131e",
+            "content_type": "image/png",
+            "height": 1024,
+            "width": 1024
+          }],
+          "uuid": "63edf765-ac1f-47e7-84cd-9b55675dcb58"
+        },
+        "balance": {
+          "currency": "EUR",
+          "value": "400"
+        },
+        "country": "NL",
+        "created": "2017-05-12 16:19:33.527027",
+        "currency": "EUR",
+        "daily_limit": {
+          "currency": "EUR",
+          "value": "1000"
+        },
+        "daily_spent": {
+          "currency": "EUR",
+          "value": "0"
+        },
+        "description": "More Life",
+        "id": 2880,
+        "monetary_account_profile": {
+          "profile_action_required": "NO_ACTION_NEEDED",
+          "profile_amount_required": {
+            "currency": "EUR",
+            "value": "0"
+          },
+          "profile_drain": "None",
+          "profile_fill": "None"
+        },
+        "notification_filters": [],
+        "overdraft_limit": {
+          "currency": "EUR",
+          "value": "0"
+        },
+        "public_uuid": "8e7666de-09b3-400e-acc0-8c3e5ec410d0",
+        "setting": {
+          "color": "#FE2851",
+          "default_avatar_status": "AVATAR_DEFAULT",
+          "restriction_chat": "ALLOW_INCOMING"
+        },
+        "status": "ACTIVE",
+        "sub_status": "None",
+        "timezone": "europe/amsterdam",
+        "updated": "2017-05-12 16:19:33.527027",
+        "user_id": 1816
+      }
+    },
+    {
+      "MonetaryAccountBank": {
+        "alias": [{
+          "name": "Guthrie Onderlinge Waarborgmaatschappij",
+          "type": "IBAN",
+          "value": "NL67BUNQ9900030222"
+        }],
+        "avatar": {
+          "anchor_uuid": "bfcdbae5-c6db-4017-868d-f2378c2c8b33",
+          "image": [{
+            "attachment_public_uuid": "a9abbc51-171e-4886-8d7e-486881179e52",
+            "content_type": "image/png",
+            "height": 1024,
+            "width": 1024
+          }],
+          "uuid": "7fef8833-d805-40f2-9e1b-e254b61c0642"
+        },
+        "balance": {
+          "currency": "EUR",
+          "value": "600"
+        },
+        "country": "NL",
+        "created": "2017-05-12 16:20:36.742678",
+        "currency": "EUR",
+        "daily_limit": {
+          "currency": "EUR",
+          "value": "1000"
+        },
+        "daily_spent": {
+          "currency": "EUR",
+          "value": "0"
+        },
+        "description": "Everybody",
+        "id": 2881,
+        "monetary_account_profile": {
+          "profile_action_required": "NO_ACTION_NEEDED",
+          "profile_amount_required": {
+            "currency": "EUR",
+            "value": "0"
+          },
+          "profile_drain": "None",
+          "profile_fill": "None"
+        },
+        "notification_filters": [],
+        "overdraft_limit": {
+          "currency": "EUR",
+          "value": "0"
+        },
+        "public_uuid": "bfcdbae5-c6db-4017-868d-f2378c2c8b33",
+        "setting": {
+          "color": "#997CF7",
+          "default_avatar_status": "AVATAR_DEFAULT",
+          "restriction_chat": "ALLOW_INCOMING"
+        },
+        "status": "ACTIVE",
+        "sub_status": "None",
+        "timezone": "europe/amsterdam",
+        "updated": "2017-05-12 16:20:36.742678",
+        "user_id": 1816
+      }
+    }
+  ],
+  "payments": [{
+      "Payment": {
+        "address_billing": "None",
+        "address_shipping": "None",
+        "alias": {
+          "avatar": {
+            "anchor_uuid": "None",
+            "image": [{
+              "attachment_public_uuid": "75c2a1ba-da8e-43e8-836b-df91c1242bde",
+              "content_type": "image/png",
+              "height": 1024,
+              "width": 1024
+            }],
+            "uuid": "23f7dd8b-5ebd-4acb-80c4-456614a20514"
+          },
+          "country": "NL",
+          "display_name": "Guthrie Onderlinge Waarborgmaatschappij",
+          "iban": "NL98BUNQ9900019091",
+          "is_light": "False",
+          "label_user": {
+            "avatar": {
+              "anchor_uuid": "b6f29f76-4afb-4f97-a235-180c11e53be5",
+              "image": [{
+                "attachment_public_uuid": "0d10b1c4-b249-4c49-a442-5379bae0a030",
+                "content_type": "image/png",
+                "height": 640,
+                "width": 640
+              }],
+              "uuid": "646d3802-881e-415c-96f9-35397ce7cc9a"
+            },
+            "country": "NL",
+            "display_name": "Guthrie Onderlinge Waarborgmaatschappij",
+            "public_nick_name": "Guthrie Onderlinge Waarborgmaatschappij",
+            "uuid": "b6f29f76-4afb-4f97-a235-180c11e53be5"
+          }
+        },
+        "allow_chat": "True",
+        "amount": {
+          "currency": "EUR",
+          "value": "-25.53"
+        },
+        "attachment": [],
+        "batch_id": "None",
+        "counterparty_alias": {
+          "avatar": {
+            "anchor_uuid": "None",
+            "image": [{
+              "attachment_public_uuid": "5c598364-ab1b-42d7-9a79-91f872f333c1",
+              "content_type": "image/png",
+              "height": 1024,
+              "width": 1024
+            }],
+            "uuid": "0f56a33b-a451-48b4-8d4a-3d8a34c15fa1"
+          },
+          "country": "NL",
+          "display_name": "Catrice (nickname)",
+          "iban": "NL37BUNQ9900000013",
+          "is_light": "False",
+          "label_user": {
+            "avatar": {
+              "anchor_uuid": "8de50b32-8b97-481f-85a7-aa4e751803f2",
+              "image": [{
+                "attachment_public_uuid": "eca34771-55cc-42c3-b7b4-8f1a978b6624",
+                "content_type": "image/jpeg",
+                "height": 480,
+                "width": 480
+              }],
+              "uuid": "3552dc00-b8b8-4edc-9163-515647c75d4a"
+            },
+            "country": "NL",
+            "display_name": "Catrice (nickname)",
+            "public_nick_name": "Catrice (nickname)",
+            "uuid": "8de50b32-8b97-481f-85a7-aa4e751803f2"
+          }
+        },
+        "created": "2017-05-17 11:01:06.157861",
+        "description": "invoice 2456",
+        "geolocation": "None",
+        "id": 20835,
+        "merchant_reference": "None",
+        "monetary_account_id": 1837,
+        "scheduled_id": "None",
+        "type": "BUNQ",
+        "updated": "2017-05-17 11:01:06.157861"
+      }
+    },
+    {
+      "Payment": {
+        "address_billing": "None",
+        "address_shipping": "None",
+        "alias": {
+          "avatar": {
+            "anchor_uuid": "None",
+            "image": [{
+              "attachment_public_uuid": "75c2a1ba-da8e-43e8-836b-df91c1242bde",
+              "content_type": "image/png",
+              "height": 1024,
+              "width": 1024
+            }],
+            "uuid": "23f7dd8b-5ebd-4acb-80c4-456614a20514"
+          },
+          "country": "NL",
+          "display_name": "Guthrie Onderlinge Waarborgmaatschappij",
+          "iban": "NL98BUNQ9900019091",
+          "is_light": "False",
+          "label_user": {
+            "avatar": {
+              "anchor_uuid": "b6f29f76-4afb-4f97-a235-180c11e53be5",
+              "image": [{
+                "attachment_public_uuid": "0d10b1c4-b249-4c49-a442-5379bae0a030",
+                "content_type": "image/png",
+                "height": 640,
+                "width": 640
+              }],
+              "uuid": "646d3802-881e-415c-96f9-35397ce7cc9a"
+            },
+            "country": "NL",
+            "display_name": "Guthrie Onderlinge Waarborgmaatschappij",
+            "public_nick_name": "Guthrie Onderlinge Waarborgmaatschappij",
+            "uuid": "b6f29f76-4afb-4f97-a235-180c11e53be5"
+          }
+        },
+        "allow_chat": "True",
+        "amount": {
+          "currency": "EUR",
+          "value": "-400"
+        },
+        "attachment": [],
+        "batch_id": "None",
+        "counterparty_alias": {
+          "avatar": {
+            "anchor_uuid": "None",
+            "image": [{
+              "attachment_public_uuid": "bc2bf172-145a-409f-a1b7-741bf946131e",
+              "content_type": "image/png",
+              "height": 1024,
+              "width": 1024
+            }],
+            "uuid": "63edf765-ac1f-47e7-84cd-9b55675dcb58"
+          },
+          "country": "NL",
+          "display_name": "Guthrie OnderlingeWaarborgmaatschappij",
+          "iban": "NL06BUNQ9900029283",
+          "is_light": "False",
+          "label_user": {
+            "avatar": {
+              "anchor_uuid": "b6f29f76-4afb-4f97-a235-180c11e53be5",
+              "image": [{
+                "attachment_public_uuid": "0d10b1c4-b249-4c49-a442-5379bae0a030",
+                "content_type": "image/png",
+                "height": 640,
+                "width": 640
+              }],
+              "uuid": "646d3802-881e-415c-96f9-35397ce7cc9a"
+            },
+            "country": "NL",
+            "display_name": "Guthrie Onderlinge Waarborgmaatschappij",
+            "public_nick_name": "Guthrie Onderlinge Waarborgmaatschappij",
+            "uuid": "b6f29f76-4afb-4f97-a235-180c11e53be5"
+          }
+        },
+        "created": "2017-05-12 16:21:10.601136",
+        "description": "",
+        "geolocation": "None",
+        "id": 19651,
+        "merchant_reference": "None",
+        "monetary_account_id": 1837,
+        "scheduled_id": "None",
+        "type": "BUNQ",
+        "updated": "2017-05-12 16:21:10.601136"
+      }
+    },
+    {
+      "Payment": {
+        "address_billing": "None",
+        "address_shipping": "None",
+        "alias": {
+          "avatar": {
+            "anchor_uuid": "None",
+            "image": [{
+              "attachment_public_uuid": "75c2a1ba-da8e-43e8-836b-df91c1242bde",
+              "content_type": "image/png",
+              "height": 1024,
+              "width": 1024
+            }],
+            "uuid": "23f7dd8b-5ebd-4acb-80c4-456614a20514"
+          },
+          "country": "NL",
+          "display_name": "Guthrie Onderlinge Waarborgmaatschappij",
+          "iban": "NL98BUNQ9900019091",
+          "is_light": "False",
+          "label_user": {
+            "avatar": {
+              "anchor_uuid": "b6f29f76-4afb-4f97-a235-180c11e53be5",
+              "image": [{
+                "attachment_public_uuid": "0d10b1c4-b249-4c49-a442-5379bae0a030",
+                "content_type": "image/png",
+                "height": 640,
+                "width": 640
+              }],
+              "uuid": "646d3802-881e-415c-96f9-35397ce7cc9a"
+            },
+            "country": "NL",
+            "display_name": "Guthrie Onderlinge Waarborgmaatschappij",
+            "public_nick_name": "Guthrie Onderlinge Waarborgmaatschappij",
+            "uuid": "b6f29f76-4afb-4f97-a235-180c11e53be5"
+          }
+        },
+        "allow_chat": "True",
+        "amount": {
+          "currency": "EUR",
+          "value": "-600"
+        },
+        "attachment": [],
+        "batch_id": "None",
+        "counterparty_alias": {
+          "avatar": {
+            "anchor_uuid": "None",
+            "image": [{
+              "attachment_public_uuid": "a9abbc51-171e-4886-8d7e-486881179e52",
+              "content_type": "image/png",
+              "height": 1024,
+              "width": 1024
+            }],
+            "uuid": "7fef8833-d805-40f2-9e1b-e254b61c0642"
+          },
+          "country": "NL",
+          "display_name": "Guthrie Onderlinge Waarborgmaatschappij",
+          "iban": "NL67BUNQ9900030222",
+          "is_light": "False",
+          "label_user": {
+            "avatar": {
+              "anchor_uuid": "b6f29f76-4afb-4f97-a235-180c11e53be5",
+              "image": [{
+                "attachment_public_uuid": "0d10b1c4-b249-4c49-a442-5379bae0a030",
+                "content_type": "image/png",
+                "height": 640,
+                "width": 640
+              }],
+              "uuid": "646d3802-881e-415c-96f9-35397ce7cc9a"
+            },
+            "country": "NL",
+            "display_name": "Guthrie OnderlingeWaarborgmaatschappij",
+            "public_nick_name": "Guthrie Onderlinge Waarborgmaatschappij",
+            "uuid": "b6f29f76-4afb-4f97-a235-180c11e53be5"
+          }
+        },
+        "created": "2017-05-12 16:20:55.626039",
+        "description": "",
+        "geolocation": "None",
+        "id": 19649,
+        "merchant_reference": "None",
+        "monetary_account_id": 1837,
+        "scheduled_id": "None",
+        "type": "BUNQ",
+        "updated": "2017-05-12 16:20:55.626039"
+      }
+    },
+    {
+      "Payment": {
+        "address_billing": "None",
+        "address_shipping": "None",
+        "alias": {
+          "avatar": {
+            "anchor_uuid": "None",
+            "image": [{
+              "attachment_public_uuid": "75c2a1ba-da8e-43e8-836b-df91c1242bde",
+              "content_type": "image/png",
+              "height": 1024,
+              "width": 1024
+            }],
+            "uuid": "23f7dd8b-5ebd-4acb-80c4-456614a20514"
+          },
+          "country": "NL",
+          "display_name": "Guthrie Onderlinge Waarborgmaatschappij",
+          "iban": "NL98BUNQ9900019091",
+          "is_light": "False",
+          "label_user": {
+            "avatar": {
+              "anchor_uuid": "b6f29f76-4afb-4f97-a235-180c11e53be5",
+              "image": [{
+                "attachment_public_uuid": "0d10b1c4-b249-4c49-a442-5379bae0a030",
+                "content_type": "image/png",
+                "height": 640,
+                "width": 640
+              }],
+              "uuid": "646d3802-881e-415c-96f9-35397ce7cc9a"
+            },
+            "country": "NL",
+            "display_name": "Guthrie Onderlinge Waarborgmaatschappij",
+            "public_nick_name": "Guthrie Onderlinge Waarborgmaatschappij",
+            "uuid": "b6f29f76-4afb-4f97-a235-180c11e53be5"
+          }
+        },
+        "allow_chat": "True",
+        "amount": {
+          "currency": "EUR",
+          "value": "10000"
+        },
+        "attachment": [],
+        "batch_id": "None",
+        "counterparty_alias": {
+          "avatar": {
+            "anchor_uuid": "None",
+            "image": [{
+              "attachment_public_uuid": "0f0938aa-5355-4061-b072-f1e9ea46397e",
+              "content_type": "image/jpeg",
+              "height": 640,
+              "width": 640
+            }],
+            "uuid": "fbb359ec-de31-48d4-91b4-f5a5c7b6da3a"
+          },
+          "country": "NL",
+          "display_name": "Test Data",
+          "iban": "NL91ABNA0417164300",
+          "is_light": "None",
+          "label_user": {
+            "avatar": {
+              "anchor_uuid": "b6f29f76-4afb-4f97-a235-180c11e53be5",
+              "image": [{
+                "attachment_public_uuid": "0d10b1c4-b249-4c49-a442-5379bae0a030",
+                "content_type": "image/png",
+                "height": 640,
+                "width": 640
+              }],
+              "uuid": "646d3802-881e-415c-96f9-35397ce7cc9a"
+            },
+            "country": "NL",
+            "display_name": "Guthrie nderlinge Waarborgmaatschappij",
+            "public_nick_name": "Guthrie Onderlinge Waarborgmaatschappij",
+            "uuid": "b6f29f76-4afb-4f97-a235-180c11e53be5"
+          }
+        },
+        "created": "2017-05-12 16:07:05.768396",
+        "description": "Topup account NL98BUNQ9900019091GuthrieOnderlingeWaarborgmaatschappij",
+        "geolocation": "None",
+        "id": 19648,
+        "merchant_reference": "None",
+        "monetary_account_id": 1837,
+        "scheduled_id": "None",
+        "type": "IDEAL",
+        "updated": "2017-05-12 16:07:05.768396"
+      }
+    },
+    {
+      "Payment": {
+        "address_billing": "None",
+        "address_shipping": "None",
+        "alias": {
+          "avatar": {
+            "anchor_uuid": "None",
+            "image": [{
+              "attachment_public_uuid": "75c2a1ba-da8e-43e8-836b-df91c1242bde",
+              "content_type": "image/png",
+              "height": 1024,
+              "width": 1024
+            }],
+            "uuid": "23f7dd8b-5ebd-4acb-80c4-456614a20514"
+          },
+          "country": "NL",
+          "display_name": "Guthrie Onderlinge Waarborgmaatschappij",
+          "iban": "NL98BUNQ9900019091",
+          "is_light": "False",
+          "label_user": {
+            "avatar": {
+              "anchor_uuid": "b6f29f76-4afb-4f97-a235-180c11e53be5",
+              "image": [{
+                "attachment_public_uuid": "0d10b1c4-b249-4c49-a442-5379bae0a030",
+                "content_type": "image/png",
+                "height": 640,
+                "width": 640
+              }],
+              "uuid": "646d3802-881e-415c-96f9-35397ce7cc9a"
+            },
+            "country": "NL",
+            "display_name": "Guthrie Onderlinge Waarborgmaatschappij",
+            "public_nick_name": "Guthrie Onderlinge Waarborgmaatschappij",
+            "uuid": "b6f29f76-4afb-4f97-a235-180c11e53be5"
+          }
+        },
+        "allow_chat": "True",
+        "amount": {
+          "currency": "EUR",
+          "value": "-500"
+        },
+        "attachment": [],
+        "batch_id": "None",
+        "counterparty_alias": {
+          "avatar": {
+            "anchor_uuid": "None",
+            "image": [{
+              "attachment_public_uuid": "3e971e03-3ea0-4849-9030-969f0cbe6e5e",
+              "content_type": "image/png",
+              "height": 1024,
+              "width": 1024
+            }],
+            "uuid": "1ed1f804-45d0-4eff-bbc2-0acd45923af7"
+          },
+          "country": "NL",
+          "display_name": "Guthrie Onderlinge Waarborgmaatschappij",
+          "iban": "NL41BUNQ9900029526",
+          "is_light": "False",
+          "label_user": {
+            "avatar": {
+              "anchor_uuid": "b6f29f76-4afb-4f97-a235-180c11e53be5",
+              "image": [{
+                "attachment_public_uuid": "0d10b1c4-b249-4c49-a442-5379bae0a030",
+                "content_type": "image/png",
+                "height": 640,
+                "width": 640
+              }],
+              "uuid": "646d3802-881e-415c-96f9-35397ce7cc9a"
+            },
+            "country": "NL",
+            "display_name": "Guthrie Onderlinge Waarborgmaatschappij",
+            "public_nick_name": "Guthrie Onderlinge Waarborgmaatschappij",
+            "uuid": "b6f29f76-4afb-4f97-a235-180c11e53be5"
+          }
+        },
+        "created": "2017-05-12 16:03:08.287890",
+        "description": "Money",
+        "geolocation": "None",
+        "id": 19645,
+        "merchant_reference": "None",
+        "monetary_account_id": 1837,
+        "scheduled_id": "None",
+        "type": "BUNQ",
+        "updated": "2017-05-12 16:03:08.287890"
+      }
+    },
+    {
+      "Payment": {
+        "address_billing": "None",
+        "address_shipping": "None",
+        "alias": {
+          "avatar": {
+            "anchor_uuid": "None",
+            "image": [{
+              "attachment_public_uuid": "75c2a1ba-da8e-43e8-836b-df91c1242bde",
+              "content_type": "image/png",
+              "height": 1024,
+              "width": 1024
+            }],
+            "uuid": "23f7dd8b-5ebd-4acb-80c4-456614a20514"
+          },
+          "country": "NL",
+          "display_name": "Guthrie Onderlinge Waarborgmaatschappij",
+          "iban": "NL98BUNQ9900019091",
+          "is_light": "False",
+          "label_user": {
+            "avatar": {
+              "anchor_uuid": "b6f29f76-4afb-4f97-a235-180c11e53be5",
+              "image": [{
+                "attachment_public_uuid": "0d10b1c4-b249-4c49-a442-5379bae0a030",
+                "content_type": "image/png",
+                "height": 640,
+                "width": 640
+              }],
+              "uuid": "646d3802-881e-415c-96f9-35397ce7cc9a"
+            },
+            "country": "NL",
+            "display_name": "Guthrie Onderlinge Waarborgmaatschappij",
+            "public_nick_name": "Guthrie Onderlinge Waarborgmaatschappij",
+            "uuid": "b6f29f76-4afb-4f97-a235-180c11e53be5"
+          }
+        },
+        "allow_chat": "True",
+        "amount": {
+          "currency": "EUR",
+          "value": "-11.05"
+        },
+        "attachment": [],
+        "batch_id": "None",
+        "counterparty_alias": {
+          "avatar": {
+            "anchor_uuid": "None",
+            "image": [{
+              "attachment_public_uuid": "5c598364-ab1b-42d7-9a79-91f872f333c1",
+              "content_type": "image/png",
+              "height": 1024,
+              "width": 1024
+            }],
+            "uuid": "0f56a33b-a451-48b4-8d4a-3d8a34c15fa1"
+          },
+          "country": "NL",
+          "display_name": "Catrice (nickname)",
+          "iban": "NL37BUNQ9900000013",
+          "is_light": "False",
+          "label_user": {
+            "avatar": {
+              "anchor_uuid": "8de50b32-8b97-481f-85a7-aa4e751803f2",
+              "image": [{
+                "attachment_public_uuid": "eca34771-55cc-42c3-b7b4-8f1a978b6624",
+                "content_type": "image/jpeg",
+                "height": 480,
+                "width": 480
+              }],
+              "uuid": "3552dc00-b8b8-4edc-9163-515647c75d4a"
+            },
+            "country": "NL",
+            "display_name": "Catrice (nickname)",
+            "public_nick_name": "Catrice (nickname)",
+            "uuid": "8de50b32-8b97-481f-85a7-aa4e751803f2"
+          }
+        },
+        "created": "2017-04-17 11:01:06.646239",
+        "description": "invoice 1563",
+        "geolocation": "None",
+        "id": 17363,
+        "merchant_reference": "None",
+        "monetary_account_id": 1837,
+        "scheduled_id": "None",
+        "type": "BUNQ",
+        "updated": "2017-04-17 11:01:06.646239"
+      }
+    },
+    {
+      "Payment": {
+        "address_billing": "None",
+        "address_shipping": "None",
+        "alias": {
+          "avatar": {
+            "anchor_uuid": "None",
+            "image": [{
+              "attachment_public_uuid": "75c2a1ba-da8e-43e8-836b-df91c1242bde",
+              "content_type": "image/png",
+              "height": 1024,
+              "width": 1024
+            }],
+            "uuid": "23f7dd8b-5ebd-4acb-80c4-456614a20514"
+          },
+          "country": "NL",
+          "display_name": "Guthrie Onderlinge Waarborgmaatschappij",
+          "iban": "NL98BUNQ9900019091",
+          "is_light": "False",
+          "label_user": {
+            "avatar": {
+              "anchor_uuid": "b6f29f76-4afb-4f97-a235-180c11e53be5",
+              "image": [{
+                "attachment_public_uuid": "0d10b1c4-b249-4c49-a442-5379bae0a030",
+                "content_type": "image/png",
+                "height": 640,
+                "width": 640
+              }],
+              "uuid": "646d3802-881e-415c-96f9-35397ce7cc9a"
+            },
+            "country": "NL",
+            "display_name": "Guthrie Onderlinge Waarborgmaatschappij",
+            "public_nick_name": "Guthrie Onderlinge Waarborgmaatschappij",
+            "uuid": "b6f29f76-4afb-4f97-a235-180c11e53be5"
+          }
+        },
+        "allow_chat": "True",
+        "amount": {
+          "currency": "EUR",
+          "value": "-11"
+        },
+        "attachment": [],
+        "batch_id": "None",
+        "counterparty_alias": {
+          "avatar": {
+            "anchor_uuid": "None",
+            "image": [{
+              "attachment_public_uuid": "4fb51837-08a8-40c7-9a4a-859dc0dfe2a0",
+              "content_type": "image/jpeg",
+              "height": 126,
+              "width": 200
+            }],
+            "uuid": "c6362f8b-4cfc-4c4e-9fdb-c2905047af95"
+          },
+          "country": "NL",
+          "display_name": "bunq",
+          "iban": "NL28BUNQ9900000951",
+          "is_light": "False",
+          "label_user": {
+            "avatar": {
+              "anchor_uuid": "c8be79b9-ad12-4d92-9bc9-bf0e663a6f79",
+              "image": [{
+                "attachment_public_uuid": "4fb51837-08a8-40c7-9a4a-859dc0dfe2a0",
+                "content_type": "image/jpeg",
+                "height": 126,
+                "width": 200
+              }],
+              "uuid": "c6362f8b-4cfc-4c4e-9fdb-c2905047af95"
+            },
+            "country": "NL",
+            "display_name": "bunq",
+            "public_nick_name": "bunq",
+            "uuid": "c8be79b9-ad12-4d92-9bc9-bf0e663a6f79"
+          }
+        },
+        "created": "2017-03-16 11:01:08.782273",
+        "description": "invoice 625",
+        "geolocation": "None",
+        "id": 14065,
+        "merchant_reference": "None",
+        "monetary_account_id": 1837,
+        "scheduled_id": "None",
+        "type": "BUNQ",
+        "updated": "2017-03-16 11:01:08.782273"
+      }
+    },
+    {
+      "Payment": {
+        "address_billing": "None",
+        "address_shipping": "None",
+        "alias": {
+          "avatar": {
+            "anchor_uuid": "None",
+            "image": [{
+              "attachment_public_uuid": "75c2a1ba-da8e-43e8-836b-df91c1242bde",
+              "content_type": "image/png",
+              "height": 1024,
+              "width": 1024
+            }],
+            "uuid": "23f7dd8b-5ebd-4acb-80c4-456614a20514"
+          },
+          "country": "NL",
+          "display_name": "Guthrie Onderlinge Waarborgmaatschappij",
+          "iban": "NL98BUNQ9900019091",
+          "is_light": "False",
+          "label_user": {
+            "avatar": {
+              "anchor_uuid": "b6f29f76-4afb-4f97-a235-180c11e53be5",
+              "image": [{
+                "attachment_public_uuid": "0d10b1c4-b249-4c49-a442-5379bae0a030",
+                "content_type": "image/png",
+                "height": 640,
+                "width": 640
+              }],
+              "uuid": "646d3802-881e-415c-96f9-35397ce7cc9a"
+            },
+            "country": "000",
+            "display_name": "Guthrie Onderlinge Waarborgmaatschappij",
+            "public_nick_name": "Guthrie Onderlinge Waarborgmaatschappij",
+            "uuid": "b6f29f76-4afb-4f97-a235-180c11e53be5"
+          }
+        },
+        "allow_chat": "True",
+        "amount": {
+          "currency": "EUR",
+          "value": "2500"
+        },
+        "attachment": [],
+        "batch_id": "None",
+        "counterparty_alias": {
+          "avatar": {
+            "anchor_uuid": "None",
+            "image": [{
+              "attachment_public_uuid": "0f0938aa-5355-4061-b072-f1e9ea46397e",
+              "content_type": "image/jpeg",
+              "height": 640,
+              "width": 640
+            }],
+            "uuid": "fbb359ec-de31-48d4-91b4-f5a5c7b6da3a"
+          },
+          "country": "NL",
+          "display_name": "TEST DATA",
+          "iban": "NL91ABNA0417164300",
+          "is_light": "None",
+          "label_user": {
+            "avatar": {
+              "anchor_uuid": "b6f29f76-4afb-4f97-a235-180c11e53be5",
+              "image": [{
+                "attachment_public_uuid": "0d10b1c4-b249-4c49-a442-5379bae0a030",
+                "content_type": "image/png",
+                "height": 640,
+                "width": 640
+              }],
+              "uuid": "646d3802-881e-415c-96f9-35397ce7cc9a"
+            },
+            "country": "NL",
+            "display_name": "Guthrie Onderlinge Waarborgmaatschappij",
+            "public_nick_name": "Guthrie ßOnderlinge Waarborgmaatschappij",
+            "uuid": "b6f29f76-4afb-4f97-a235-180c11e53be5"
+          }
+        },
+        "created": "2016-03-15 01:02:45.828381",
+        "description": "Welcome to bunq! \niDEAL transaction identifier code: bpvnevvq 1749965413473546",
+        "geolocation": "None",
+        "id": 8842,
+        "merchant_reference": "None",
+        "monetary_account_id": 1837,
+        "scheduled_id": "None",
+        "type": "IDEAL",
+        "updated": "2016-03-15 01:02:45.828381"
+      }
+    }
+  ],
+  "start_session": [{
+      "Id": {
+        "id": 25221
+      }
+    },
+    {
+      "Token": {
+        "created": "2017-05-19 10:55:08.914147",
+        "id": 25221,
+        "token": "c0af8baf06ac20e7df7b0c9102179ea5aed0b33703246b95e645b45f02d09fa5",
+        "updated": "2017-05-19 10:55:08.914147"
+      }
+    },
+    {
+      "UserCompany": {
+        "address_main": {
+          "city": "Maastricht",
+          "country": "NL",
+          "house_number": "96",
+          "postal_code": "1265 VD",
+          "province": "None",
+          "street": "Holter Heath"
+        },
+        "address_postal": {
+          "city": "Maastricht",
+          "country": "NL",
+          "house_number": "96",
+          "postal_code": "1265 VD",
+          "province": "None",
+          "street": "Holter Heath"
+        },
+        "alias": [{
+            "name": "+31682501531",
+            "type": "PHONE_NUMBER",
+            "value": "+31682501531"
+          },
+          {
+            "name": "rae-cv@bunq.org",
+            "type": "EMAIL",
+            "value": "rae-cv@bunq.org"
+          }
+        ],
+        "avatar": {
+          "anchor_uuid": "b6f29f76-4afb-4f97-a235-180c11e53be5",
+          "image": [{
+            "attachment_public_uuid": "0d10b1c4-b249-4c49-a442-5379bae0a030",
+            "content_type": "image/png",
+            "height": 640,
+            "width": 640
+          }],
+          "uuid": "646d3802-881e-415c-96f9-35397ce7cc9a"
+        },
+        "chamber_of_commerce_number": "18498622",
+        "counter_bank_iban": "NL91ABNA0417164300",
+        "country": "NL",
+        "created": "2017-03-15 01:02:45.563621",
+        "daily_limit_without_confirmation_login": {
+          "currency": "EUR",
+          "value": "25"
+        },
+        "director_alias": {
+          "avatar": {
+            "anchor_uuid": "311c30fe-e483-4183-9d68-6cb3ba012cb3",
+            "image": [{
+              "attachment_public_uuid": "d3266354-43fc-43de-b395-8e489d5ae583",
+              "content_type": "image/jpeg",
+              "height": 480,
+              "width": 480
+            }],
+            "uuid": "f6613092-680b-4369-a9b8-f368fc066af2"
+          },
+          "country": "000",
+          "display_name": "Isaias (nickname)",
+          "public_nick_name": "Isaias (nickname)",
+          "uuid": "311c30fe-e483-4183-9d68-6cb3ba012cb3"
+        },
+        "display_name": "Guthrie Onderlinge Waarborgmaatschappij",
+        "id": 1816,
+        "language": "en_US",
+        "name": "Guthrie Onderlinge Waarborgmaatschappij",
+        "notification_filters": [{
+            "category": "BILLING",
+            "notification_delivery_method": "PUSH"
+          },
+          {
+            "category": "CARD_TRANSACTION_FAILED",
+            "notification_delivery_method": "PUSH"
+          },
+          {
+            "category": "CARD_TRANSACTION_SUCCESSFUL",
+            "notification_delivery_method": "PUSH"
+          },
+          {
+            "category": "CHAT",
+            "notification_delivery_method": "PUSH"
+          },
+          {
+            "category": "DRAFT_PAYMENT",
+            "notification_delivery_method": "PUSH"
+          },
+          {
+            "category": "FRIEND_SIGN_UP",
+            "notification_delivery_method": "PUSH"
+          },
+          {
+            "category": "IDEAL",
+            "notification_delivery_method": "PUSH"
+          },
+          {
+            "category": "SOFORT",
+            "notification_delivery_method": "PUSH"
+          },
+          {
+            "category": "MONETARY_ACCOUNT_PROFILE",
+            "notification_delivery_method": "PUSH"
+          },
+          {
+            "category": "PAYMENT",
+            "notification_delivery_method": "PUSH"
+          },
+          {
+            "category": "PROMOTION",
+            "notification_delivery_method": "PUSH"
+          },
+          {
+            "category": "REQUEST",
+            "notification_delivery_method": "PUSH"
+          },
+          {
+            "category": "SCHEDULE_RESULT",
+            "notification_delivery_method": "PUSH"
+          },
+          {
+            "category": "SCHEDULE_STATUS",
+            "notification_delivery_method": "PUSH"
+          },
+          {
+            "category": "SHARE",
+            "notification_delivery_method": "PUSH"
+          },
+          {
+            "category": "SUPPORT",
+            "notification_delivery_method": "PUSH"
+          },
+          {
+            "category": "TAB_RESULT",
+            "notification_delivery_method": "PUSH"
+          },
+          {
+            "category": "USE_RESPONSE",
+            "notification_delivery_method": "PUSH"
+          },
+          {
+            "category": "USER_APPROVAL",
+            "notification_delivery_method": "PUSH"
+          },
+          {
+            "category": "WHITELIST",
+            "notification_delivery_method": "PUSH"
+          },
+          {
+            "category": "WHITELIST_RESULT",
+            "notification_delivery_method": "PUSH"
+          },
+          {
+            "category": "SLICE_CHAT",
+            "notification_delivery_method": "PUSH"
+          },
+          {
+            "category": "SLICE_REGISTRY_ENTRY",
+            "notification_delivery_method": "PUSH"
+          },
+          {
+            "category": "SLICE_REGISTRY_MEMBERSHIP",
+            "notification_delivery_method": "PUSH"
+          },
+          {
+            "category": "SLICE_REGISTRY_SETTLEMENT",
+            "notification_delivery_method": "PUSH"
+          }
+        ],
+        "public_nick_name": "Guthrie Onderlinge Waarborgmaatschappij",
+        "public_uuid": "b6f29f76-4afb-4f97-a235-180c11e53be5",
+        "region": "en_US",
+        "session_timeout": 300,
+        "status": "ACTIVE",
+        "sub_status": "NONE",
+        "ubo": [{
+          "date_of_birth": "1959-12-18",
+          "name": "Dolly Hegger",
+          "nationality": "NL"
+        }],
+        "updated": "2017-05-16 17:53:53.815653",
+        "version_terms_of_service": "1.0"
+      }
+    }
+  ]
+}

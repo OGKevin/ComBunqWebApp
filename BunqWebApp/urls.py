@@ -18,11 +18,11 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from Manager.views import ManagerView, ManagerFormView
-from BunqAPI.views import GenerateView, MyBunqView, APIView, FileDownloader, RedirectView  # noqa
+from BunqAPI.views import GenerateView, MyBunqView, APIView, RedirectView
 from BunqWebApp import views
 from filecreator.views import APIView as filecreator
 from filecreator.views import FileDownloaderView as file_downlaoder
-from django.contrib.auth import views as auth_views
+# from django.contrib.auth import views as auth_views
 
 '''
 Each app needs to get its own URL conf. It works fine this way but its not
@@ -32,23 +32,29 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', views.HomeView.as_view(), name='home'),
     url(r'^account/register/$', views.RegisterView.as_view(), name='register'),
-    url(r'^account/logout/$', auth_views.logout, name='logout'),
+    url(r'^account/logout/$', views.LogOutView.as_view(), name='logout'),
+    url(r'^accounts/login/$', views.LogInView.as_view(), name='login'),
+    url(r'^accounts/login/old$', views.MigrationService.as_view()),
     url(r'^accounts/profile/$', RedirectView.as_view(), name='my_bunq'),
     url(r'^Manager/(?i)$', ManagerView.as_view(), name='Manager'),
     url(r'^Manager/form/(?i)$', ManagerFormView.as_view(), name='managerForm'),
     url(r'^generate/$', GenerateView.as_view(), name='generate'),
     url(r'^my_bunq/$', MyBunqView.as_view(), name='my_bunq'),
-    url(r'^my_bunq/download/(?P<action>[\w-]+)$', FileDownloader.as_view(), name='downloader'),  # noqa
-    # NOTE: after invoice has moved to filecreator this url can be removed
     url(r'^API/(?P<selector>[\w-]+)$', APIView.as_view()),  # noqa,
-    url(r'^API/(?P<selector>[\w-]+)/(?P<user_id>\d*)$', APIView.as_view()),  # noqa,
-    url(r'^API/(?P<selector>[\w-]+)/(?P<user_id>\d*)/(?P<account_id>\d*)$', APIView.as_view()),  # noqa,
-    url(r'^API/(?P<selector>[\w-]+)/(?P<user_id>\d*)/(?P<account_id>\d*)/(?P<payment_id>\d*)$', APIView.as_view()),  # noqa,
-    url(r'^API/(?P<selector>[\w-]+)/(?P<user_id>\d*)/(?P<account_id>\d*)/(?P<statement_format>[\w-]+)/(?P<date_start>[\w-]+)/(?P<date_end>[\w-]+)/(?P<regional_format>[\w-]+)$', APIView.as_view()),  # noqa,
-    url(r'^API/filecreator/(?P<selector>[\w-]+)/(?P<extension>[\w-]+)$', filecreator.as_view(), name='API'),  # noqa
-    url(r'^filecreator/download$', file_downlaoder.as_view(), name='API'),  # noqa,
+    url(r'^API/(?P<selector>[\w-]+)/(?P<user_id>\d*)$', APIView.as_view()),
+    url(r'^API/(?P<selector>[\w-]+)/(?P<user_id>\d*)/(?P<account_id>\d*)$',
+        APIView.as_view()),
+    url(r'^API/(?P<selector>[\w-]+)/(?P<user_id>\d*)/(?P<account_id>\d*)/'
+        r'(?P<payment_id>\d*)$', APIView.as_view()),
+    url(r'^API/(?P<selector>[\w-]+)/(?P<user_id>\d*)/(?P<account_id>\d*)/'
+        r'(?P<statement_format>[\w-]+)/(?P<date_start>[\w-]+)/'
+        r'(?P<date_end>[\w-]+)/(?P<regional_format>[\w-]+)$',
+        APIView.as_view()),
+    url(r'^API/filecreator/(?P<selector>[\w-]+)/(?P<extension>[\w-]+)$',
+        filecreator.as_view(), name='API'),
+    url(r'^filecreator/download$', file_downlaoder.as_view(),
+        name='filecreator'),
     url(r'^captcha/', include('captcha.urls')),
-    url(r'', include('two_factor.urls', 'two_factor')),
     # url(r'^.*$', views.RedirectView.as_view(), name='home'),
     # NOTE: this redirect is not working properly
 ] + static(settings.STATIC_URL)

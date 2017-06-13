@@ -75,8 +75,11 @@
 
 								</header>
                 <form class="ui form" action="" method="post">
+									{% if error %}
+									<li>{{Error}}</li>
+									{%endif%}
                   {% csrf_token %}
-                  {{form}}
+                  {{form.as_p}}
                   <button type="sumbit" name="button" id="button">Register</button>
                 </form>
 								<!-- <p>

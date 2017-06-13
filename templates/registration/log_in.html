@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    {% load raven %}
+    {% load static %}
+		<script type='text/javascript' src="{%static "raven-js/dist/raven.min.js"%}"></script>
+		<script>Raven.config('{% sentry_public_dsn 'https' %}').install()</script>
+    <title>ComBunqWebApp</title>
+  </head>
+  <body>
+    {% if messages%}
+    {% for msg in messages%}
+    <strong>{{msg}}</strong>
+    {%endfor%}
+    {%endif%}
+    <form enctype="multipart/form-data" class="" action="" method="post">
+      {% csrf_token %}
+      {{form}}
+    <button type="submit" name="button">Log in </button>
+    </form>
+    <p>If you have an old json you can login via this <a href="/accounts/login/old">link</a></p>
+  </body>
+</html>

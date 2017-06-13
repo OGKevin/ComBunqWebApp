@@ -46,7 +46,7 @@ except NameError:
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-if 'HEROKU' in os.environ:
+if 'HEROKU' in os.environ:  # pragma: no cover
     DEBUG = False
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
@@ -78,7 +78,6 @@ else:
     USE_PROXY = False
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-LOGIN_URL = 'two_factor:login'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 # Application definition
@@ -95,10 +94,6 @@ INSTALLED_APPS = [
     'captcha',
     'simple_history',
     'BunqAPI',
-    'django_otp',
-    'django_otp.plugins.otp_static',
-    'django_otp.plugins.otp_totp',
-    'two_factor',
     'raven.contrib.django.raven_compat',
     'filecreator'
 ]
@@ -112,7 +107,6 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django_otp.middleware.OTPMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'simple_history.middleware.HistoryRequestMiddleware',
@@ -261,3 +255,6 @@ STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
 WHITENOISE_ROOT = STATIC_ROOT
+
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# MEDIA_URL = '/media/'

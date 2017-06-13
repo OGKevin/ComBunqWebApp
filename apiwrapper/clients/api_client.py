@@ -53,6 +53,9 @@ class ApiClient:
     def post(self, endpoint, payload):
         return self.request('POST', endpoint, payload)
 
+    def delete(self, endpoint):
+        return self.request('DELETE', endpoint)
+
     def request(self, method, endpoint, payload=None):
         headers = self.create_headers(method, endpoint, payload)
 
@@ -155,6 +158,14 @@ class ApiClient:
 
     def request_parameters_are_set(self):
         return self.privkey is not None
+
+    @property
+    def session_token(self):
+        return self._session_token
+
+    @session_token.setter
+    def session_token(self, value):
+        self._session_token = value
 
     @property
     def endpoints(self):

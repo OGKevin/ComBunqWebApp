@@ -1,4 +1,6 @@
-# from pprint import pprint
+import logging
+
+logger = logging.getLogger(name='raven')
 
 
 class Endpoint:
@@ -11,10 +13,18 @@ class Endpoint:
 
     def _make_get_request(self, endpoint, verify=True):
         res = self._api_client.get(endpoint, verify)
-        # pprint(res.json())
+        if res.status_code is not 200:
+            logger.error(res.json()['Error'][0]['error_description'])
         return res
 
     def _make_post_request(self, endpoint, payload):
         res = self._api_client.post(endpoint, payload)
-        # pprint(res.json())
+        if res.status_code is not 200:
+            logger.error(res.json()['Error'][0]['error_description'])
+        return res
+
+    def _make_delete_request(self, endpoint):
+        res = self._api_client.delete(endpoint)
+        if res.status_code is not 200:
+            logger.error(res.json()['Error'][0]['error_description'])
         return res

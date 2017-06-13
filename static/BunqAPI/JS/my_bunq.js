@@ -2,7 +2,8 @@ var dataTable;
 
 $(function() {
   var jsonObj;
-
+  sendPost(jsonObj, "load_file", false)
+  
   function get_file() {
     data = $("#id_encrypted_file")[0].files[0]
     var reader = new FileReader()
@@ -187,7 +188,7 @@ function sendPost(json, action, template) {
         } else if (action.match(/payment/)) {
           createTable(r.Response)
         } else if (action.match(/invoice/)) {
-          $.fileDownload('./download/invoice')
+          $.fileDownload('/filecreator/download')
             .done(function() {
               alert('File download a success!');
             })
