@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from BunqAPI.forms import GenerateKeyForm, MyBunqForm
+from BunqAPI.forms import GenerateKeyForm
 from BunqAPI.installation import Installation
 from BunqAPI.callbacks import callback
 from django.http import HttpResponse, HttpResponseForbidden
@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from django.views import View
 from django.views.generic.base import RedirectView
 import json
+import datetime
 from django.contrib.auth import authenticate
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
@@ -98,11 +99,26 @@ class MyBunqView(View):
     def get(self, request):
         user = User.objects.get(username=request.user)
         try:
-            callback(user)
+            cb = callback(user)
+            self.check_bunq_session(user, cb)
         except (ObjectDoesNotExist, KeyError):
             return HttpResponseForbidden('You are not logged in correctly.'
                                          '<a href="/account/logout">Back</a>')
         return render(request, self.template)  # pragma: no cover
+
+    @staticmethod
+    def check_bunq_session(user, cb):
+        last_login = user.last_login
+        session_end = user.session.session_end_date
+
+        print(last_login)
+        print(session_end)
+
+        if last_login <= session_end:
+            cb.delete_session()
+            user.session.session_end_date = datetime.datetime.now(
+                datetime.timezone.utc)
+            user.save()
 
 
 @method_decorator(login_required, name='dispatch')
