@@ -11,6 +11,7 @@ import requests
 import arrow
 import markdown2
 import datetime
+import logging
 # from django.http import HttpResponse
 from django.contrib import messages
 from BunqAPI.installation import Installation
@@ -43,12 +44,16 @@ class HomeView(View):
             'https://api.github.com/repos/OGKevin/combunqwebapp/releases') \
             .json()
 
-        data = res[:7]
-        for x in data:
-            x['created_at'] = arrow.get(x['created_at']).format('Do MMM')
-            x['body'] = markdown2.markdown(x['body'])
-
-        return data
+        try:
+            data = res[:7]
+        except TypeError as e:
+            logging.error(e)
+            return None
+        else:
+            for x in data:
+                x['created_at'] = arrow.get(x['created_at']).format('Do MMM')
+                x['body'] = markdown2.markdown(x['body'])
+            return data
 
 
 class RegisterView(View):
