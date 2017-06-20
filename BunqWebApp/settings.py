@@ -62,6 +62,7 @@ if 'HEROKU' in os.environ:  # pragma: no cover
                      '.combunqweb.herokuapp.com', '.127.0.0.1']
     USE_PROXY = True
     PROXY_URI = os.environ['PROXY_URI']
+    TELEGRAM_TOKEN = os.environ['TELEGRAM_TOKEN']
 
     if API_URI == 'True':
         API_URI = True
@@ -76,6 +77,7 @@ else:
     API_URI = True
     ALLOWED_HOSTS = ['*']
     USE_PROXY = False
+    TELEGRAM_TOKEN = '436640385:AAEvt0mTMAblvQlYKv-OECwPwY82Vul0A94'
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
@@ -95,7 +97,8 @@ INSTALLED_APPS = [
     'simple_history',
     'BunqAPI',
     'raven.contrib.django.raven_compat',
-    'filecreator'
+    'filecreator',
+    'bunq_bot'
 ]
 
 MIDDLEWARE = [
