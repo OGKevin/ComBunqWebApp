@@ -33,16 +33,6 @@ before_script:
 - ./manage.py collectstatic --noinput -v 0
 script:
 - coverage run ./manage.py test
-deploy:
-  provider: heroku
-  api_key:
-    secure: rk8KBnZll+g7ZGUlMUx8utKt2QfEUL5MTFUkzMIwQpFFFSH9XU4mw/22g2hK4WSGsAByfGmEKuHCIk6X/jcEskJ49EuZLe+DNWYf2F9eRqe1WB5CQzlKTIskuO5gSv3XT2vrajdv5xUmotUMZVpw86xILd6Bb3Ob4a2YyD8JCzmhUPwspnrATGsOXxPKTG5h5EgKHWY4KWpS9frQonzuqN+lXf/E6y1ArViS6l0srMxuU0l60yG/DlajyCNv30a2sRWvTaYB9SEKjwuvauHlOve1rTYae/H0MKFvkOpRWqnNEiP/hP6qPLzQbEVQdT8xu+IdiE06Rn5Hm9Mr/m+o35dcsTiqy7HEGIltMYH+MuAepu3jEj59EX+AzoTYB/U3KQ5uTtWIJ6R17Lr8hF5fdkY8dACsV7BhnMwftb9uiBzb821yjViEA2OnQDFWFwKE4nyQeis51KRnUSaDtx8cNa4vBglP0L0v2mPzRbzqIwj8JarS2wRd1/KbetCLzxxex/kVFBlkfHjz8nXrjDyfYDza32aM70onQxGISpOMUXrVEFXHh0FF1KSZMhDZwFwueBrm+RU6/VWQ7uzxudEBXDanTcc8M5inDcrvIM0myCfn64AKDBE3HNVjAN+VGZZEqfsA8bZQ+cinrsDvzZaYkCF9do2Von9i0bjJENr/6Z0=
-  run:
-  - ./manage.py migrate
-  - restart
-  app: combunqweb
-  on:
-    tags: true
 after_success:
 - coveralls
 notifications:
