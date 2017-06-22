@@ -44,41 +44,22 @@ except NameError:
             Exception('Please create a %s file with random characters \
             to generate your secret key!' % SECRET_FILE)
 
-
-# SECURITY WARNING: don't run with debug turned on in production!
-if 'HEROKU' in os.environ:  # pragma: no cover
-    DEBUG = False
-    SECURE_SSL_REDIRECT = True
-    SESSION_COOKIE_SECURE = True
-
-    RAVEN_CONFIG = {
-        'dsn': os.environ['DSN'],
-    }
-
-    DESABLE_LOGGERS = True
-
-    API_URI = os.environ['API_URI']
-    ALLOWED_HOSTS = ['.beta-combunqweb.herokuapp.com',
-                     '.combunqweb.herokuapp.com', '.bunqweb.com']
-    USE_PROXY = True
-    PROXY_URI = os.environ['PROXY_URI']
-
-    if API_URI == 'True':
-        API_URI = True
-    else:
-        API_URI = False
-
-else:
-    DEBUG = True
-    SECURE_SSL_REDIRECT = False
-    SESSION_COOKIE_SECURE = False
-    DESABLE_LOGGERS = False
-    API_URI = True
-    ALLOWED_HOSTS = ['*']
-    USE_PROXY = False
+DEBUG = True
+SECURE_SSL_REDIRECT = False
+SESSION_COOKIE_SECURE = False
+DESABLE_LOGGERS = False
+SANDBOX = True
+ALLOWED_HOSTS = ['*']
+USE_PROXY = False
+PROXY_URI = 'url'
+TELEGRAM_TOKEN = None
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+RAVEN_CONFIG = {
+        'dsn': None,
+    }
 
 # Application definition
 
@@ -95,7 +76,8 @@ INSTALLED_APPS = [
     'simple_history',
     'BunqAPI',
     'raven.contrib.django.raven_compat',
-    'filecreator'
+    'filecreator',
+    'bunq_bot'
 ]
 
 MIDDLEWARE = [

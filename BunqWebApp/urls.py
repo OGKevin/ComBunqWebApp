@@ -22,6 +22,8 @@ from BunqAPI.views import GenerateView, MyBunqView, APIView, RedirectView
 from BunqWebApp import views
 from filecreator.views import APIView as filecreator
 from filecreator.views import FileDownloaderView as file_downlaoder
+from bunq_bot.views import WebHook
+
 # from django.contrib.auth import views as auth_views
 
 '''
@@ -54,6 +56,7 @@ urlpatterns = [
         filecreator.as_view(), name='API'),
     url(r'^filecreator/download$', file_downlaoder.as_view(),
         name='filecreator'),
+    url(r'bot/%s$' % settings.TELEGRAM_TOKEN, WebHook.as_view(), name='bot'),
     url(r'^captcha/', include('captcha.urls')),
     # url(r'^.*$', views.RedirectView.as_view(), name='home'),
     # NOTE: this redirect is not working properly

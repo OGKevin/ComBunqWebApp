@@ -1,0 +1,7 @@
+bunqweb.com {
+proxy / localhost:8000
+}
+
+www.bunqweb.com {
+proxy / localhost:8000
+}
