@@ -1,8 +1,9 @@
 Hi I'm a bot, the bunq-bot here to help you the best way I can.
 
-I can help you with:
-Nothing at the moment :(
+My commands are:
+/start `To start receiving automatic messages.`
+/stop `To stop receiving automatic messages. This command should also be used before you want to remove me.`
+/news `Shows the recent 5 blog posts from bunq.`
+/help `Displays a help message.`
 
-If you need help you can use the /help command.
-
-My source code can be found [here](https://github.com/OGKevin/bunq-bot).
+My source code can be found [here](https://github.com/OGKevin/ComBunqWebApp/tree/master/bunq_bot).
