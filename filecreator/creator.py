@@ -24,7 +24,7 @@ class Creator(object):
         self.user = user
         self.extension = extension
 
-    def payment(self, data):
+    def payment(self, data, transaction_id=None):
         data['Payment']['amount']['value'] = float(
             data['Payment']['amount']['value'])
 
@@ -38,7 +38,8 @@ class Creator(object):
         )).replace('.', ',')
 
         if self.extension == 'pdf':
-            file_path = self.pdf(data['Payment'], 'payment.html')
+            file_path = self.pdf(data['Payment'], 'payment.html',
+                                 prefix=transaction_id)
 
         self.store_in_session(file_path)
 
@@ -158,7 +159,7 @@ class Creator(object):
         return temp_file.name
 
     @staticmethod
-    def pdf(data, template):
+    def pdf(data, template, prefix=None):
         html_string = render_to_string(
             'filecreator/pdf/%s' % template, {'data': data}
         )
@@ -177,24 +178,29 @@ class Creator(object):
 
         pdf = pdfkit.from_string(html_string, False, options=options)
 
-        temp_file = Creator.temp_file('.pdf')
+        temp_file = Creator.temp_file('.pdf', append_prefix=prefix)
         temp_file.write(pdf)
         temp_file.close()
 
         return temp_file.name
 
     @staticmethod
-    def temp_file(extension, bytes_=True):
+    def temp_file(extension, bytes_=True, append_prefix=None):
         if bytes_ is True:
             mode = 'wb'
         else:
             mode = 'w'
 
+        if append_prefix is not None:
+            prefix = "ComBunqWebApp-pr-%s-pr-" % append_prefix
+        else:
+            prefix = "ComBunqWebApp"
+
         temp_file = tempfile.NamedTemporaryFile(
             mode=mode,
             dir=None,
             suffix='%s' % extension,
-            prefix='ComBunqWebApp',
+            prefix=prefix,
             delete=False
         )
         return temp_file

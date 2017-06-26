@@ -34,12 +34,21 @@ class FileDownloaderView(View):
             session_key=user.tokens.file_token
         ).get_decoded()["file_path"]
 
+        file_name = os.path.basename(file_path).split('-pr-')
+        print(file_name)
+        if len(file_name) >= 3:
+            transaction_id = "_%s" % file_name[1]
+        else:
+            transaction_id = None
+
         file_extension = os.path.splitext(file_path)[1]
 
         with open(file_path, 'rb') as f:
-            response = HttpResponse(f.read(), content_type="application/force-download")  # noqa
+            response = HttpResponse(f.read(),
+                                    content_type="application/force-download")
             response['Content-Disposition'] = 'attachment; filename=%s' % smart_str(  # noqa
-                                'ComBunqWebApp_%s%s' % (user, file_extension))
+                                'ComBunqWebApp_%s%s%s' % (user, transaction_id,
+                                                          file_extension))
             try:
                 return response
             # except Exception as e:
