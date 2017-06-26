@@ -172,7 +172,7 @@ function sendPost(json, action, template) {
         } else if (action.match(/load_file/)) {
           show(r.start_session, false, start_session_template, 'start_session')
           show(r.accounts, false, accounts_template, 'accounts')
-          createTable(r.payments)
+          createTable(r.payments, payments_template)
 
 
         } else if (action.match(/accounts/)) {
@@ -186,7 +186,7 @@ function sendPost(json, action, template) {
               alert('File download failed!');
             });
         } else if (action.match(/payment/)) {
-          createTable(r.Response)
+          createTable(r.Response, template)
         } else if (action.match(/invoice/)) {
           $.fileDownload('/filecreator/download')
             .done(function() {
@@ -239,6 +239,34 @@ function sendPost(json, action, template) {
     });
 }
 
+var payment_id;
+$(document).delegate('.table-click', 'click', function(event) {
+    /* Act on the event */
+    // let Popup = new PopupClass({width: 200, maxHeight: 100}, false, false);
+    payment_id = $(this).data("id")
+    sendPost(null, 'payment' + '/' + get_user_id() + '/' + get_account_id() + '/' + payment_id, single_transaction_template)
+    setTimeout(function(){
+      
+      $("#single_transaction").bPopup()
+    }, 1000)
+    // Popup.show(data)
+    // console.log(data);
+});
+
+$(document).delegate('#export_payment2', 'click', function(event) {
+  sendPost(null, 'get_payment_pdf/' + get_user_id() + '/' + get_account_id() + '/' + payment_id)
+});
+
+$(document).delegate('.search', 'keyup', function(event) {
+  var $rows = $('#table-trans tbody tr');
+      var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
+      
+      $rows.show().filter(function() {
+          var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
+          return !~text.indexOf(val);
+      }).hide();
+});
+
 function show(j, error, template, location) {
   if (error) {
     $("#user_accounts").html(j.error_description_translated)
@@ -284,46 +312,64 @@ function show(j, error, template, location) {
   }
 }
 
-function createTable(input) {
+function createTable(input, template) {
 
-  var rows = [],
-    headers = [
-      'Payment ID',
-      'Account ID',
-      'Date',
-      'Amount',
-      // 'Account IBAN',
-      'Payee IBAN',
-      'Name',
-      'Description',
-      // 'Type'
-    ]
+  // var rows = [],
+  //   headers = [
+  //     'Payment ID',
+  //     'Account ID',
+  //     'Date',
+  //     'Amount',
+  //     // 'Account IBAN',
+  //     'Payee IBAN',
+  //     'Name',
+  //     'Description',
+  //     // 'Type'
+  //   ]
+  console.log(input);
   numeral.locale("nl-nl")
   for (var i = 0; i < input.length; i++) {
-    rows.push([
-      input[i].Payment.id,
-      input[i].Payment.monetary_account_id,
-      moment(input[i].Payment.updated.slice(0, 10)).format("MMM Do YYYY"),
-      numeral(input[i].Payment.amount.value.replace(".", ",")).format('$0,0[.]00'),
+    // rows.push([
+      // input[i].Payment.id,
+      // input[i].Payment.monetary_account_id,
+      input[i].Payment.updated = moment(input[i].Payment.updated.slice(0, 10)).format("MMM Do YYYY"),
+      input[i].Payment.amount.value = numeral(input[i].Payment.amount.value.replace(".", ",")).format('$0,0[.]00')
       // input[i].Payment.alias.iban,
-      input[i].Payment.counterparty_alias.iban,
-      input[i].Payment.counterparty_alias.label_user.public_nick_name,
-      input[i].Payment.description,
+      // input[i].Payment.counterparty_alias.iban,
+      // input[i].Payment.counterparty_alias.label_user.public_nick_name,
+      // input[i].Payment.description,
       // input[i].Payment.type
-    ])
+    // ])
   }
-  options = {
-    data: {
-      'headings': headers,
-      "rows": rows
+  // options = {
+  //   data: {
+  //     'headings': headers,
+  //     "rows": rows
+  //   }
+  // }
+  // if (dataTable) {
+  //   dataTable.destroy();
+  // }
+  // dataTable = new DataTable("#transaction_table", options);
+  // $("#transaction_table").css('visibility', 'visible');
+  // $("#user_payments").css('visibility', 'visible');
+  data = {
+    // 'headers': headers,
+    'rows': input
+  }
+  arr = template.split("/")
+  $.get(template, function(template) {
+    rendered = Mustache.render(template, data)
+    if (arr[arr.length-1] == "payments.html"){
+      $("#transaction_table").html(rendered)
+      $("#user_payments").css('visibility', 'visible');
+      
+    }else{
+      $("#single_transaction").html(rendered)
     }
-  }
-  if (dataTable) {
-    dataTable.destroy();
-  }
-  dataTable = new DataTable("#transaction_table", options);
-  $("#transaction_table").css('visibility', 'visible');
-  $("#user_payments").css('visibility', 'visible');
+    // console.log(rendered);
+    
+  })
 }
 
 function deactivateItems() {

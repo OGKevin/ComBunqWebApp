@@ -22,9 +22,10 @@
 			var start_session_template = '{%static 'BunqAPI/templates/mustache/start_session.html '%}'
 			var ussers_template = '{%static 'BunqAPI/templates/mustache/users.html '%}'
 			var accounts_template = '{%static 'BunqAPI/templates/mustache/accounts.html '%}'
-			var payments_template = '{%static 'BunqAPI/templates/mustache/payments.html '%}'
+			var payments_template = '{%static 'BunqAPI/templates/mustache/payments.html'%}'
 			var card_template = '{%static 'BunqAPI/templates/mustache/card.html '%}'
 			var register_template = '{%static 'BunqAPI/templates/mustache/register.html '%}'
+			var single_transaction_template = '{%static 'BunqAPI/templates/mustache/single_transaction.html'%}'
 		</script>
 	</head>
 	<body class="left-sidebar">
@@ -144,8 +145,10 @@ Restart session </button>
 											<header>
 												<h3>Transactions</h3>
 											</header>
-												<table id="transaction_table" class="ui celled table">
-												</table>
+												<!-- <table id="transaction_table" class="ui celled table">
+												</table> -->
+												<div id="transaction_table">
+												</div>
 										</div>
 									</section>
 										<!-- <section>
@@ -323,10 +326,16 @@ Restart session </button>
 		<script type='text/javascript' src="{%static "vanilla-datatables/vanilla-dataTables.min.js"%}"></script>
 		<script type='text/javascript' src="{%static "table-to-json/src/jquery.tabletojson.js"%}"></script>
 		<link rel="stylesheet" href="{%static "vanilla-datatables/vanilla-dataTables.min.css"%}"/>
+		<script type="text/javascript" src="{%static "bPopup/jquery.bpopup.min.js"%}"></script>
 		<script type='text/javascript' src="{%static "BunqAPI/JS/my_bunq.js "%}"></script>
 	  <!-- <script type='text/javascript' src="{%static "BunqAPI/JS/vue.js "%}"></script> -->
 	  <link rel='stylesheet' href="{%static "BunqAPI/CSS/my_bunq.css "%}"/>
 		<script src="{%static "assets/js/main.js"%}"></script>
+
+		<!-- Pop ups  -->
+		<div id="single_transaction">
+			
+		</div>
 
 	</body>
 </html>

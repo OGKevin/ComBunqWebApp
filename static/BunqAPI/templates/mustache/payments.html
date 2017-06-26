@@ -1,32 +1,28 @@
-<style media="screen">
-  table,
-  th,
-  td {
-    border: 1px solid black;
-  }
-</style>
-
-<header>
-  <h3>Something else</h3>
-</header>
-
-<table>
-  <tr>
-    <th>Date</th>
-    <th>Amount</th>
-    <th>Account IBAN</th>
-    <th>Payee IBAN</th>
-    <th>Name</th>
-    <th>Description</th>
-  </tr>
-  {{#.}}
-  <tr>
-    <td>{{Payment.updated}}</td>
-    <td>{{Payment.amount.value}}</td>
-    <td>{{Payment.alias.iban}}</td>
-    <td>{{Payment.counterparty_alias.iban}}</td>
-    <td>{{Payment.counterparty_alias.label_user.public_nick_name}}</td>
-    <td>{{Payment.description}}</td>
-  </tr>
-  {{/.}}
+<div class="ui fluid icon input">
+  <input class="search" type="text" placeholder="Search...">
+  <i class="search icon"></i>
+</div>
+<table class="ui selectable celled table" id="table-trans">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Amount</th>
+      <th>Payee IBAN</th>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#rows}}
+    <tr>
+      <td>{{Payment.updated}}</td>
+      <td>{{Payment.amount.value}}</td>
+      <td>{{Payment.counterparty_alias.iban}}</td>
+      <td>{{Payment.counterparty_alias.display_name}}</td>
+      <td>{{Payment.description}}</td>
+      <td><button class="table-click mini ui secondary button" data-id="{{Payment.id}}" >Details</button> | <button id="export_payment2" class="mini ui secondary button" href="#">Export</button></td>
+    </tr>
+    {{/rows}}
+  </tbody>
 </table>

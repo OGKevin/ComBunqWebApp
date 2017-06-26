@@ -1,0 +1,25 @@
+{
+  "name": "communitybunqweb",
+  "description": "Bunq web interface made by bunqers",
+  "main": "./manage.py",
+  "authors": [
+    "OGKevin <Kevinhellemun@icloud.com>"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "bunq",
+    "pyhton",
+    "django",
+  ],
+  "homepage": "https://github.com/OGKevin/ComBunqWebApp",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bPopup": "bpopup#^0.11.0"
+  }
+}
