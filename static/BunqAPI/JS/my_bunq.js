@@ -1,17 +1,7 @@
-var dataTable;
-
 $(function() {
   var jsonObj;
-  sendPost(jsonObj, "load_file", false)
+  sendPost( "load_file", false)
   
-  function get_file() {
-    data = $("#id_encrypted_file")[0].files[0]
-    var reader = new FileReader()
-    reader.readAsText(data)
-    reader.onload = function(event) {
-      jsonObj = JSON.parse(event.target.result);
-    }
-  }
   $("#encryption_form").submit(function(event) {
     /* Act on the event */
     event.preventDefault()
@@ -21,20 +11,19 @@ $(function() {
 
 
     setTimeout(function() {
-      sendPost(jsonObj, "load_file", false)
+      sendPost( "load_file", false)
 
     }, 500)
   });
 
   $("#load_file").click(function(event) {
-    // firstCall()
     get_file()
     deactivateItems()
     $(this).addClass('active')
 
 
     setTimeout(function() {
-      sendPost(jsonObj, "load_file", false)
+      sendPost( "load_file", false)
 
     }, 500)
 
@@ -43,76 +32,57 @@ $(function() {
   $('#register').click(function(event) {
     deactivateItems()
     $(this).addClass('active')
-    sendPost(jsonObj, $(this)[0].id, register_template)
+    sendPost( $(this)[0].id, register_template)
   });
 
   $('#start_session').click(function(event) {
     deactivateItems()
     $(this).addClass('active')
-    sendPost(jsonObj, $(this)[0].id, start_session_template)
+    sendPost( $(this)[0].id, start_session_template)
   });
   $("#users").click(function(event) {
     deactivateItems()
     $(this).addClass('active')
-    sendPost(jsonObj, $(this)[0].id + '/' + get_user_id() + '/', ussers_template)
+    sendPost( $(this)[0].id + '/' + get_user_id() + '/', ussers_template)
   });
   $("#accounts").click(function(event) {
     deactivateItems()
     $(this).addClass('active')
-    sendPost(jsonObj, $(this)[0].id + '/' + get_user_id() + '/' + get_account_id(), accounts_template)
+    sendPost( $(this)[0].id + '/' + get_user_id() + '/' + get_account_id(), accounts_template)
 
 
   });
   $("#payment").click(function(event) {
     deactivateItems()
     $(this).addClass('active')
-    sendPost(jsonObj, $(this)[0].id + '/' + get_user_id() + '/' + get_account_id(), payments_template)
+    sendPost( $(this)[0].id + '/' + get_user_id() + '/' + get_account_id(), payments_template)
 
   });
   $("#card").click(function(event) {
     deactivateItems()
     $(this).addClass('active')
-    sendPost(jsonObj, $(this)[0].id + '/' + get_user_id() + '/' + get_account_id(), card_template)
+    sendPost( $(this)[0].id + '/' + get_user_id() + '/' + get_account_id(), card_template)
 
   });
   $("#mastercard_action").click(function(event) {});
-  $("#export_transactions").click(function(event) {
-    deactivateItems()
-    $(this).addClass('active')
-    pages = $("#pages").val()
-    if (dataTable) {
-      // getTableData()
-      json = $("#transaction_table").tableToJSON()
-      sendPost(json, 'filecreator/transactions/csv')
-      // curentPage = dataTable.currentPage
-      // if (pages) {
-      //
-      //   dataTable.export('csv', 'Bunq-transactions', ';', '\r\n', [pages])
-      // } else {
-      //   dataTable.export('csv', 'Bunq-transactions', ';', '\r\n', curentPage)
-      //
-      // }
-    } else {
-      $("#loading").html('Table is not created yet?')
-    }
-  });
+  // $("#export_transactions").click(function(event) {
+  //   deactivateItems()
+  //   $(this).addClass('active')
+  //   pages = $("#pages").val()
+  //     json = $("#transaction_table").tableToJSON()
+  //     sendPost('filecreator/transactions/csv', null, json)
+  // });
   $("#export_invoice").click(function(event) {
     deactivateItems()
     $(this).addClass('active')
-    sendPost(jsonObj, 'invoice/' + get_user_id())
+    sendPost( 'invoice/' + get_user_id())
   });
 
-  $("#export_payment").click(function(event) {
+  $("#export_customer_statement").click(function(event) {
     /* Act on the event */
     deactivateItems()
     $(this).addClass('active')
-    sendPost(jsonObj, 'get_payment_pdf/' + get_user_id() + '/' + get_account_id() + '/' + get_payment_id())
-  });
-  $("#export_payment2").click(function(event) {
-    /* Act on the event */
-    deactivateItems()
-    $(this).addClass('active')
-    sendPost(jsonObj, 'customer_statement/' + get_user_id() + '/' + get_account_id() + '/' + get_format_type() + '/' + get_begin_date() + '/' + get_end_date() + '/' + 'european')
+    sendPost( 'customer_statement/' + get_user_id() + '/' + get_account_id() + '/' + get_format_type() + '/' + get_begin_date() + '/' + get_end_date() + '/' + 'european')
   });
 });
 
@@ -139,7 +109,7 @@ function get_end_date() {
 function get_format_type() {
   return $("#format_type").val()
 }
-function sendPost(json, action, template) {
+function sendPost(action, template, data) {
   $('#loading').html('<div class="ui segment"><div class="ui active inverted dimmer"><div class="ui large text loader"></div></div>')
   csrftoken = Cookies.get('csrftoken')
 
@@ -152,9 +122,8 @@ function sendPost(json, action, template) {
       url: '/API/' + action,
       type: 'POST',
       dataType: '',
-      data: {
-        'json': JSON.stringify(json),
-        'pass': $('#id_encryption_password').val()
+      data : {
+        'json': JSON.stringify(data)
       },
       beforeSend: function(xhr, settings) {
         if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
@@ -239,22 +208,19 @@ function sendPost(json, action, template) {
     });
 }
 
-var payment_id;
 $(document).delegate('.table-click', 'click', function(event) {
     /* Act on the event */
-    // let Popup = new PopupClass({width: 200, maxHeight: 100}, false, false);
     payment_id = $(this).data("id")
-    sendPost(null, 'payment' + '/' + get_user_id() + '/' + get_account_id() + '/' + payment_id, single_transaction_template)
+    sendPost('payment' + '/' + get_user_id() + '/' + get_account_id() + '/' + payment_id, single_transaction_template)
     setTimeout(function(){
       
       $("#single_transaction").bPopup()
     }, 1000)
-    // Popup.show(data)
-    // console.log(data);
 });
 
-$(document).delegate('#export_payment2', 'click', function(event) {
-  sendPost(null, 'get_payment_pdf/' + get_user_id() + '/' + get_account_id() + '/' + payment_id)
+$(document).delegate('#export_payment', 'click', function(event) {
+  payment_id = $(this).data("id")
+  sendPost('get_payment_pdf/' + get_user_id() + '/' + get_account_id() + '/' + payment_id)
 });
 
 $(document).delegate('.search', 'keyup', function(event) {
@@ -305,56 +271,18 @@ function show(j, error, template, location) {
         default:
 
       }
-      // $("#" + location).html(rendered)
-      // locatoin(rendered)
     })
 
   }
 }
 
 function createTable(input, template) {
-
-  // var rows = [],
-  //   headers = [
-  //     'Payment ID',
-  //     'Account ID',
-  //     'Date',
-  //     'Amount',
-  //     // 'Account IBAN',
-  //     'Payee IBAN',
-  //     'Name',
-  //     'Description',
-  //     // 'Type'
-  //   ]
-  console.log(input);
-  numeral.locale("nl-nl")
+ numeral.locale("nl-nl")
   for (var i = 0; i < input.length; i++) {
-    // rows.push([
-      // input[i].Payment.id,
-      // input[i].Payment.monetary_account_id,
       input[i].Payment.updated = moment(input[i].Payment.updated.slice(0, 10)).format("MMM Do YYYY"),
       input[i].Payment.amount.value = numeral(input[i].Payment.amount.value.replace(".", ",")).format('$0,0[.]00')
-      // input[i].Payment.alias.iban,
-      // input[i].Payment.counterparty_alias.iban,
-      // input[i].Payment.counterparty_alias.label_user.public_nick_name,
-      // input[i].Payment.description,
-      // input[i].Payment.type
-    // ])
   }
-  // options = {
-  //   data: {
-  //     'headings': headers,
-  //     "rows": rows
-  //   }
-  // }
-  // if (dataTable) {
-  //   dataTable.destroy();
-  // }
-  // dataTable = new DataTable("#transaction_table", options);
-  // $("#transaction_table").css('visibility', 'visible');
-  // $("#user_payments").css('visibility', 'visible');
   data = {
-    // 'headers': headers,
     'rows': input
   }
   arr = template.split("/")
@@ -367,19 +295,9 @@ function createTable(input, template) {
     }else{
       $("#single_transaction").html(rendered)
     }
-    // console.log(rendered);
-    
   })
 }
 
 function deactivateItems() {
-  $("#load_file, #register, #start_session, #users, #accounts, #lock_ids, #payment, #card, #mastercard_action, #export_transactions, #export_invoice").removeClass('active')
-}
-
-function getTableData() {
-  table = dataTable
-  json = $("#transaction_table").tableToJSON()
-  // for (var i = 0; i < table.rows.length; i++) {
-  //   data.push(table.rows[i].innerHTML)
-  // }
+  $("#load_file, #register, #start_session, #users, #accounts, #lock_ids, #payment, #card, #mastercard_action, #export_transactions, #export_customer_statement, #export_invoice").removeClass('active')
 }

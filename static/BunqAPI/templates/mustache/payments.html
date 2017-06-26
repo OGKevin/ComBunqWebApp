@@ -21,7 +21,7 @@
       <td>{{Payment.counterparty_alias.iban}}</td>
       <td>{{Payment.counterparty_alias.display_name}}</td>
       <td>{{Payment.description}}</td>
-      <td><button class="table-click mini ui secondary button" data-id="{{Payment.id}}" >Details</button> | <button id="export_payment2" class="mini ui secondary button" href="#">Export</button></td>
+      <td><button class="table-click mini ui secondary button" data-id="{{Payment.id}}" >Details</button> | <button id="export_payment" data-id="{{Payment.id}}" class="mini ui secondary button">Export</button></td>
     </tr>
     {{/rows}}
   </tbody>
