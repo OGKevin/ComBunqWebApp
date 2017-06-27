@@ -33,7 +33,7 @@ packaging==16.8
 pbkdf2==1.3
 pdfkit==0.6.1
 Pillow==4.1.1
-pip-upgrader==1.4.1
+pip-upgrader==1.4.2
 psycopg2==2.7.1
 pycparser==2.17
 pycrypto==2.6.1
@@ -48,7 +48,7 @@ qrcode==5.3
 raven==6.1.0
 requests==2.18.1
 requests-mock==1.3.0
-ruamel.yaml==0.15.14
+ruamel.yaml==0.15.15
 shellescape==3.4.1
 six==1.10.0
 terminaltables==3.1.0
