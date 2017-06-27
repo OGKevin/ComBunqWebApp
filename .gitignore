@@ -185,3 +185,10 @@ tmp/
 static/semantic/tasks
 static/semantic/src
 static/semantic/dist/components
+/keyrings/live/pubring.gpg~
+/keyrings/live/pubring.kbx~
+/keyrings/live/secring.gpg
+/Caddyfile
+/uwsgi.ini
+/BunqWebApp/config.yaml
+/uwsgi-develop.ini

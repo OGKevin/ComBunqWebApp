@@ -35,11 +35,10 @@ class FileDownloaderView(View):
         ).get_decoded()["file_path"]
 
         file_name = os.path.basename(file_path).split('-pr-')
-        print(file_name)
         if len(file_name) >= 3:
             transaction_id = "_%s" % file_name[1]
         else:
-            transaction_id = None
+            transaction_id = ''
 
         file_extension = os.path.splitext(file_path)[1]
 
