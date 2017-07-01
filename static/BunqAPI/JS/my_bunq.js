@@ -214,7 +214,8 @@ function sendPost(action, template, data) {
 $(document).delegate('.table-click', 'click', function(event) {
     /* Act on the event */
     payment_id = $(this).data("id")
-    sendPost('payment' + '/' + get_user_id() + '/' + get_account_id() + '/' + payment_id, single_transaction_template)
+    ma_id = $(this).data("ma")
+    sendPost('payment' + '/' + get_user_id() + '/' + ma_id + '/' + payment_id, single_transaction_template)
     setTimeout(function(){
 
       $("#single_transaction").bPopup()
@@ -223,7 +224,8 @@ $(document).delegate('.table-click', 'click', function(event) {
 
 $(document).delegate('#export_payment', 'click', function(event) {
   payment_id = $(this).data("id")
-  sendPost('get_payment_pdf/' + get_user_id() + '/' + get_account_id() + '/' + payment_id)
+  ma_id = $(this).data("ma")
+  sendPost('get_payment_pdf/' + get_user_id() + '/' + ma_id + '/' + payment_id)
 });
 
 $(document).delegate('.search', 'keyup', function(event) {
