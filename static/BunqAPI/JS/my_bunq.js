@@ -2,32 +2,32 @@ $(function() {
   var jsonObj;
   sendPost( "load_file", false)
 
-  $("#encryption_form").submit(function(event) {
-    /* Act on the event */
-    event.preventDefault()
-    get_file()
-    deactivateItems()
-    $(this).addClass('active')
+  // $("#encryption_form").submit(function(event) {
+  //   /* Act on the event */
+  //   event.preventDefault()
+  //   get_file()
+  //   deactivateItems()
+  //   $(this).addClass('active')
+  //
+  //
+  //   setTimeout(function() {
+  //     sendPost( "load_file", false)
+  //
+  //   }, 500)
+  // });
 
-
-    setTimeout(function() {
-      sendPost( "load_file", false)
-
-    }, 500)
-  });
-
-  $("#load_file").click(function(event) {
-    get_file()
-    deactivateItems()
-    $(this).addClass('active')
-
-
-    setTimeout(function() {
-      sendPost( "load_file", false)
-
-    }, 500)
-
-  });
+  // $("#load_file").click(function(event) {
+  //   get_file()
+  //   deactivateItems()
+  //   $(this).addClass('active')
+  //
+  //
+  //   setTimeout(function() {
+  //     sendPost( "load_file", false)
+  //
+  //   }, 500)
+  //
+  // });
 
   $('#register').click(function(event) {
     deactivateItems()
@@ -93,9 +93,9 @@ function get_user_id() {
   return $('#userID').val()
 }
 
-// function get_account_id() {
-//   return $("#accountID").val()
-// }
+function get_account_id() {
+  return $("#accountID").val()
+}
 
 function get_payment_id() {
   return $('#paymentID').val()
@@ -271,7 +271,7 @@ function show(j, error, template, location) {
         case "accounts":
           $("#user_accounts").html(rendered)
           $("#user_accounts").css('visibility', 'visible');
-          $("#accountID").val(j[0].MonetaryAccountBank.id)
+          // $("#accountID").val(j[0].MonetaryAccountBank.id)
           break;
         case "users":
           $("#user_accounts").html(rendered)
