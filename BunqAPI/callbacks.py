@@ -234,7 +234,7 @@ class callback:
                                                                     ).json()
         return r
 
-    def payment(self, mode='normal'):
+    def payment(self, mode='normal', new=False, old=False):
         '''
         Returns a list of all transactions from an account. If an payment id is
         given then a specific transaction will be returned.
@@ -243,13 +243,18 @@ class callback:
 
         https://doc.bunq.com/api/1/call/payment
         '''
+        newer_id = self._new_id if new else None
+        older_id = self._old_id if old else None
+
         if mode == 'normal':
             if self.account_id and self.user_id is not None:
                 if self.payment_id is None:
                     r = self.bunq_api.endpoints\
                             .payment.get_all_payments_for_account(
                                                         self.user_id,
-                                                        self.account_id)
+                                                        self.account_id,
+                                                        newer_id=self._new_id,
+                                                        older_id=self._old_id)
                 else:
                     r = self.bunq_api.endpoints.payment.get_payment_by_id(
                         self.user_id, self.account_id, self.payment_id
@@ -266,18 +271,28 @@ class callback:
                 new_url = r.json()['Pagination']['newer_url']
                 old_url = r.json()['Pagination']['older_url']
                 if new_url is not None:
-                    new_id = self._parse_ulr(new_url)["newer_id"]
-                    print(new_id)
+                    new_id = self._parse_ulr(new_url)["newer_id"][0]
                     self._user.session.new_id = new_id
                     self._user.save()
                 if old_url is not None:
-                    old_id = self._parse_ulr(old_url)["older_id"]
-                    print(old_id)
+                    old_id = self._parse_ulr(old_url)["older_id"][0]
                     self._user.session.old_id = old_id
                     self._user.save()
 
             # pprint(r.json())
             return r.json()
+
+    def payment_next(self):
+        if self._old_id is not None:
+            return self.payment(old=True)
+        else:
+            error = {
+            'Error':[{
+            'error_description_translated':('User\'s transactions not '
+                                            'retrieved yet.')
+            }]
+            }
+            return error
 
     def card(self):
         '''
@@ -597,6 +612,22 @@ class callback:
             return None
         else:
             return self._api_key
+
+    @property
+    def _new_id(self):
+        new_id = self._user.session.new_id
+        if new_id is None:
+            return None
+        else:
+            return new_id
+
+    @property
+    def _old_id(self):
+        old_id = self._user.session.old_id
+        if old_id is None:
+            return None
+        else:
+            return old_id
 
     @api_key.setter
     def api_key(self, value):
