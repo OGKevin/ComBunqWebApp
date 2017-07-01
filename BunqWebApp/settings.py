@@ -201,7 +201,7 @@ else:  # pragma: no cover
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME':  'KevinH' if config is None else config.DATABASE.NAME,
+            'NAME':  'khellemun' if config is None else config.DATABASE.NAME,
             'USER': None if config is None else config.DATABASE.USER
         }
     }

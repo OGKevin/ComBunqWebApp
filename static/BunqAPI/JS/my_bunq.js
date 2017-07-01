@@ -1,7 +1,7 @@
 $(function() {
   var jsonObj;
   sendPost( "load_file", false)
-  
+
   $("#encryption_form").submit(function(event) {
     /* Act on the event */
     event.preventDefault()
@@ -43,25 +43,28 @@ $(function() {
   $("#users").click(function(event) {
     deactivateItems()
     $(this).addClass('active')
-    sendPost( $(this)[0].id + '/' + get_user_id() + '/', ussers_template)
+    // sendPost( $(this)[0].id + '/' + get_user_id() + '/', ussers_template)
+    sendPost( $(this)[0].id, ussers_template)
   });
   $("#accounts").click(function(event) {
     deactivateItems()
     $(this).addClass('active')
-    sendPost( $(this)[0].id + '/' + get_user_id() + '/' + get_account_id(), accounts_template)
+    // sendPost( $(this)[0].id + '/' + get_user_id() + '/' + get_account_id(), accounts_template)
+    sendPost( $(this)[0].id + '/' + get_user_id(), accounts_template)
 
 
   });
-  $("#payment").click(function(event) {
-    deactivateItems()
-    $(this).addClass('active')
-    sendPost( $(this)[0].id + '/' + get_user_id() + '/' + get_account_id(), payments_template)
-
-  });
+  // $("#payment").click(function(event) {
+  //   deactivateItems()
+  //   $(this).addClass('active')
+  //   sendPost( $(this)[0].id + '/' + get_user_id() + '/' + get_account_id(), payments_template)
+  //
+  // });
   $("#card").click(function(event) {
     deactivateItems()
     $(this).addClass('active')
-    sendPost( $(this)[0].id + '/' + get_user_id() + '/' + get_account_id(), card_template)
+    // sendPost( $(this)[0].id + '/' + get_user_id() + '/' + get_account_id(), card_template)
+    sendPost( $(this)[0].id + '/' + get_user_id(), card_template)
 
   });
   $("#mastercard_action").click(function(event) {});
@@ -90,9 +93,9 @@ function get_user_id() {
   return $('#userID').val()
 }
 
-function get_account_id() {
-  return $("#accountID").val()
-}
+// function get_account_id() {
+//   return $("#accountID").val()
+// }
 
 function get_payment_id() {
   return $('#paymentID').val()
@@ -213,7 +216,7 @@ $(document).delegate('.table-click', 'click', function(event) {
     payment_id = $(this).data("id")
     sendPost('payment' + '/' + get_user_id() + '/' + get_account_id() + '/' + payment_id, single_transaction_template)
     setTimeout(function(){
-      
+
       $("#single_transaction").bPopup()
     }, 1000)
 });
@@ -226,12 +229,17 @@ $(document).delegate('#export_payment', 'click', function(event) {
 $(document).delegate('.search', 'keyup', function(event) {
   var $rows = $('#table-trans tbody tr');
       var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
-      
+
       $rows.show().filter(function() {
           var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
           return !~text.indexOf(val);
       }).hide();
 });
+
+$(document).delegate('.ma-table-click', 'click', function(event) {
+  ma_id = $(this).data('id')
+  sendPost('payment' + '/' + get_user_id() + '/' + ma_id, payments_template)
+})
 
 function show(j, error, template, location) {
   if (error) {
@@ -291,7 +299,7 @@ function createTable(input, template) {
     if (arr[arr.length-1] == "payments.html"){
       $("#transaction_table").html(rendered)
       $("#user_payments").css('visibility', 'visible');
-      
+
     }else{
       $("#single_transaction").html(rendered)
     }
