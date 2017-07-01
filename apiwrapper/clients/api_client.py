@@ -42,21 +42,23 @@ class ApiClient:
             if getattr(self, k, None) is None or kwargs.get(k) is not None:
                 setattr(self, k, kwargs.get(k))
 
-    def get(self, endpoint, verify=True):
-        result = self.request('GET', endpoint)
+    def get(self, endpoint, verify=True, **kwargs):
+        result = self.request('GET', endpoint, **kwargs)
 
         if verify and not self.verify(result):
             return None
 
         return result
 
-    def post(self, endpoint, payload):
-        return self.request('POST', endpoint, payload)
+    def post(self, endpoint, payload, **kwargs):
+        return self.request('POST', endpoint, payload, **kwargs)
 
     def delete(self, endpoint):
         return self.request('DELETE', endpoint)
 
-    def request(self, method, endpoint, payload=None):
+    def request(self, method, endpoint, payload=None, **kwargs):
+        if kwargs:
+            endpoint += '?' + '&'.join(['{0}={1}'.format(key, val) for key, val in kwargs])
         headers = self.create_headers(method, endpoint, payload)
 
         url = '%s%s' % (self._uri, endpoint)

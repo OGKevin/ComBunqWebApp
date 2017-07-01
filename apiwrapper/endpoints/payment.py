@@ -14,7 +14,7 @@ class Payment(Endpoint):
         return MonetaryAccount._get_base_endpoint(user_id, account_id)
 
     # Payment Logic
-    def get_all_payments_for_account(self, user_id, account_id):
+    def get_all_payments_for_account(self, user_id, account_id, **kwargs):
         endpoint = self._get_base_endpoint(user_id, account_id)
         endpoint += "/%s" % self.__endpoint_payment
 

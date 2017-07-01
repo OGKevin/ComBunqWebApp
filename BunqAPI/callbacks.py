@@ -8,10 +8,11 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 import json
 import time
 from filecreator.creator import Creator
-# from pprint import pprint
+from pprint import pprint
 from django.core import signing
 import datetime
 import base64
+import urllib.parse as urlparse
 
 
 class callback:
@@ -248,11 +249,11 @@ class callback:
                     r = self.bunq_api.endpoints\
                             .payment.get_all_payments_for_account(
                                                         self.user_id,
-                                                        self.account_id).json()
+                                                        self.account_id)
                 else:
                     r = self.bunq_api.endpoints.payment.get_payment_by_id(
                         self.user_id, self.account_id, self.payment_id
-                    ).json()
+                    )
             else:
                 r = {
                     'Error': [{
@@ -260,7 +261,23 @@ class callback:
                                                          'is not specified')
                     }]
                 }
-            return r
+
+            if self.check_status_code(r):
+                new_url = r.json()['Pagination']['newer_url']
+                old_url = r.json()['Pagination']['older_url']
+                if new_url is not None:
+                    new_id = self._parse_ulr(new_url)["newer_id"]
+                    print(new_id)
+                    self._user.session.new_id = new_id
+                    self._user.save()
+                if old_url is not None:
+                    old_id = self._parse_ulr(old_url)["older_id"]
+                    print(old_id)
+                    self._user.session.old_id = old_id
+                    self._user.save()
+
+            # pprint(r.json())
+            return r.json()
 
     def card(self):
         '''
@@ -472,6 +489,10 @@ class callback:
         s = SessionStore(session_key=session_key)
         dec_data = signing.loads(s[name])
         return dec_data
+
+    def _parse_ulr(self, url):
+        par = urlparse.parse_qs(urlparse.urlparse(url).query)
+        return par
 
     @property
     def bunq_api(self):

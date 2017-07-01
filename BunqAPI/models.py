@@ -24,6 +24,8 @@ class Session(models.Model):
     session_server_id = models.CharField(blank=True, null=True, max_length=150)
     session_server_token = models.CharField(blank=True, null=True,
                                             max_length=150)
+    new_id = models.CharField(blank=True, null=True, max_length=150)
+    old_id = models.CharField(blank=True, null=True, max_length=150)
 
 
 @receiver(post_save, sender=User)
