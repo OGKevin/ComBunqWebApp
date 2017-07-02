@@ -24,3 +24,6 @@ th, td {
 #user_payments{
   visibility: hidden;
 }
+#single_transaction{
+  display: none;
+}

@@ -1,0 +1,21 @@
+<style media="screen">
+  .container{
+    background-color: white;
+  }
+</style>
+<div class="container">
+  {{#rows}}
+  Payment ID : {{Payment.id}}
+  <br>
+  Date : {{Payment.updated}}
+  <br>
+  Amount : {{Payment.amount.value}}
+  <br>
+  From : {{Payment.alias.display_name}} -- {{Payment.alias.iban}}
+  <br>
+  To : {{Payment.counterparty_alias.display_name}} -- {{Payment.counterparty_alias.iban}}
+  <br>
+  Description : {{Payment.description}}
+  {{/rows}}
+  <br>
+</div>

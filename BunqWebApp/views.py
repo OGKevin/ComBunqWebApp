@@ -112,10 +112,11 @@ class LogInView(View):
             password = form.cleaned_data['password']
             file_contents = request.FILES['user_file'].read().decode()
 
-            self.authenticate_user(username, password, request)
+            user = self.authenticate_user(username, password, request)
             session = self.store_in_session(file_contents, password, username)
-            if session is not False:
+            if session:
                 self.check_bunq_session(username)
+                login(request, user)
                 return redirect('my_bunq')
             else:
                 messages.error(request=request,
@@ -133,7 +134,12 @@ class LogInView(View):
     def authenticate_user(username, password, request):
         user = authenticate(username=username, password=password)
         if user is not None:
-            login(request, user)
+            # login(request, user)
+            '''
+            This will always be called because users is being authenticated
+            in the form.
+            '''
+            return user
 
     @staticmethod
     def store_in_session(data, password, username):
@@ -143,7 +149,7 @@ class LogInView(View):
         try:
             dec_data = signing.loads(data['secret'], key=password)
         except signing.BadSignature:
-            return False
+            return None
 
         enc_data = signing.dumps(dec_data)
 
@@ -152,6 +158,7 @@ class LogInView(View):
         s.create()
         user.session.session_token = s.session_key
         user.save()
+        return True
 
     @staticmethod
     def check_bunq_session(username):
@@ -203,13 +210,13 @@ class MigrationService(View):
             password = form.cleaned_data['password']
             encryption_password = form.cleaned_data['encryption_password']
             user_file = request.FILES['user_file']
-            self.authenticate_user(username=username, password=password,
-                                   request=request)
+            user = self.authenticate_user(username=username, password=password,
+                                          request=request)
             api_key = self.decrypt_file(user_file=user_file,
                                         encryption_password=encryption_password)  # noqa
             if api_key is not False:
-                print(api_key)
                 form = self.generate_form(initial={'API': api_key})
+                login(request, user)
                 return render(request, 'BunqAPI/index.html',
                               {'form': form})
             else:
@@ -224,10 +231,7 @@ class MigrationService(View):
     def authenticate_user(username, password, request):
         user = authenticate(username=username, password=password)
         if user is not None:
-            login(request, user)
-            return True
-        else:
-            return False
+            return user
 
     @staticmethod
     def decrypt_file(user_file, encryption_password):

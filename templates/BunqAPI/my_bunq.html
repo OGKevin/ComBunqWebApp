@@ -22,9 +22,10 @@
 			var start_session_template = '{%static 'BunqAPI/templates/mustache/start_session.html '%}'
 			var ussers_template = '{%static 'BunqAPI/templates/mustache/users.html '%}'
 			var accounts_template = '{%static 'BunqAPI/templates/mustache/accounts.html '%}'
-			var payments_template = '{%static 'BunqAPI/templates/mustache/payments.html '%}'
+			var payments_template = '{%static 'BunqAPI/templates/mustache/payments.html'%}'
 			var card_template = '{%static 'BunqAPI/templates/mustache/card.html '%}'
 			var register_template = '{%static 'BunqAPI/templates/mustache/register.html '%}'
+			var single_transaction_template = '{%static 'BunqAPI/templates/mustache/single_transaction.html'%}'
 		</script>
 	</head>
 	<body class="left-sidebar">
@@ -99,14 +100,15 @@ Restart session </button>
 										<div class="ui input">
 										  <input id="userID" type="text" placeholder="user_id">
 										</div>
-										<div class="ui input">
-										  <input id="accountID" type="text" placeholder="account_id/card_id">
-										</div>
-										<div class="ui input">
-										  <input id="paymentID" type="text" placeholder="payment_id">
-										</div>
+										<!-- <div class="ui input">
+										<input id="paymentID" type="text" placeholder="payment_id">
+									</div> -->
+
 										<p>The input boxes below are needed for 'Export transactions'</p>
 
+										<div class="ui input">
+										<input id="accountID" type="text" placeholder="account_id">
+									</div>
 										<div class="ui input">
 										  <input id="begin_date" type="text" placeholder="start date: YYYY-MM-DD">
 										</div>
@@ -120,12 +122,12 @@ Restart session </button>
 											<a id="start_session" class="item">Restart session</a>
 											<a id="users" class="item">Users</a>
 											<a id="accounts" class="item">Accounts</a>
-											<a id="payment" class="item">Payment</a>
+											<!-- <a id="payment" class="item">Payment</a> -->
 											<a id="card" class= "item">Cards</a>
-											<a id="export_transactions" class= "item">Export transactions table</a>
+											<!-- <a id="export_transactions" class= "item">Export transactions table</a> -->
 											<a id="export_invoice" class= "item">Export invoice</a>
-											<a id="export_payment" class= "item">Export payment</a>
-											<a id="export_payment2" class= "item">Export transactions</a>
+											<!-- <a id="export_payment" class= "item">Export payment</a> -->
+											<a id="export_customer_statement" class= "item">Export transactions</a>
 										</div>
 									</section>
 
@@ -144,8 +146,10 @@ Restart session </button>
 											<header>
 												<h3>Transactions</h3>
 											</header>
-												<table id="transaction_table" class="ui celled table">
-												</table>
+												<!-- <table id="transaction_table" class="ui celled table">
+												</table> -->
+												<div id="transaction_table">
+												</div>
 										</div>
 									</section>
 										<!-- <section>
@@ -323,10 +327,16 @@ Restart session </button>
 		<script type='text/javascript' src="{%static "vanilla-datatables/vanilla-dataTables.min.js"%}"></script>
 		<script type='text/javascript' src="{%static "table-to-json/src/jquery.tabletojson.js"%}"></script>
 		<link rel="stylesheet" href="{%static "vanilla-datatables/vanilla-dataTables.min.css"%}"/>
+		<script type="text/javascript" src="{%static "bPopup/jquery.bpopup.min.js"%}"></script>
 		<script type='text/javascript' src="{%static "BunqAPI/JS/my_bunq.js "%}"></script>
 	  <!-- <script type='text/javascript' src="{%static "BunqAPI/JS/vue.js "%}"></script> -->
 	  <link rel='stylesheet' href="{%static "BunqAPI/CSS/my_bunq.css "%}"/>
 		<script src="{%static "assets/js/main.js"%}"></script>
+
+		<!-- Pop ups  -->
+		<div id="single_transaction">
+
+		</div>
 
 	</body>
 </html>

@@ -329,7 +329,8 @@ class callback:
 
             try:
                 pdf = Creator(self._user,
-                              'pdf').payment(payment['Response'][0])
+                              'pdf').payment(payment['Response'][0],
+                                             transaction_id=self.payment_id)
             except KeyError:  # pragma: no cover
                 error_msg = payment['Error'][0]['error_description_translated']
                 error = {

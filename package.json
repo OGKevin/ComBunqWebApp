@@ -13,8 +13,7 @@
   "keywords": [
     "bunq",
     "pyhton",
-    "django",
-    "heroku"
+    "django"
   ],
   "author": "OGKevin <Kevinhellemun@icloud.com>",
   "license": "MIT",

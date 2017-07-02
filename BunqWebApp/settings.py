@@ -12,13 +12,22 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 
 import os
 import dj_database_url
+from ruamel.yaml import YAML
+from box import Box
+import pathlib
 # import raven
 # from django.core.urlresolvers import reverse_lazy
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
+config_file = pathlib.Path(os.path.join(BASE_DIR, 'BunqWebApp/config.yaml'))
+if config_file.is_file():
+    config = Box(YAML(typ='safe').load(pathlib.Path(
+                                                    os.path.join(BASE_DIR,
+                                                                'BunqWebApp/config.yaml'))))  # noqa
+else:
+    config = None
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
@@ -44,21 +53,33 @@ except NameError:
             Exception('Please create a %s file with random characters \
             to generate your secret key!' % SECRET_FILE)
 
-DEBUG = True
-SECURE_SSL_REDIRECT = False
-SESSION_COOKIE_SECURE = False
-DESABLE_LOGGERS = False
-SANDBOX = True
-ALLOWED_HOSTS = ['*']
-USE_PROXY = False
-PROXY_URI = 'url'
-TELEGRAM_TOKEN = None
+if config is not None:
+    DEBUG = True if str(config.DEBUG) == 'True' else False
+    SECURE_SSL_REDIRECT = False
+    SESSION_COOKIE_SECURE = False
+    DESABLE_LOGGERS = False
+    SANDBOX = True if str(config.SANDBOX) == 'True' else False
+    ALLOWED_HOSTS = ['*']
+    USE_PROXY = True if str(config.USE_PROXY) == 'True' else False
+    PROXY_URI = config.PROXY_URI
+    TELEGRAM_TOKEN = None if str(config.TELEGRAM_TOKEN) == "None" else config\
+                                                                            .TELEGRAM_TOKEN  # noqa
+
+else:
+    DEBUG = True
+    SANDBOX = True
+    DESABLE_LOGGERS = False
+    ALLOWED_HOSTS = ['*']
+    USE_PROXY = False
+    TELEGRAM_TOKEN = None
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-RAVEN_CONFIG = {
-        'dsn': None,
+
+if config is not None and config.DSN is not 'None':
+    RAVEN_CONFIG = {
+        'dsn': config.DSN if str(config.DSN) != "None" else None,
     }
 
 # Application definition
@@ -180,7 +201,8 @@ else:  # pragma: no cover
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME':  'KevinH',
+            'NAME':  'khellemun' if config is None else config.DATABASE.NAME,
+            'USER': None if config is None else config.DATABASE.USER
         }
     }
     db_from_env = dj_database_url.config()
@@ -230,7 +252,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static-files')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), os.path.join(
-    BASE_DIR, 'node_modules')]
+    BASE_DIR, 'node_modules'), os.path.join(BASE_DIR, 'bower_components')]
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',

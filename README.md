@@ -23,7 +23,7 @@ Community BunqWeb is going to be a web interface for bunqers using the [Bunq API
 
 
 
-View the app live based on the latest [release]: <https://combunqweb.herokuapp.com/>
+View the app live based on the latest [release]: <https://bunqweb.com/>
 
 View the [wiki] for more information.
 
@@ -47,10 +47,10 @@ View the [wiki] for more information.
 
 
   - Use Bunq CSV file and see a Pie Charts of Income, Expanses, Transcation Names and Percentages
-  - User the bunq API to view your transactions
+  - Use the bunq API to view your transactions
   - Export your latest invoice
   - Export the shown transactions in CSV format
- 
+  - Export a bunq official transactions overview
 
 # Why Community ?
 
@@ -95,8 +95,6 @@ MIT
    [Answer]:<https://together.bunq.com/topic/is-there-a-browser-web-desktop-client-planned#comment-1881>
 
    [django]:<https://www.djangoproject.com/>
-
-   [heroku]:<https://www.heroku.com/>
 
    [npm]:<https://www.npmjs.com/>
 
