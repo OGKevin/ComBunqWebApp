@@ -173,6 +173,8 @@ class callback:
                                                  'start_session')
                 session_id = r.json()['Response'][0]['Id']['id']
 
+                self._save_response(response=r.json(), name='start_session')
+
                 self._store_session_server_info(session_token, user_id,
                                                 session_id)
 
@@ -180,7 +182,6 @@ class callback:
 
                 self._sotre_session_expire(r.json()['Response'][2])
 
-                self._save_response(response=r.json(), name='start_session')
                 return r.json()
         else:  # pragma: no cover
             error = {
@@ -234,7 +235,7 @@ class callback:
                                                                     ).json()
         return r
 
-    def payment(self, mode='normal', new=False, old=False):
+    def payment(self, new=False, old=False):
         '''
         Returns a list of all transactions from an account. If an payment id is
         given then a specific transaction will be returned.
@@ -243,48 +244,71 @@ class callback:
 
         https://doc.bunq.com/api/1/call/payment
         '''
-        newer_id = self._new_id if new else None
-        older_id = self._old_id if old else None
+        newer_id = self.to_int(self._new_id) if new else 0
+        older_id = self.to_int(self._old_id )if old else 0
 
-        if mode == 'normal':
-            if self.account_id and self.user_id is not None:
-                if self.payment_id is None:
-                    r = self.bunq_api.endpoints\
-                            .payment.get_all_payments_for_account(
-                                                        self.user_id,
-                                                        self.account_id,
-                                                        newer_id=self._new_id,
-                                                        older_id=self._old_id)
+        if self.account_id and self.user_id is not None:
+            if self.payment_id is None:
+                r = self.bunq_api.endpoints\
+                        .payment.get_all_payments_for_account
+                if new:
+                    r = r(self.user_id, self.account_id, newer_id=newer_id)
+                elif old:
+                    r = r(self.user_id, self.account_id, older_id=older_id)
                 else:
-                    r = self.bunq_api.endpoints.payment.get_payment_by_id(
-                        self.user_id, self.account_id, self.payment_id
-                    )
+                    r = r(self.user_id, self.account_id)
             else:
-                r = {
-                    'Error': [{
-                        'error_description_translated': ('account or userd id '
-                                                         'is not specified')
-                    }]
-                }
+                r = self.bunq_api.endpoints.payment.get_payment_by_id(
+                    self.user_id, self.account_id, self.payment_id
+                )
+        else:
+            r = {
+                'Error': [{
+                    'error_description_translated': ('account or userd id '
+                                                     'is not specified')
+                }]
+            }
 
-            if self.check_status_code(r):
-                new_url = r.json()['Pagination']['newer_url']
-                old_url = r.json()['Pagination']['older_url']
-                if new_url is not None:
-                    new_id = self._parse_ulr(new_url)["newer_id"][0]
-                    self._user.session.new_id = new_id
-                    self._user.save()
-                if old_url is not None:
-                    old_id = self._parse_ulr(old_url)["older_id"][0]
-                    self._user.session.old_id = old_id
-                    self._user.save()
+        if self.check_status_code(r):
+            new_url = r.json()['Pagination']['newer_url']
+            old_url = r.json()['Pagination']['older_url']
+            if new_url is not None:
+                new_id = self._parse_ulr(new_url)["newer_id"][0]
+                self._user.session.new_id = new_id
+                self._user.save()
+            if old_url is not None:
+                old_id = self._parse_ulr(old_url)["older_id"][0]
+                self._user.session.old_id = old_id
+                self._user.save()
 
-            # pprint(r.json())
-            return r.json()
+            s = SessionStore(session_key=self._user.session.session_token)
+            s['account_id'] = self.account_id
+            s.save()
+
+        # pprint(r.json())
+        return r.json()
 
     def payment_next(self):
         if self._old_id is not None:
+            ids = SessionStore(session_key=self._user.session.session_token)
+            self.account_id = ids['account_id']
+            self.user_id = ids['user_id']
             return self.payment(old=True)
+        else:
+            error = {
+            'Error':[{
+            'error_description_translated':('User\'s transactions not '
+                                            'retrieved yet.')
+            }]
+            }
+            return error
+
+    def payment_prev(self):
+        if self._new_id is not None:
+            ids = SessionStore(session_key=self._user.session.session_token)
+            self.account_id = ids['account_id']
+            self.user_id = ids['user_id']
+            return self.payment(new=True)
         else:
             error = {
             'Error':[{
@@ -467,11 +491,16 @@ class callback:
             return True
 
     def _store_session_server_info(self, session_token, user_id, session_id):
-        s = SessionStore()
+        # s = SessionStore()
+        # s['user_id'] = user_id
+        # s.create()
+        # self._user.session \
+        #           .session_user_id = s.session_key
+
+        session_key = self._user.session.session_token
+        s = SessionStore(session_key=session_key)
         s['user_id'] = user_id
-        s.create()
-        self._user.session \
-                  .session_user_id = s.session_key
+        s.save()
 
         self._user.session.session_server_id = session_id
         self._user.session.session_server_token = session_token
@@ -624,6 +653,7 @@ class callback:
     @property
     def _old_id(self):
         old_id = self._user.session.old_id
+        print(old_id)
         if old_id is None:
             return None
         else:

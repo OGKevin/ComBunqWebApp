@@ -58,7 +58,7 @@ class ApiClient:
 
     def request(self, method, endpoint, payload=None, **kwargs):
         if kwargs:
-            endpoint += '?' + '&'.join(['{0}={1}'.format(key, val) for key, val in kwargs])
+            endpoint += '?' + '&'.join(['{0}={1}'.format(key, val) for key, val in kwargs.items()])
         headers = self.create_headers(method, endpoint, payload)
 
         url = '%s%s' % (self._uri, endpoint)

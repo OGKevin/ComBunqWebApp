@@ -11,14 +11,14 @@ class Endpoint:
     def __init__(self, api_client):
         self._api_client = api_client
 
-    def _make_get_request(self, endpoint, verify=True):
-        res = self._api_client.get(endpoint, verify)
+    def _make_get_request(self, endpoint, verify=True, **kwargs):
+        res = self._api_client.get(endpoint, verify, **kwargs)
         if res.status_code is not 200:
             logger.error(res.json()['Error'][0]['error_description'])
         return res
 
-    def _make_post_request(self, endpoint, payload):
-        res = self._api_client.post(endpoint, payload)
+    def _make_post_request(self, endpoint, payload, **kwargs):
+        res = self._api_client.post(endpoint, payload, **kwargs)
         if res.status_code is not 200:
             logger.error(res.json()['Error'][0]['error_description'])
         return res

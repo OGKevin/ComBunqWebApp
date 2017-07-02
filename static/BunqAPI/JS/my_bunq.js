@@ -241,8 +241,12 @@ $(document).delegate('.ma-table-click', 'click', function(event) {
   sendPost('payment' + '/' + get_user_id() + '/' + ma_id, payments_template)
 })
 
-$(document).delegate('#payment-next', 'click', function(event){
-  sendPost('payment' + '/' + get_user_id() + '/' + ma_id, payments_template)
+$(document).delegate('#payment_next', 'click', function(event){
+  sendPost($(this)[0].id, payments_template)
+})
+
+$(document).delegate('#payment_prev', 'click', function(event){
+  sendPost($(this)[0].id, payments_template)
 })
 
 function show(j, error, template, location) {

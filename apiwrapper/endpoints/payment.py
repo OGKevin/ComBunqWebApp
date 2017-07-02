@@ -18,7 +18,7 @@ class Payment(Endpoint):
         endpoint = self._get_base_endpoint(user_id, account_id)
         endpoint += "/%s" % self.__endpoint_payment
 
-        return self._make_get_request(endpoint)
+        return self._make_get_request(endpoint, **kwargs)
 
     def get_payment_by_id(self, user_id, account_id, payment_id):
         endpoint = self._get_base_endpoint(user_id, account_id)
