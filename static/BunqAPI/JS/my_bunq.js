@@ -1,33 +1,33 @@
 $(function() {
   var jsonObj;
   sendPost( "load_file", false)
-  
-  $("#encryption_form").submit(function(event) {
-    /* Act on the event */
-    event.preventDefault()
-    get_file()
-    deactivateItems()
-    $(this).addClass('active')
 
+  // $("#encryption_form").submit(function(event) {
+  //   /* Act on the event */
+  //   event.preventDefault()
+  //   get_file()
+  //   deactivateItems()
+  //   $(this).addClass('active')
+  //
+  //
+  //   setTimeout(function() {
+  //     sendPost( "load_file", false)
+  //
+  //   }, 500)
+  // });
 
-    setTimeout(function() {
-      sendPost( "load_file", false)
-
-    }, 500)
-  });
-
-  $("#load_file").click(function(event) {
-    get_file()
-    deactivateItems()
-    $(this).addClass('active')
-
-
-    setTimeout(function() {
-      sendPost( "load_file", false)
-
-    }, 500)
-
-  });
+  // $("#load_file").click(function(event) {
+  //   get_file()
+  //   deactivateItems()
+  //   $(this).addClass('active')
+  //
+  //
+  //   setTimeout(function() {
+  //     sendPost( "load_file", false)
+  //
+  //   }, 500)
+  //
+  // });
 
   $('#register').click(function(event) {
     deactivateItems()
@@ -43,25 +43,28 @@ $(function() {
   $("#users").click(function(event) {
     deactivateItems()
     $(this).addClass('active')
-    sendPost( $(this)[0].id + '/' + get_user_id() + '/', ussers_template)
+    // sendPost( $(this)[0].id + '/' + get_user_id() + '/', ussers_template)
+    sendPost( $(this)[0].id, ussers_template)
   });
   $("#accounts").click(function(event) {
     deactivateItems()
     $(this).addClass('active')
-    sendPost( $(this)[0].id + '/' + get_user_id() + '/' + get_account_id(), accounts_template)
+    // sendPost( $(this)[0].id + '/' + get_user_id() + '/' + get_account_id(), accounts_template)
+    sendPost( $(this)[0].id + '/' + get_user_id(), accounts_template)
 
 
   });
-  $("#payment").click(function(event) {
-    deactivateItems()
-    $(this).addClass('active')
-    sendPost( $(this)[0].id + '/' + get_user_id() + '/' + get_account_id(), payments_template)
-
-  });
+  // $("#payment").click(function(event) {
+  //   deactivateItems()
+  //   $(this).addClass('active')
+  //   sendPost( $(this)[0].id + '/' + get_user_id() + '/' + get_account_id(), payments_template)
+  //
+  // });
   $("#card").click(function(event) {
     deactivateItems()
     $(this).addClass('active')
-    sendPost( $(this)[0].id + '/' + get_user_id() + '/' + get_account_id(), card_template)
+    // sendPost( $(this)[0].id + '/' + get_user_id() + '/' + get_account_id(), card_template)
+    sendPost( $(this)[0].id + '/' + get_user_id(), card_template)
 
   });
   $("#mastercard_action").click(function(event) {});
@@ -211,27 +214,34 @@ function sendPost(action, template, data) {
 $(document).delegate('.table-click', 'click', function(event) {
     /* Act on the event */
     payment_id = $(this).data("id")
-    sendPost('payment' + '/' + get_user_id() + '/' + get_account_id() + '/' + payment_id, single_transaction_template)
+    ma_id = $(this).data("ma")
+    sendPost('payment' + '/' + get_user_id() + '/' + ma_id + '/' + payment_id, single_transaction_template)
     setTimeout(function(){
-      
+
       $("#single_transaction").bPopup()
     }, 1000)
 });
 
 $(document).delegate('#export_payment', 'click', function(event) {
   payment_id = $(this).data("id")
-  sendPost('get_payment_pdf/' + get_user_id() + '/' + get_account_id() + '/' + payment_id)
+  ma_id = $(this).data("ma")
+  sendPost('get_payment_pdf/' + get_user_id() + '/' + ma_id + '/' + payment_id)
 });
 
 $(document).delegate('.search', 'keyup', function(event) {
   var $rows = $('#table-trans tbody tr');
       var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
-      
+
       $rows.show().filter(function() {
           var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
           return !~text.indexOf(val);
       }).hide();
 });
+
+$(document).delegate('.ma-table-click', 'click', function(event) {
+  ma_id = $(this).data('id')
+  sendPost('payment' + '/' + get_user_id() + '/' + ma_id, payments_template)
+})
 
 function show(j, error, template, location) {
   if (error) {
@@ -261,7 +271,7 @@ function show(j, error, template, location) {
         case "accounts":
           $("#user_accounts").html(rendered)
           $("#user_accounts").css('visibility', 'visible');
-          $("#accountID").val(j[0].MonetaryAccountBank.id)
+          // $("#accountID").val(j[0].MonetaryAccountBank.id)
           break;
         case "users":
           $("#user_accounts").html(rendered)
@@ -291,7 +301,7 @@ function createTable(input, template) {
     if (arr[arr.length-1] == "payments.html"){
       $("#transaction_table").html(rendered)
       $("#user_payments").css('visibility', 'visible');
-      
+
     }else{
       $("#single_transaction").html(rendered)
     }

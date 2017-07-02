@@ -11,6 +11,7 @@
       <th>ID</th>
       <th>First alias</th>
       <th>Balance</th>
+      <th>Actions</th>
     </tr>
   </thead>
   <tbody>
@@ -20,6 +21,7 @@
       <td>{{id}}</td>
       <td>{{alias.0.value}}</td>
       <td>{{balance.currency}} {{balance.value}}</td>
+      <td><button class="ma-table-click mini ui secondary button" data-id="{{id}}">Transactions</button></td>
     </tr>
     {{/MonetaryAccountBank}} {{/.}}
   </tbody>
