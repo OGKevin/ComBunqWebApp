@@ -2,32 +2,32 @@ $(function() {
   var jsonObj;
   sendPost( "load_file", false)
 
-  $("#encryption_form").submit(function(event) {
-    /* Act on the event */
-    event.preventDefault()
-    get_file()
-    deactivateItems()
-    $(this).addClass('active')
+  // $("#encryption_form").submit(function(event) {
+  //   /* Act on the event */
+  //   event.preventDefault()
+  //   get_file()
+  //   deactivateItems()
+  //   $(this).addClass('active')
+  //
+  //
+  //   setTimeout(function() {
+  //     sendPost( "load_file", false)
+  //
+  //   }, 500)
+  // });
 
-
-    setTimeout(function() {
-      sendPost( "load_file", false)
-
-    }, 500)
-  });
-
-  $("#load_file").click(function(event) {
-    get_file()
-    deactivateItems()
-    $(this).addClass('active')
-
-
-    setTimeout(function() {
-      sendPost( "load_file", false)
-
-    }, 500)
-
-  });
+  // $("#load_file").click(function(event) {
+  //   get_file()
+  //   deactivateItems()
+  //   $(this).addClass('active')
+  //
+  //
+  //   setTimeout(function() {
+  //     sendPost( "load_file", false)
+  //
+  //   }, 500)
+  //
+  // });
 
   $('#register').click(function(event) {
     deactivateItems()
@@ -93,9 +93,9 @@ function get_user_id() {
   return $('#userID').val()
 }
 
-// function get_account_id() {
-//   return $("#accountID").val()
-// }
+function get_account_id() {
+  return $("#accountID").val()
+}
 
 function get_payment_id() {
   return $('#paymentID').val()
@@ -214,7 +214,8 @@ function sendPost(action, template, data) {
 $(document).delegate('.table-click', 'click', function(event) {
     /* Act on the event */
     payment_id = $(this).data("id")
-    sendPost('payment' + '/' + get_user_id() + '/' + get_account_id() + '/' + payment_id, single_transaction_template)
+    ma_id = $(this).data("ma")
+    sendPost('payment' + '/' + get_user_id() + '/' + ma_id + '/' + payment_id, single_transaction_template)
     setTimeout(function(){
 
       $("#single_transaction").bPopup()
@@ -223,7 +224,8 @@ $(document).delegate('.table-click', 'click', function(event) {
 
 $(document).delegate('#export_payment', 'click', function(event) {
   payment_id = $(this).data("id")
-  sendPost('get_payment_pdf/' + get_user_id() + '/' + get_account_id() + '/' + payment_id)
+  ma_id = $(this).data("ma")
+  sendPost('get_payment_pdf/' + get_user_id() + '/' + ma_id + '/' + payment_id)
 });
 
 $(document).delegate('.search', 'keyup', function(event) {
@@ -277,7 +279,7 @@ function show(j, error, template, location) {
         case "accounts":
           $("#user_accounts").html(rendered)
           $("#user_accounts").css('visibility', 'visible');
-          $("#accountID").val(j[0].MonetaryAccountBank.id)
+          // $("#accountID").val(j[0].MonetaryAccountBank.id)
           break;
         case "users":
           $("#user_accounts").html(rendered)
