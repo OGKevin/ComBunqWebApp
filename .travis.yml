@@ -21,6 +21,8 @@ before_script:
 - "export DISPLAY=:99.0"
 - "sh -e /etc/init.d/xvfb start"
 - sleep 3 # give xvfb some time to start
+- npm install -g bower
+- bower install
 # - sudo /etc/init.d/postgresql stop
 # - wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key
 #   add -
