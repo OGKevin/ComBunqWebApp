@@ -299,7 +299,7 @@ function createTable(input, template) {
   $.get(template, function(template) {
     rendered = Mustache.render(template, data)
     if (arr[arr.length-1] == "payments.html"){
-      $("#transaction_table").html(rendered)
+      $("#user_payments").html(rendered)
       $("#user_payments").css('visibility', 'visible');
 
     }else{
