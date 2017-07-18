@@ -11,7 +11,7 @@ chardet==3.0.4
 colorclass==2.2.0
 contextlib2==0.5.5
 coverage==4.4.1
-cryptography==1.9
+cryptography==2.0
 cssselect==1.0.1
 dj-database-url==0.4.2
 Django==1.11.3
