@@ -46,7 +46,7 @@ pytz==2017.2
 PyYAML==3.12
 qrcode==5.3
 raven==6.1.0
-requests==2.18.1
+requests==2.18.2
 requests-mock==1.3.0
 ruamel.yaml==0.15.19
 shellescape==3.4.1
