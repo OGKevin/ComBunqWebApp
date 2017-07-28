@@ -5,7 +5,7 @@ asn1crypto==0.22.0
 Babel==2.4.0
 cairocffi==0.8.0
 CairoSVG==2.0.3
-certifi==2017.4.17
+certifi==2017.7.27.1
 cffi==1.10.0
 chardet==3.0.4
 colorclass==2.2.0
