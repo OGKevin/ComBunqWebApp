@@ -41,7 +41,7 @@ pyparsing==2.2.0
 Pyphen==0.9.4
 python-box==3.0.1
 python-dateutil==2.6.1
-python-telegram-bot==7.0.0
+python-telegram-bot==7.0.1
 pytz==2017.2
 PyYAML==3.12
 qrcode==5.3
