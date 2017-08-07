@@ -37,6 +37,6 @@
     "vue": "^2.3.3"
   },
   "devDependencies": {
-    "semantic-ui": "^2.2.10"
+    "semantic-ui": "2.2.11"
   }
 }
