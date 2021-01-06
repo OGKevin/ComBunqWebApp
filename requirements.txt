@@ -4,7 +4,7 @@ arrow==0.10.0
 asn1crypto==0.22.0
 Babel==2.4.0
 cairocffi==0.8.0
-CairoSVG==2.0.3
+CairoSVG==2.5.1
 certifi==2017.7.27.1
 cffi==1.10.0
 chardet==3.0.4
