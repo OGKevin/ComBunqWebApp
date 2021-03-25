@@ -43,7 +43,7 @@ python-box==3.0.1
 python-dateutil==2.6.1
 python-telegram-bot==7.0.1
 pytz==2017.2
-PyYAML==3.12
+PyYAML==5.4
 qrcode==5.3
 raven==6.1.0
 requests==2.18.2
